@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
+from time import sleep
 
 def download_list(link: str)-> None:
 
@@ -25,6 +26,7 @@ def download_list(link: str)-> None:
             EC.element_to_be_clickable((By.CSS_SELECTOR, '[aria-label="Download deck file"]')))
 
         download_button.click()
+        sleep(2)
 
     finally:
         driver.quit()
