@@ -13,6 +13,9 @@ matches = reader.searchMatches(search, repository)
 
 utils.clear()
 
-print('Matches:')
-for match in matches:
-    print(match)
+if len(matches) >=1:
+    print('Matches:')
+    for match in matches:
+        print(match)
+else:
+    print('No matches found. :^(\nThis might be an error, try running it again.')
