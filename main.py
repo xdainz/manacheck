@@ -1,38 +1,18 @@
+import download, reader, utils
 
-def readFile(filename: str ) -> list:
-    try:
-        with open(filename, 'r') as repository:
-            raw_array = repository.readlines()
-            cleaned_array = []
+search_link = 'https://manabox.app/decks/GgG_dmiHS2iRFdgQQdurwg'
+repository_link = 'https://manabox.app/decks/u3AlIDEKTZeN1AfWptxHcw'
 
-            for line in raw_array.copy():
-                if line != 'Commander\n' and line != 'Deck\n' and line != '\n':
-                    cleaned_array.append(line[1:-1])
-            
-        repository.close()
-        return cleaned_array
-        
-    except FileNotFoundError:
-        raise Exception(f"Error: File '{filename}' not found")
+download.download_list(search_link)
+search = utils.rename_last_file('search.txt')
 
+download.download_list(repository_link)
+repository = utils.rename_last_file('repository.txt')
 
-def searchMatches(search_file: str, repository_file: str) -> list:
-        look_up: list = readFile(search_file)
-        repository: list = readFile(repository_file)
+matches = reader.searchMatches(search, repository)
 
-        matches: list = []
+utils.clear()
 
-        for card in look_up:
-            if card in repository:
-                matches.append(card)
-
-        return matches
-
-
-def readFiles() -> None:
-    for match in searchMatches('search.txt','repository.txt'):
-        print(match)
-
-
-if __name__ == '__main__':
-    readFiles()
+print('Matches:')
+for match in matches:
+    print(match)
