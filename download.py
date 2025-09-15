@@ -4,14 +4,18 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
 from time import sleep
+from utils import rename_last_file
 
-def download_list(link: str)-> None:
+def download_list(link: str, file_name: str)-> str:
 
     download_dir = os.path.join(os.getcwd(), 'data')
+
+    if os.path.exists(os.path.join(download_dir, f'{file_name}.txt')):
+        return os.path.join(download_dir,f'{file_name}.txt')
+
     if not os.path.exists(download_dir):
         os.makedirs(download_dir)
 
-    print(download_dir)
     options = webdriver.ChromeOptions()
     
     prefs = {'download.default_directory': download_dir}
@@ -26,7 +30,8 @@ def download_list(link: str)-> None:
             EC.element_to_be_clickable((By.CSS_SELECTOR, '[aria-label="Download deck file"]')))
 
         download_button.click()
-        sleep(2)
 
     finally:
+        sleep(2)
         driver.quit()
+        return rename_last_file(f'{file_name}.txt')
