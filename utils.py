@@ -26,7 +26,7 @@ def rename_last_file(new_file_name: str) -> str:
 
     return new_name
 
-def open_file_editor(file_path):
+def open_file_editor(file_path) -> None:
     if os.name == 'nt':
         subprocess.Popen(['notepad.exe', file_path])
     else:
