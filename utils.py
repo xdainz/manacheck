@@ -32,6 +32,34 @@ def open_file_editor(file_path) -> None:
     else:
         subprocess.call(['vim', file_path])
    
+def read_rep_list() -> list[str]:
+    arr: list[str] = []
+
+    while True:
+        try:
+            if os.path.exists('multisearch.txt'):
+                open_file_editor('multisearch.txt')
+                with open('multisearch.txt') as links:
+                    arr = links.readlines()
+                    
+                    arr.pop(0)
+
+                    if arr == []:
+                        raise Exception('\nNo links where found inside multisearch.txt')
+
+                    links.close()
+                break
+
+            else:
+                f = open('multisearch.txt', 'a')
+                f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THIS LINE)----')
+                f.close()
+        except Exception:
+            raise
+
+    return arr
+
  
 if __name__ == '__main__':
-    open_file_editor('multisearch.txt')
+    read_rep_list()
+#    open_file_editor('multisearch.txt')
