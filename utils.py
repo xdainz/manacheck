@@ -60,6 +60,29 @@ def read_rep_list() -> list[str]:
             raise
 
     return arr
+def read_search_list() -> list[str]:
+    arr: list[str] = []
+
+    while True:
+        try:
+            if os.path.exists('search_list.txt'):
+                open_file_editor('search_list.txt')
+                with open('search_list.txt') as links:
+                    arr = links.readlines()
+                    
+                    arr.pop(0)
+                    arr.pop(0)
+
+                    if arr == []:
+                        raise Exception('\nNo links where found inside.')
+
+                    links.close()
+                break
+
+            else:
+                f = open('search_list.txt', 'a')
+                f.write('[---------- MANABOX WITH THE CARDS YOU ARE LOOKING FOR ----------]\n')
+                f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THESE LINES) ----')
                 f.close()
         except Exception:
             raise
