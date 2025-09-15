@@ -1,5 +1,6 @@
 import os
 import glob
+import subprocess
 
 def clear() -> None:
     if os.name == 'nt':
@@ -24,3 +25,10 @@ def rename_last_file(new_file_name: str) -> str:
         os.rename(last_file, new_name)
 
     return new_name
+
+def open_file_editor(file_path):
+    if os.name == 'nt':
+        subprocess.Popen(['notepad.exe', file_path])
+    else:
+        subprocess.call(['vim', file_path])
+   
