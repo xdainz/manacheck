@@ -10,9 +10,8 @@ def download_list(link: str, file_name: str)-> str:
 
     download_dir = os.path.join(os.getcwd(), 'data')
 
-    if os.path.exists(os.path.join(download_dir, 'search.txt')):
-        print(os.path.join(download_dir, 'search.txt'))
-        return 'search.txt'
+    if os.path.exists(os.path.join(download_dir, f'{file_name}.txt')):
+        return f'{file_name}.txt'
 
     if not os.path.exists(download_dir):
         os.makedirs(download_dir)
