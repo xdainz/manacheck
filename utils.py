@@ -37,22 +37,29 @@ def read_rep_list() -> list[str]:
 
     while True:
         try:
-            if os.path.exists('multisearch.txt'):
-                open_file_editor('multisearch.txt')
-                with open('multisearch.txt') as links:
+            if os.path.exists('repositories.txt'):
+                open_file_editor('repositories.txt')
+                with open('repositories.txt') as links:
                     arr = links.readlines()
                     
                     arr.pop(0)
+                    arr.pop(0)
 
                     if arr == []:
-                        raise Exception('\nNo links where found inside multisearch.txt')
+                        raise Exception('\nNo links where found inside repositories.txt')
 
                     links.close()
                 break
 
             else:
-                f = open('multisearch.txt', 'a')
-                f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THIS LINE)----')
+                f = open('repositories.txt', 'a')
+                f.write('[---------- MANABOX\'S YOU WANT TO SEARCH INTO ----------]\n')
+                f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THESE LINES) ----')
+                f.close()
+        except Exception:
+            raise
+
+    return arr
                 f.close()
         except Exception:
             raise
