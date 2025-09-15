@@ -32,3 +32,6 @@ def open_file_editor(file_path):
     else:
         subprocess.call(['vim', file_path])
    
+ 
+if __name__ == '__main__':
+    open_file_editor('multisearch.txt')
