@@ -9,10 +9,14 @@ from utils import rename_last_file
 def download_list(link: str, file_name: str)-> str:
 
     download_dir = os.path.join(os.getcwd(), 'data')
+
+    if os.path.exists(os.path.join(download_dir, 'search.txt')):
+        print(os.path.join(download_dir, 'search.txt'))
+        return 'search.txt'
+
     if not os.path.exists(download_dir):
         os.makedirs(download_dir)
 
-    print(download_dir)
     options = webdriver.ChromeOptions()
     
     prefs = {'download.default_directory': download_dir}
