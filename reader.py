@@ -9,7 +9,7 @@ def readFile(filename: str ) -> list:
 
     finally:
         for line in raw_array.copy():
-            if line != 'Commander\n' and line != 'Deck\n' and line != 'Planeswalkers' and line != '\n':
+            if line != 'Commander\n' and line != 'Deck\n' and line != '\n':
                 cleaned_array.append(line[1:-1])
             
         return cleaned_array
