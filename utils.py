@@ -1,6 +1,7 @@
 import os
 import glob
 import subprocess
+import shutil
 
 def clear() -> None:
     if os.name == 'nt':
@@ -90,7 +91,18 @@ def read_search_list() -> list[str]:
 
     return arr
 
- 
+def search_files_exist() -> bool:
+
+    if os.path.exists('./data'):
+        if len(os.listdir('./data')) >= 2:
+            return True
+    
+    return False
+
+def del_search_files() -> None:
+    if os.path.exists('./data'):
+        shutil.rmtree('./data')        
+
 if __name__ == '__main__':
-    read_rep_list()
+    print(search_files_exist())
 #    open_file_editor('multisearch.txt')
