@@ -53,13 +53,14 @@ def read_rep_list() -> list[str]:
 
             else:
                 f = open('repositories.txt', 'a')
-                f.write('[---------- MANABOX\'S YOU WANT TO SEARCH INTO ----------]\n')
+                f.write('[----------- MANABOX\'S YOU WANT TO SEARCH INTO -----------]\n')
                 f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THESE LINES) ----')
                 f.close()
         except Exception:
             raise
 
     return arr
+
 def read_search_list() -> list[str]:
     arr: list[str] = []
 
