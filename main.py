@@ -1,11 +1,11 @@
-import download, reader, utils
+import fetch_list, reader, utils
 
 search_link = 'https://manabox.app/decks/GgG_dmiHS2iRFdgQQdurwg'
 repository_link = 'https://manabox.app/decks/u3AlIDEKTZeN1AfWptxHcw'
 
-search = download.download_list(search_link, 'search')
+search = fetch_list.download_list(search_link, 'search')
 
-repository = download.download_list(repository_link, 'repository')
+repository = fetch_list.download_list(repository_link, 'repository')
 
 matches = reader.searchMatches(search, repository)
 

@@ -1,4 +1,4 @@
-import reader, download, utils
+import reader, fetch_list, utils
 
 def cli() -> None:
     print(' ----------------------------\n'
@@ -27,7 +27,7 @@ def cli() -> None:
 
     i = 1
     for link in search_links:
-        search_files.add(download.download_list(link, f'search [{i}]'))
+        search_files.add(fetch_list.download_list(link, f'search [{i}]'))
         i += 1
     
     input('\nLink/s have been found.\n'
@@ -40,7 +40,7 @@ def cli() -> None:
 
     i = 1
     for link in repository_links:
-        repository_files.add(download.download_list(link, f'repository [{i}]'))
+        repository_files.add(fetch_list.download_list(link, f'repository [{i}]'))
         i += 1
 
     final_matches: set = set()

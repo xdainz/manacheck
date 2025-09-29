@@ -1,7 +1,7 @@
-import reader, utils, download
+import reader, utils, fetch_list
 
 # the list you're looking for
-search: str = download.download_list('https://manabox.app/decks/yai3ffpXRiSX9H2uF1RLEg', 'search')
+search: str = fetch_list.download_list('https://manabox.app/decks/yai3ffpXRiSX9H2uF1RLEg', 'search')
 
 links: list = utils.read_rep_list()
 # link for testing: https://manabox.app/decks/vYzyl7ykTz6UtEkrlQB1bA
@@ -11,7 +11,7 @@ repositories: set = set()
 
 i = 1
 for link in links:
-    repositories.add(download.download_list(link, f'repository [{i}]'))
+    repositories.add(fetch_list.download_list(link, f'repository [{i}]'))
     i += 1
 
 final_list = set()
