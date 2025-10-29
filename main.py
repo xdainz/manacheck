@@ -31,7 +31,7 @@ def main() -> None:
         for match in final_matches:
             print(f'{pink_start}•{pink_end} {match}')
     else:
-        print('\nNo matches found. :^(\nThis might be an error, try running it again.')
+        print(f'{pink_start}\nNo matches found. :^({pink_end}')
 
 if __name__ == '__main__':
     main()
