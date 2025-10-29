@@ -5,7 +5,7 @@ def clear() -> None:
     if os.name == 'nt':
         os.system('cls')
     else:
-        os.system('clear')
+        os.system('clear -x')
 
 def open_file_editor(file_path) -> None:
     if os.name == 'nt':
