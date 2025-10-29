@@ -12,71 +12,18 @@ def open_file_editor(file_path) -> None:
         subprocess.Popen(['notepad.exe', file_path])
     else:
         subprocess.call(['vim', file_path])
-   
-def read_rep_list() -> list[str]:
-    arr: list[str] = []
-
-    while True:
-        try:
-            if os.path.exists('repositories.txt'):
-                open_file_editor('repositories.txt')
-                with open('repositories.txt') as links:
-                    arr = links.readlines()
-                    
-                    arr.pop(0)
-                    arr.pop(0)
-
-                    if arr == []:
-                        raise Exception('\nNo links where found inside repositories.txt')
-
-                    links.close()
-                break
-
-            else:
-                f = open('repositories.txt', 'a')
-                f.write('[----------- MANABOX\'S YOU WANT TO SEARCH INTO -----------]\n')
-                f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THESE LINES) ----')
-                f.close()
-        except Exception:
-            raise
-
-    return arr
-
-def read_search_list() -> list[str]:
-    arr: list[str] = []
-
-    while True:
-        try:
-            if os.path.exists('search_list.txt'):
-                open_file_editor('search_list.txt')
-                with open('search_list.txt') as links:
-                    arr = links.readlines()
-                    
-                    arr.pop(0)
-                    arr.pop(0)
-
-                    if arr == []:
-                        raise Exception('\nNo links where found inside.')
-
-                    links.close()
-                break
-
-            else:
-                f = open('search_list.txt', 'a')
-                f.write('[---------- MANABOX WITH THE CARDS YOU ARE LOOKING FOR ----------]\n')
-                f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THESE LINES) ----')
-                f.close()
-        except Exception:
-            raise
-
-    return arr
         
-def clean_data_manabox(raw_data:str) -> list[str]:
+def is_link_valid(link:str) -> bool:
+    return True
+
+       
+def clean_data_manabox(raw_data:str) -> set[str]:
     
-    to_ignore = ['commander', 'deck', 'planeswalkers', 'creatures', 'artifacts','instants', 'sorceries', 'lands', '//']
+    to_ignore = ['commander', 'deck', 'planeswalkers', 'creatures', 'artifacts','enchantments',
+                 'instants', 'sorceries', 'lands', '//', ' ']
 
     raw_list = raw_data.split('\n')
-    cleaned_list = []
+    cleaned_set = set()
     
     for data in raw_list:
         try:
@@ -84,10 +31,20 @@ def clean_data_manabox(raw_data:str) -> list[str]:
             int(data)
         except ValueError:
             # if not assume its str
-            if data.lower() not in to_ignore or len(data) >= 2: #shortest card has 2 letters (acording to google)
-                cleaned_list.append(data)
+            if data.lower() not in to_ignore and len(data) >= 2: #shortest card has 2 letters (acording to google)
+                cleaned_set.add(data)
         
-    return cleaned_list
+    return cleaned_set
+
+def get_matches(search_list:set[str], repository_list:set[str]) -> set[str]:
+    
+    matches = set()
+    
+    for card in search_list:
+        if card in repository_list and card not in matches:
+            matches.add(card)
+    
+    return matches
 
 if __name__ == '__main__':
     pass
