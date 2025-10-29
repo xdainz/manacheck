@@ -41,7 +41,23 @@ def get_moxfield_content(link:str) -> str:
 
    return get_content(link, xpath)
 
+
+def get(link: str) -> str:
+    
+    DOMAINS = {
+        'https://manabox.app/': get_manabox_content,
+        'https://moxfield.com/': get_moxfield_content
+    }
+
+    for domain, func in DOMAINS.items():
+        if link.startswith(domain):
+            return func(link)
+
+    raise ValueError(f'Failed to match {link} with a supported domain.')
+
+
+   
 if __name__ == '__main__':
   
-   var = get_moxfield_content('https://moxfield.com/decks/mLvJIellBEGt7KPWqgwefQ')
+   var = get('https://moxfield.com/decks/mLvJIellBEGt7KPWqgwefQ')
    print(var)
