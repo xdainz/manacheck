@@ -102,6 +102,25 @@ def search_files_exist() -> bool:
 def del_search_files() -> None:
     if os.path.exists('./data'):
         shutil.rmtree('./data')        
+        
+def clean_data_manabox(raw_data:str) -> list[str]:
+    
+    to_ignore = ['commander', 'deck', 'planeswalkers', 'creatures', 'artifacts','instants', 'sorceries', 'lands', '//']
+
+    raw_list = raw_data.split('\n')
+    cleaned_list = []
+    
+    for data in raw_list:
+        try:
+            # check if str can be typecasted to an int
+            int(data)
+        except ValueError:
+            # if not assume its str
+            if data.lower() not in to_ignore or len(data) >= 2: #shortest card has 2 letters (acording to google)
+                cleaned_list.append(data)
+        
+    return cleaned_list
+
 
 if __name__ == '__main__':
     print(search_files_exist())
