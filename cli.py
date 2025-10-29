@@ -2,6 +2,8 @@ import fetcher, utils
 
 bold_start = '\033[1m '
 bold_end = ' \033[0m'
+pink_start = '\033[35m'
+pink_end = ' \033[0m'
 
 def main() -> None:
     # start screen
@@ -34,12 +36,12 @@ def main() -> None:
     if len(final_matches) >=1:
         print('\nMatches found:')
         for match in final_matches:
-            print(f'• {match}')
+            print(f'{pink_start}•{pink_end} {match}')
     else:
         print('\nNo matches found. :^(\nThis might be an error, try running it again.')
 
 def get_link(prompt) -> str:
-    link = input(f'{bold_start}Enter {prompt} link:\n>{bold_end}')
+    link = input(f'{bold_start}Enter {prompt} link:\n{bold_end}> ')
     if utils.is_link_valid(link):
         return link
     else:
