@@ -1,5 +1,5 @@
 import os
-import subprocess
+import psutil
 
 pink_start = '\033[35m'
 pink_end = ' \033[0m'
@@ -20,20 +20,25 @@ f'{pink_start}'
 f'{pink_end}\n')
 
 def clear() -> None:
-    if os.name == 'nt':
+    if is_powershell():
         os.system('cls')
     else:
         os.system('clear -x')
 
-def open_file_editor(file_path) -> None:
-    if os.name == 'nt':
-        subprocess.Popen(['notepad.exe', file_path])
+def is_powershell():
+    program_id = os.getppid()
+    parent_process = psutil.Process(program_id)
+    shell_name = parent_process.name().lower()
+
+    windows_shells = ['pwsh.exe', 'powershell.exe', 'cmd.exe'] 
+
+    if shell_name in windows_shells:
+        return True
     else:
-        subprocess.call(['vim', file_path])
-        
+        return False
+
 def is_link_valid(link:str) -> bool:
     return True
-
        
 def clean_data_manabox(raw_data:str) -> set[str]:
     
