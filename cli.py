@@ -5,7 +5,7 @@ bold_end = ' \033[0m'
 
 def main() -> None:
     # start screen
-    start_page()  
+    utils.splash_screen()
     
     # data storer
     data_search: set = set() 
@@ -38,13 +38,8 @@ def main() -> None:
     else:
         print('\nNo matches found. :^(\nThis might be an error, try running it again.')
 
-def start_page() -> None:
-    print(' ----------------------------\n'
-          '| Welcome to Manabox-Checker |\n'
-          ' ----------------------------')
-
 def get_link(prompt) -> str:
-    link = input(f'{bold_start}Enter {prompt} link:{bold_end}')
+    link = input(f'{bold_start}Enter {prompt} link:\n>{bold_end}')
     if utils.is_link_valid(link):
         return link
     else:
