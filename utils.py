@@ -1,6 +1,8 @@
 import os
 import psutil
 
+bold_start = '\033[1m '
+bold_end = ' \033[0m'
 pink_start = '\033[35m'
 pink_end = ' \033[0m'
 
@@ -40,6 +42,13 @@ def is_powershell():
 def is_link_valid(link:str) -> bool:
     return True
        
+def get_link(prompt) -> str:
+    link = input(f'{bold_start}Enter {prompt} link:\n{bold_end}> ')
+    if is_link_valid(link):
+        return link
+    else:
+        return ':v'
+    
 def clean_data(raw_data:str) -> set[str]:
     
     to_ignore = ('commander', 'deck', 'planeswalkers', 'creatures', 'artifacts','enchantments',

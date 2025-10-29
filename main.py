@@ -1,7 +1,5 @@
 import fetcher, utils
 
-bold_start = '\033[1m '
-bold_end = ' \033[0m'
 pink_start = '\033[35m'
 pink_end = ' \033[0m'
 
@@ -15,10 +13,10 @@ def main() -> None:
 
     # ask user for links
     
-    search_link = get_link('search')
+    search_link = utils.get_link('search')
 #    search_link = 'https://manabox.app/decks/yai3ffpXRiSX9H2uF1RLEg'
     
-    repository_link = get_link('repository')
+    repository_link = utils.get_link('repository')
 #    repository_link = 'https://manabox.app/decks/vYzyl7ykTz6UtEkrlQB1bA'
 
    
@@ -40,12 +38,5 @@ def main() -> None:
     else:
         print('\nNo matches found. :^(\nThis might be an error, try running it again.')
 
-def get_link(prompt) -> str:
-    link = input(f'{bold_start}Enter {prompt} link:\n{bold_end}> ')
-    if utils.is_link_valid(link):
-        return link
-    else:
-        return ':v'
-    
 if __name__ == '__main__':
     main()
