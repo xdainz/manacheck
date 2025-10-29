@@ -5,6 +5,8 @@ bold_start = '\033[1m'
 bold_end = '\033[0m'
 pink_start ='\033[35m'
 pink_end = '\033[0m'
+italic_start = '\033[3m'
+italic_end = '\033[0m'
 
 def splash_screen() -> None:
     clear()
@@ -21,6 +23,8 @@ def splash_screen() -> None:
 
     except Exception as e:
         print(f'Erro: {e}')
+    
+    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield.{pink_end}{italic_end}')
     
 
 def clear() -> None:
