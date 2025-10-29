@@ -1,7 +1,5 @@
 import os
-import glob
 import subprocess
-import shutil
 
 def clear() -> None:
     if os.name == 'nt':
@@ -90,7 +88,6 @@ def clean_data_manabox(raw_data:str) -> list[str]:
                 cleaned_list.append(data)
         
     return cleaned_list
-
 
 if __name__ == '__main__':
     pass
