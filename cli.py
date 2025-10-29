@@ -1,63 +1,54 @@
-import reader, fetch_list, utils
+import fetcher, utils
 
-def cli() -> None:
-    print(' ----------------------------\n'
-          '| Welcome to Manabox-Checker |\n'
-          ' ----------------------------\n')
+bold_start = '\033[1m '
+bold_end = ' \033[0m'
+
+def main() -> None:
+    # start screen
+    start_page()  
     
-    if utils.search_files_exist():
-        while True:
-            del_previous_files = input('Previous search files have been found.\n'
-                                       '\033[1mDo you want to remove them and perform a new search? [Y/n] \033[0m')
+    # data storer
+    data_search: set = set() 
+    data_repository: set = set()
 
-            if del_previous_files.upper() == 'Y':
-                utils.del_search_files()
-                break
-            else:
-                print('No files were deleted, searching existing files...')
-                break
-    else:
-        input('Your editor will open with further instructions.\n'
-              'Press Enter to continue. ')
-            
-    # look up search links :v
-    search_links: list = utils.read_search_list()
+    # ask user for links
     
-    search_files: set = set()
-
-    i = 1
-    for link in search_links:
-        search_files.add(fetch_list.download_list(link, f'search [{i}]'))
-        i += 1
+    search_link = get_link('search')
+#    search_link = 'https://manabox.app/decks/yai3ffpXRiSX9H2uF1RLEg'
     
-    input('\nLink/s have been found.\n'
-          'Press Enter to continue. ')
+    repository_link = get_link('repository')
+#    repository_link = 'https://manabox.app/decks/vYzyl7ykTz6UtEkrlQB1bA'
 
-    # look up repositories
-    repository_links: list = utils.read_rep_list()
+   
+    # look up search link
+    for data in utils.clean_data_manabox(fetcher.get_manabox(search_link)):
+        data_search.add(data)
     
-    repository_files: set = set()
+    # look up repository link
+    for data in utils.clean_data_manabox(fetcher.get_manabox(repository_link)):
+        data_repository.add(data)
 
-    i = 1
-    for link in repository_links:
-        repository_files.add(fetch_list.download_list(link, f'repository [{i}]'))
-        i += 1
+    # check matching data
+    final_matches: set[str] = utils.get_matches(data_search, data_repository)
 
-    final_matches: set = set()
-    
-    for search in search_files:
-        for repo in repository_files:
-            final_matches.update(reader.searchMatches(search, repo))
-
-    i = 1
     if len(final_matches) >=1:
         print('\nMatches found:')
         for match in final_matches:
-            print(f'{i}. {match}')
-            i += 1
+            print(f'• {match}')
     else:
         print('\nNo matches found. :^(\nThis might be an error, try running it again.')
- 
+
+def start_page() -> None:
+    print(' ----------------------------\n'
+          '| Welcome to Manabox-Checker |\n'
+          ' ----------------------------')
+
+def get_link(prompt) -> str:
+    link = input(f'{bold_start}Enter {prompt} link:{bold_end}')
+    if utils.is_link_valid(link):
+        return link
+    else:
+        return ':v'
     
 if __name__ == '__main__':
-    cli()
+    main()
