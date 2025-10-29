@@ -3,7 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-def get_manabox(link: str)-> str:
+TIME_OUT = 10
+
+def get_content(link: str, xpath: str)-> str:
 
     options = webdriver.ChromeOptions()
     
@@ -13,13 +15,33 @@ def get_manabox(link: str)-> str:
 
     driver.get(link)
     
-    content = driver.find_element(By.XPATH, '/html/body/div[1]/astro-island/div/div/div[2]/div[2]/div[2]/div').text
+    try:
+        wait = WebDriverWait(driver, TIME_OUT)
+        element = wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
+        content = element.text
     
-    assert content is not None
+    except Exception as e:
+       print(f'Error finding element with Xpath "{xpath}" on {link}: {e}')
+       content = None
+    
+    finally:
+        driver.quit()
 
-    driver.quit()
+    assert content is not None, f'Content was not found after {TIME_OUT} seconds.'
     
     return content
 
+def get_manabox_content(link:str) -> str:
+   xpath = '/html/body/div[1]/astro-island/div/div/div[2]/div[2]/div[2]/div' 
+
+   return get_content(link, xpath)
+
+def get_moxfield_content(link:str) -> str:
+   xpath = '/html/body/div/main/div[3]/div[5]/section/div[2]/article'
+
+   return get_content(link, xpath)
+
 if __name__ == '__main__':
-   get_manabox('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw') 
+  
+   var = get_moxfield_content('https://moxfield.com/decks/mLvJIellBEGt7KPWqgwefQ')
+   print(var)

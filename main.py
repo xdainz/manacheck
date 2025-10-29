@@ -23,11 +23,11 @@ def main() -> None:
 
    
     # look up search link
-    for data in utils.clean_data_manabox(fetcher.get_manabox(search_link)):
+    for data in utils.clean_data(fetcher.get_manabox_content(search_link)):
         data_search.add(data)
     
     # look up repository link
-    for data in utils.clean_data_manabox(fetcher.get_manabox(repository_link)):
+    for data in utils.clean_data(fetcher.get_manabox_content(repository_link)):
         data_repository.add(data)
 
     # check matching data

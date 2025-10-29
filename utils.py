@@ -40,10 +40,10 @@ def is_powershell():
 def is_link_valid(link:str) -> bool:
     return True
        
-def clean_data_manabox(raw_data:str) -> set[str]:
+def clean_data(raw_data:str) -> set[str]:
     
-    to_ignore = ['commander', 'deck', 'planeswalkers', 'creatures', 'artifacts','enchantments',
-                 'instants', 'sorceries', 'lands', '//', ' ']
+    to_ignore = ('commander', 'deck', 'planeswalkers', 'creatures', 'artifacts','enchantments',
+                 'instants', 'sorceries', 'lands', '//')
 
     raw_list = raw_data.split('\n')
     cleaned_set = set()
@@ -54,7 +54,7 @@ def clean_data_manabox(raw_data:str) -> set[str]:
             int(data)
         except ValueError:
             # if not assume its str
-            if data.lower() not in to_ignore and len(data) >= 2: #shortest card has 2 letters (acording to google)
+            if not data.lower().startswith(to_ignore) and len(data) >= 2: #shortest card has 2 letters (acording to google)
                 cleaned_set.add(data)
         
     return cleaned_set
@@ -70,4 +70,8 @@ def get_matches(search_list:set[str], repository_list:set[str]) -> set[str]:
     return matches
 
 if __name__ == '__main__':
-    pass
+    import fetcher
+    var = clean_data(fetcher.get_moxfield_content('https://moxfield.com/decks/mLvJIellBEGt7KPWqgwefQ'))
+    var2 = clean_data(fetcher.get_manabox_content('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw'))
+    print(var)
+    print(var2)
