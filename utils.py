@@ -40,14 +40,18 @@ def is_powershell():
         return False
 
 def is_link_valid(link:str) -> bool:
-    return True
-       
+    allowed_domains = ('https://manabox.app/', 'https://moxfield.com/')
+    
+    return link.startswith(allowed_domains)
+
 def get_link(prompt) -> str:
-    link = input(f'{bold_start}Enter {prompt} link:\n{bold_end}> ')
+
+    link = input(f'{bold_start}Enter {prompt} link:\n{bold_end}> ').strip()
+
     if is_link_valid(link):
         return link
-    else:
-        return ':v'
+
+    raise ValueError(f'{link} is not a valid domain.')
     
 def clean_data(raw_data:str) -> set[str]:
     
