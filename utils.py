@@ -9,24 +9,6 @@ def clear() -> None:
     else:
         os.system('clear')
 
-def rename_last_file(new_file_name: str) -> str:
-
-    download_dir = 'data'
-
-    file_list = glob.glob(os.path.join(download_dir, '*'))
-
-    last_file = max(file_list, key=os.path.getctime)
-
-    new_name = os.path.join(download_dir, new_file_name)
-
-    if last_file != 'search.txt' and last_file != 'repository.txt': 
-        if os.path.exists(new_name):
-            os.remove(new_name)
-        
-        os.rename(last_file, new_name)
-
-    return new_name
-
 def open_file_editor(file_path) -> None:
     if os.name == 'nt':
         subprocess.Popen(['notepad.exe', file_path])
@@ -90,18 +72,6 @@ def read_search_list() -> list[str]:
             raise
 
     return arr
-
-def search_files_exist() -> bool:
-
-    if os.path.exists('./data'):
-        if len(os.listdir('./data')) >= 2:
-            return True
-    
-    return False
-
-def del_search_files() -> None:
-    if os.path.exists('./data'):
-        shutil.rmtree('./data')        
         
 def clean_data_manabox(raw_data:str) -> list[str]:
     
@@ -123,5 +93,4 @@ def clean_data_manabox(raw_data:str) -> list[str]:
 
 
 if __name__ == '__main__':
-    print(search_files_exist())
-#    open_file_editor('multisearch.txt')
+    pass
