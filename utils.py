@@ -1,10 +1,10 @@
 import os
 import psutil
 
-bold_start = '\033[1m '
-bold_end = ' \033[0m'
-pink_start = '\033[35m'
-pink_end = ' \033[0m'
+bold_start = '\033[1m'
+bold_end = '\033[0m'
+pink_start ='\033[35m'
+pink_end = '\033[0m'
 
 def splash_screen() -> None:
     clear()
@@ -46,7 +46,7 @@ def is_link_valid(link:str) -> bool:
 
 def get_link(prompt) -> str:
 
-    link = input(f'{bold_start}Enter {prompt} link:\n{bold_end}> ').strip()
+    link = input(f'\n{bold_start}Enter {prompt} link:\n{bold_end}> ').strip()
 
     if is_link_valid(link):
         return link

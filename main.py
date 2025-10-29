@@ -1,7 +1,7 @@
 import fetcher, utils
 
 pink_start = '\033[35m'
-pink_end = ' \033[0m'
+pink_end = '\033[0m'
 
 def main() -> None:
     # start screen
