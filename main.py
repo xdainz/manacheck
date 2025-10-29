@@ -12,19 +12,13 @@ def main() -> None:
     data_repository: set = set()
 
     # ask user for links
-    
     search_link = utils.get_link('search')
-#    search_link = 'https://manabox.app/decks/yai3ffpXRiSX9H2uF1RLEg'
-    
     repository_link = utils.get_link('repository')
-#    repository_link = 'https://manabox.app/decks/vYzyl7ykTz6UtEkrlQB1bA'
 
-   
-    # look up search link
+    # append fetched data
     for data in utils.clean_data(fetcher.get_manabox_content(search_link)):
         data_search.add(data)
     
-    # look up repository link
     for data in utils.clean_data(fetcher.get_manabox_content(repository_link)):
         data_repository.add(data)
 
