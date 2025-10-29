@@ -2,8 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
-import utils
 
 def get_manabox(link: str)-> str:
 
@@ -24,7 +22,4 @@ def get_manabox(link: str)-> str:
     return content
 
 if __name__ == '__main__':
-    raw = get_manabox('https://manabox.app/decks/99vxnLJvTbiKCZ_KkgO1eg')
-    
-    clean = utils.clean_data_manabox(raw)
-    
+   get_manabox('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw') 
