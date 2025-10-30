@@ -24,7 +24,7 @@ def splash_screen() -> None:
     except Exception as e:
         print(f'Erro: {e}')
     
-    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield.{pink_end}{italic_end}')
+    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield, EDHREC.{pink_end}{italic_end}')
     
 
 def clear() -> None:
@@ -46,7 +46,7 @@ def is_powershell():
         return False
 
 def is_link_valid(link:str) -> bool:
-    allowed_domains = ('https://manabox.app/', 'https://moxfield.com/')
+    allowed_domains = ('https://manabox.app/', 'https://moxfield.com/', 'https://edhrec.com/deckpreview/')
     
     return link.startswith(allowed_domains)
 

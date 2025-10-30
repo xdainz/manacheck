@@ -49,6 +49,8 @@ Currently supported sites:
 
 -   [Moxfield](https://moxfield.com/)
 
+-   [EDHREC](https://edhrec.com/)
+
 ---
 
 _Scraping relies on specific CSS Selectors for each site. Maintenance will be required if the target websites change their HTML structure._
