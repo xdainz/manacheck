@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 TIME_OUT = 10
 
-def get_content(link: str, xpath: str)-> str:
+def get_content(link: str, selector: str)-> str:
 
     options = webdriver.ChromeOptions()
     
@@ -17,11 +17,11 @@ def get_content(link: str, xpath: str)-> str:
     
     try:
         wait = WebDriverWait(driver, TIME_OUT)
-        element = wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
+        element = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, selector)))
         content = element.text
     
     except Exception as e:
-       print(f'Error finding element with Xpath "{xpath}" on {link}: {e}')
+       print(f'Error finding element with CSS Selector "{selector}" on {link}: {e}')
        content = None
     
     finally:
@@ -32,12 +32,14 @@ def get_content(link: str, xpath: str)-> str:
     return content
 
 def get_manabox_content(link:str) -> str:
-   xpath = '/html/body/div[1]/astro-island/div/div/div[2]/div[2]/div[2]/div' 
+    selector = 'body > div.flex-1.w-full > astro-island > div > div > div.flex.w-full.flex-col.items-center.rounded-b-lg.border-2.border-\\[--surface-container-highest\\].bg-\\[--surface-container-regular\\].pb-3.pt-3 > div.flex.w-full > div.flex-1 > div > div' 
 
-   return get_content(link, xpath)
+    return get_content(link, selector)
 
 def get_moxfield_content(link:str) -> str:
-   xpath = '/html/body/div/main/div[3]/div[5]/section/div[2]/article'
+    selector = '#maincontent > div.deck-dnd-wrapper > div.container.mt-3.mb-5 > section > div:nth-child(3) > article'
+
+    return get_content(link, selector)
 
    return get_content(link, xpath)
 

@@ -51,4 +51,4 @@ Currently supported sites:
 
 ---
 
-_Scraping relies on specific XPaths for each site. Maintenance will be required if the target websites change their HTML structure._
+_Scraping relies on specific CSS Selectors for each site. Maintenance will be required if the target websites change their HTML structure._
