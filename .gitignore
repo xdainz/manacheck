@@ -1,4 +1,3 @@
 __pycache__
-data
-repositories.txt
-search_list.txt
+.vscode/*
+.DS_Store

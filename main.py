@@ -1,19 +1,37 @@
-import download, reader, utils
+from utils import splash_screen, get_link, clean_data, get_matches
+from fetcher import get
 
-search_link = 'https://manabox.app/decks/GgG_dmiHS2iRFdgQQdurwg'
-repository_link = 'https://manabox.app/decks/u3AlIDEKTZeN1AfWptxHcw'
+pink_start = '\033[35m'
+pink_end = '\033[0m'
 
-search = download.download_list(search_link, 'search')
+def main() -> None:
+    # start screen
+    splash_screen()
+    
+    # data storer
+    data_search: set = set() 
+    data_repository: set = set()
 
-repository = download.download_list(repository_link, 'repository')
+    # ask user for links
+    search_link = get_link('search')
+    repository_link = get_link('repository')
 
-matches = reader.searchMatches(search, repository)
+    # append fetched data
+    for data in clean_data(get(search_link)):
+        data_search.add(data)
+    
+    for data in clean_data(get(repository_link)):
+        data_repository.add(data)
 
-utils.clear()
+    # check matching data
+    final_matches: set[str] = get_matches(data_search, data_repository)
 
-if len(matches) >=1:
-    print('Matches:')
-    for match in matches:
-        print(match)
-else:
-    print('No matches found. :^(\nThis might be an error, try running it again.')
+    if len(final_matches) >=1:
+        print('\nMatches found:')
+        for match in final_matches:
+            print(f'{pink_start}•{pink_end} {match}')
+    else:
+        print(f'{pink_start}\nNo matches found. :^({pink_end}')
+
+if __name__ == '__main__':
+    main()

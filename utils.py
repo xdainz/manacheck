@@ -1,108 +1,96 @@
 import os
-import glob
-import subprocess
-import shutil
+import psutil
+
+bold_start = '\033[1m'
+bold_end = '\033[0m'
+pink_start ='\033[35m'
+pink_end = '\033[0m'
+italic_start = '\033[3m'
+italic_end = '\033[0m'
+
+def splash_screen() -> None:
+    clear()
+    file_name = 'logo.txt'
+
+    try:
+        with open(file_name, 'r', encoding='utf-8') as file:
+            logo_content = file.read()
+
+        print(f'\n{pink_start}{logo_content}{pink_end}')
+
+    except FileNotFoundError:
+        print(f'Error: {file_name} was not found.')
+
+    except Exception as e:
+        print(f'Erro: {e}')
+    
+    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield.{pink_end}{italic_end}')
+    
 
 def clear() -> None:
-    if os.name == 'nt':
+    if is_powershell():
         os.system('cls')
     else:
-        os.system('clear')
+        os.system('clear -x')
 
-def rename_last_file(new_file_name: str) -> str:
+def is_powershell():
+    program_id = os.getppid()
+    parent_process = psutil.Process(program_id)
+    shell_name = parent_process.name().lower()
 
-    download_dir = 'data'
+    windows_shells = ['pwsh.exe', 'powershell.exe', 'cmd.exe'] 
 
-    file_list = glob.glob(os.path.join(download_dir, '*'))
-
-    last_file = max(file_list, key=os.path.getctime)
-
-    new_name = os.path.join(download_dir, new_file_name)
-
-    if last_file != 'search.txt' and last_file != 'repository.txt': 
-        if os.path.exists(new_name):
-            os.remove(new_name)
-        
-        os.rename(last_file, new_name)
-
-    return new_name
-
-def open_file_editor(file_path) -> None:
-    if os.name == 'nt':
-        subprocess.Popen(['notepad.exe', file_path])
+    if shell_name in windows_shells:
+        return True
     else:
-        subprocess.call(['vim', file_path])
-   
-def read_rep_list() -> list[str]:
-    arr: list[str] = []
+        return False
 
-    while True:
-        try:
-            if os.path.exists('repositories.txt'):
-                open_file_editor('repositories.txt')
-                with open('repositories.txt') as links:
-                    arr = links.readlines()
-                    
-                    arr.pop(0)
-                    arr.pop(0)
-
-                    if arr == []:
-                        raise Exception('\nNo links where found inside repositories.txt')
-
-                    links.close()
-                break
-
-            else:
-                f = open('repositories.txt', 'a')
-                f.write('[----------- MANABOX\'S YOU WANT TO SEARCH INTO -----------]\n')
-                f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THESE LINES) ----')
-                f.close()
-        except Exception:
-            raise
-
-    return arr
-
-def read_search_list() -> list[str]:
-    arr: list[str] = []
-
-    while True:
-        try:
-            if os.path.exists('search_list.txt'):
-                open_file_editor('search_list.txt')
-                with open('search_list.txt') as links:
-                    arr = links.readlines()
-                    
-                    arr.pop(0)
-                    arr.pop(0)
-
-                    if arr == []:
-                        raise Exception('\nNo links where found inside.')
-
-                    links.close()
-                break
-
-            else:
-                f = open('search_list.txt', 'a')
-                f.write('[---------- MANABOX WITH THE CARDS YOU ARE LOOKING FOR ----------]\n')
-                f.write('---- ADD A LINK PER LINE UNDER THIS (DO NOT DELETE THESE LINES) ----')
-                f.close()
-        except Exception:
-            raise
-
-    return arr
-
-def search_files_exist() -> bool:
-
-    if os.path.exists('./data'):
-        if len(os.listdir('./data')) >= 2:
-            return True
+def is_link_valid(link:str) -> bool:
+    allowed_domains = ('https://manabox.app/', 'https://moxfield.com/')
     
-    return False
+    return link.startswith(allowed_domains)
 
-def del_search_files() -> None:
-    if os.path.exists('./data'):
-        shutil.rmtree('./data')        
+def get_link(prompt) -> str:
+
+    link = input(f'\n{bold_start}Enter {prompt} link:\n{bold_end}> ').strip()
+
+    if is_link_valid(link):
+        return link
+
+    raise ValueError(f'{link} is not a valid domain.')
+    
+def clean_data(raw_data:str) -> set[str]:
+    
+    to_ignore = ('commander', 'deck', 'planeswalkers', 'creatures', 'artifacts','enchantments',
+                 'instants', 'sorceries', 'lands', '//')
+
+    raw_list = raw_data.split('\n')
+    cleaned_set = set()
+    
+    for data in raw_list:
+        try:
+            # check if str can be typecasted to an int
+            int(data)
+        except ValueError:
+            # if not assume its str
+            if not data.lower().startswith(to_ignore) and len(data) >= 2: #shortest card has 2 letters (acording to google)
+                cleaned_set.add(data)
+        
+    return cleaned_set
+
+def get_matches(search_list:set[str], repository_list:set[str]) -> set[str]:
+    
+    matches = set()
+    
+    for card in search_list:
+        if card in repository_list and card not in matches:
+            matches.add(card)
+    
+    return matches
 
 if __name__ == '__main__':
-    print(search_files_exist())
-#    open_file_editor('multisearch.txt')
+    import fetcher
+    var = clean_data(fetcher.get_moxfield_content('https://moxfield.com/decks/mLvJIellBEGt7KPWqgwefQ'))
+    var2 = clean_data(fetcher.get_manabox_content('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw'))
+    print(var)
+    print(var2)
