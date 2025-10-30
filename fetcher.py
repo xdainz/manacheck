@@ -10,6 +10,7 @@ def get_content(link: str, selector: str)-> str:
     options = webdriver.ChromeOptions()
     
     options.add_argument('--headless=new')
+    options.add_argument('log-level=3') #supress non fatal error logs
 
     driver = webdriver.Chrome(options=options)
 
