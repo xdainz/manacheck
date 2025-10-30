@@ -5,11 +5,12 @@ from selenium.webdriver.support import expected_conditions as EC
 
 TIME_OUT = 10
 
-def get_content(link: str, xpath: str)-> str:
+def get_content(link: str, selector: str)-> str:
 
     options = webdriver.ChromeOptions()
     
     options.add_argument('--headless=new')
+    options.add_argument('log-level=3') #supress non fatal error logs
 
     driver = webdriver.Chrome(options=options)
 
@@ -17,11 +18,11 @@ def get_content(link: str, xpath: str)-> str:
     
     try:
         wait = WebDriverWait(driver, TIME_OUT)
-        element = wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
+        element = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, selector)))
         content = element.text
     
     except Exception as e:
-       print(f'Error finding element with Xpath "{xpath}" on {link}: {e}')
+       print(f'Error finding element with CSS Selector "{selector}" on {link}: {e}')
        content = None
     
     finally:
@@ -32,21 +33,26 @@ def get_content(link: str, xpath: str)-> str:
     return content
 
 def get_manabox_content(link:str) -> str:
-   xpath = '/html/body/div[1]/astro-island/div/div/div[2]/div[2]/div[2]/div' 
+    selector = 'body > div.flex-1.w-full > astro-island > div > div > div.flex.w-full.flex-col.items-center.rounded-b-lg.border-2.border-\\[--surface-container-highest\\].bg-\\[--surface-container-regular\\].pb-3.pt-3 > div.flex.w-full > div.flex-1 > div > div' 
 
-   return get_content(link, xpath)
+    return get_content(link, selector)
 
 def get_moxfield_content(link:str) -> str:
-   xpath = '/html/body/div/main/div[3]/div[5]/section/div[2]/article'
+    selector = '#maincontent > div.deck-dnd-wrapper > div.container.mt-3.mb-5 > section > div:nth-child(3) > article'
 
-   return get_content(link, xpath)
+    return get_content(link, selector)
 
+def get_edhrec_content(link:str) -> str:
+    selector = '#__next > main > div.d-flex.flex-grow-1.p-3.pe-lg-0 > div > div.Main_left__B9nka > div.Container_container__A7FAx > div.Panels_container__jvZjo > div > div.shadow-sm.rounded-0.rounded-bottom-3.card > div > div.DecklistPanel_decklist__VZZae > div > ul'
+
+    return get_content(link, selector)
 
 def get(link: str) -> str:
     
     DOMAINS = {
         'https://manabox.app/': get_manabox_content,
-        'https://moxfield.com/': get_moxfield_content
+        'https://moxfield.com/': get_moxfield_content,
+        'https://edhrec.com/deckpreview/': get_edhrec_content
     }
 
     for domain, func in DOMAINS.items():
@@ -59,5 +65,5 @@ def get(link: str) -> str:
    
 if __name__ == '__main__':
   
-   var = get('https://moxfield.com/decks/mLvJIellBEGt7KPWqgwefQ')
+   var = get('https://edhrec.com/deckpreview/0V3NNY9o41xN4A79ezFwew')
    print(var)
