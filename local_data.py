@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-DATABASE = 'data.csv'
+DATABASE = 'data.xlsx'
 
 CARD_NAME = 'Card Name'
 QUANTITY = 'Quantity'
@@ -11,12 +11,17 @@ def database_exist() ->bool:
 
 def create_db() -> None:
     if not database_exist():
+        headers = [CARD_NAME, QUANTITY]
+
+        layout_df = pd.DataFrame(columns=headers)
+
         try:
-            with open(DATABASE, 'x') as db:
-                db.write(f'{CARD_NAME}, {QUANTITY}')
+            with open(DATABASE, 'x'):
                 pass
         except FileExistsError:
             pass
+        
+        layout_df.to_excel(DATABASE, sheet_name='test', index=False)
 
 def write_db(card_list:list) -> None:
     # turns card list into a dataframe and add up the values
@@ -25,7 +30,7 @@ def write_db(card_list:list) -> None:
     new_df = new_df.rename(columns={'index': CARD_NAME})
     
     # read existing db
-    db = pd.read_csv(DATABASE)
+    db = pd.read_excel(DATABASE)
     
     # merge new and old dataframes
     combined_df = pd.concat([db, new_df], ignore_index=True)
@@ -33,11 +38,11 @@ def write_db(card_list:list) -> None:
     updated_df[QUANTITY] = updated_df[QUANTITY].astype(int)
     
     # save new df to database file
-    updated_df.to_csv(DATABASE, index=False)
+    updated_df.to_excel(DATABASE, index=False)
 
 
 def read_db():
-    df = pd.read_csv(DATABASE)
+    df = pd.read_excel(DATABASE)
     return df
 
 
