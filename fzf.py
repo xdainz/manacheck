@@ -7,18 +7,9 @@ from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.styles import Style 
 from local_data import read_db
+from utils import logo
 
-ASCII_BANNER = """
-   ▄▄▄▄███▄▄▄▄      ▄████████ ███▄▄▄▄      ▄████████  ▄████████    ▄█    █▄       ▄████████  ▄████████    ▄█   ▄█▄ 
- ▄██▀▀▀███▀▀▀██▄   ███    ███ ███▀▀▀██▄   ███    ███ ███    ███   ███    ███     ███    ███ ███    ███   ███ ▄███▀ 
- ███   ███   ███   ███    ███ ███   ███   ███    ███ ███    █▀    ███    ███     ███    █▀  ███    █▀    ███▐██▀   
- ███   ███   ███   ███    ███ ███   ███   ███    ███ ███         ▄███▄▄▄▄███▄▄  ▄███▄▄▄     ███         ▄█████▀    
- ███   ███   ███ ▀███████████ ███   ███ ▀███████████ ███        ▀▀███▀▀▀▀███▀  ▀▀███▀▀▀     ███        ▀▀█████▄    
- ███   ███   ███   ███    ███ ███   ███   ███    ███ ███    █▄    ███    ███     ███    █▄  ███    █▄    ███▐██▄   
- ███   ███   ███   ███    ███ ███   ███   ███    ███ ███    ███   ███    ███     ███    ███ ███    ███   ███ ▀███▄ 
-  ▀█   ███   █▀    ███    █▀   ▀█   █▀    ███    █▀  ████████▀    ███    █▀      ██████████ ████████▀    ███   ▀█▀ 
-                                                                                                         ▀         
-"""
+ASCII_BANNER = logo()
 
 def run_live_search(df):
     # This Buffer holds the text of the search query
