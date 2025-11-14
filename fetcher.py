@@ -4,12 +4,11 @@ from bs4 import BeautifulSoup
 def get_content(link: str)-> str:
     response = requests.get(link)
    
-    page_content = BeautifulSoup(response.text, 'html.parser')
-   
-    return page_content
+    return response
 
 def get_manabox_content(link:str) -> str:
-    soup = get_content(link)
+    response = get_content(link)
+    soup = BeautifulSoup(response.text, 'html.parser')
     
     raw_content = soup.find_all('astro-island')[1].get('props')
 
