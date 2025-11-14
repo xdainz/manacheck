@@ -1,41 +1,48 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import requests, json, html
+from bs4 import BeautifulSoup
 
-TIME_OUT = 10
-
-def get_content(link: str, selector: str)-> str:
-
-    options = webdriver.ChromeOptions()
-    
-    options.add_argument('--headless=new')
-    options.add_argument('log-level=3') #supress non fatal error logs
-
-    driver = webdriver.Chrome(options=options)
-
-    driver.get(link)
-    
-    try:
-        wait = WebDriverWait(driver, TIME_OUT)
-        element = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, selector)))
-        content = element.text
-    
-    except Exception as e:
-       print(f'Error finding element with CSS Selector "{selector}" on {link}: {e}')
-       content = None
-    
-    finally:
-        driver.quit()
-
-    assert content is not None, f'Content was not found after {TIME_OUT} seconds.'
-    
-    return content
+def get_content(link: str)-> str:
+    response = requests.get(link)
+   
+    page_content = BeautifulSoup(response.text, 'html.parser')
+   
+    return page_content
 
 def get_manabox_content(link:str) -> str:
-    selector = 'body > div.flex-1.w-full > astro-island > div > div > div.flex.w-full.flex-col.items-center.rounded-b-lg.border-2.border-\\[--surface-container-highest\\].bg-\\[--surface-container-regular\\].pb-3.pt-3 > div.flex.w-full > div.flex-1 > div > div' 
+    soup = get_content(link)
+    
+    raw_content = soup.find_all('astro-island')[1].get('props')
 
-    return get_content(link, selector)
+    json_string = html.unescape(raw_content)
+
+    try:
+        data_object = json.loads(json_string)
+
+    except json.JSONDecodeError as e:
+        print(f'Error: {e}')
+        
+    raw_card_list = data_object['deck'][1]['cards'][1]
+
+    cleaned_list = []
+
+    for card in raw_card_list:
+        data = card[1]
+        
+        card_name = data['name'][1]
+        set_id = data['setId'][1]
+        collector_number = data['collectorNumber'][1]
+        rarity = data['rarity'][1]
+        quantity = data['quantity'][1]
+        
+        cleaned_list.append({
+            'Name': card_name,
+            "Set": set_id.upper(),
+            "Collector Number": collector_number,
+            "Rarity": rarity,
+            "Quantity": quantity
+        })
+    
+    return cleaned_list
 
 def get_moxfield_content(link:str) -> str:
     selector = '#maincontent > div.deck-dnd-wrapper > div.container.mt-3.mb-5 > section > div:nth-child(3) > article'
@@ -65,5 +72,5 @@ def get(link: str) -> str:
    
 if __name__ == '__main__':
   
-   var = get('https://edhrec.com/deckpreview/0V3NNY9o41xN4A79ezFwew')
+   var = get('https://manabox.app/decks/vYzyl7ykTz6UtEkrlQB1bA')
    print(var)
