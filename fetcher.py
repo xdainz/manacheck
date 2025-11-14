@@ -44,9 +44,41 @@ def get_manabox_content(link:str) -> str:
     return cleaned_list
 
 def get_moxfield_content(link:str) -> str:
-    selector = '#maincontent > div.deck-dnd-wrapper > div.container.mt-3.mb-5 > section > div:nth-child(3) > article'
+    # replace deck link to call directly the api and preserve deck id
+    moxfield_api = 'https://api2.moxfield.com/v3/decks/all/'
+    deck_link = link.replace('https://moxfield.com/decks/', moxfield_api)
 
-    return get_content(link, selector)
+    response = get_content(deck_link)
+
+    data_object = json.loads(response.text) 
+
+    cleaned_list = []
+
+    card_categories = ['mainboard', 'sideboard', 'maybeboard', 'commanders', 'companions', 'signatureSpells']
+
+    boards_data = data_object['boards']
+
+    for category in card_categories:
+        card_list = boards_data[category]['cards']
+        
+        for key, card in card_list.items():
+            data = card['card']
+            
+            card_name = data['name']
+            set_id = data['set']
+            collector_number = data['cn']
+            rarity = data['rarity']
+            quantity = card['quantity']
+            
+            cleaned_list.append({
+                'Name': card_name,
+                "Set": set_id.upper(),
+                "Collector Number": collector_number,
+                "Rarity": rarity.capitalize(),
+                "Quantity": quantity
+            })
+
+    return cleaned_list
 
 def get_edhrec_content(link:str) -> str:
     selector = '#__next > main > div.d-flex.flex-grow-1.p-3.pe-lg-0 > div > div.Main_left__B9nka > div.Container_container__A7FAx > div.Panels_container__jvZjo > div > div.shadow-sm.rounded-0.rounded-bottom-3.card > div > div.DecklistPanel_decklist__VZZae > div > ul'
@@ -57,7 +89,7 @@ def get(link: str) -> str:
     
     DOMAINS = {
         'https://manabox.app/': get_manabox_content,
-        'https://moxfield.com/': get_moxfield_content,
+        'https://moxfield.com/decks/': get_moxfield_content,
         'https://edhrec.com/deckpreview/': get_edhrec_content
     }
 
@@ -71,5 +103,5 @@ def get(link: str) -> str:
    
 if __name__ == '__main__':
   
-   var = get('https://manabox.app/decks/vYzyl7ykTz6UtEkrlQB1bA')
+   var = get('https://moxfield.com/decks/wP8d8ugZaEWz2N9B-nMWeA')
    print(var)
