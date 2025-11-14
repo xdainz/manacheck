@@ -37,7 +37,7 @@ def get_manabox_content(link:str) -> str:
             'Name': card_name,
             "Set": set_id.upper(),
             "Collector Number": collector_number,
-            "Rarity": rarity,
+            "Rarity": rarity.capitalize(),
             "Quantity": quantity
         })
     
