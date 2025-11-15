@@ -1,9 +1,13 @@
 import os
 import pandas as pd
+import fetcher
 
 DATABASE = 'data.xlsx'
 
-CARD_NAME = 'Card Name'
+CARD_NAME = 'Name'
+SET = 'Set'
+COLLECTOR_NUMBER = 'Collector Number'
+RARITY = 'Rarity'
 QUANTITY = 'Quantity'
 
 def database_exist() ->bool:
@@ -11,7 +15,7 @@ def database_exist() ->bool:
 
 def create_db() -> None:
     if not database_exist():
-        headers = [CARD_NAME, QUANTITY]
+        headers = [CARD_NAME, SET, COLLECTOR_NUMBER, RARITY, QUANTITY]
 
         layout_df = pd.DataFrame(columns=headers)
 
@@ -23,22 +27,18 @@ def create_db() -> None:
         
         layout_df.to_excel(DATABASE, sheet_name='test', index=False)
 
-def write_db(card_list:list) -> None:
-    # turns card list into a dataframe and add up the values
-    card_count = pd.Series(card_list).value_counts()
-    new_df = card_count.reset_index(name=QUANTITY)
-    new_df = new_df.rename(columns={'index': CARD_NAME})
+def write_db(card_list:list[dict]) -> None:
+    # turns card list into a dataframe 
+    new_df = pd.DataFrame(card_list)
     
     # read existing db
     db = pd.read_excel(DATABASE)
     
     # merge new and old dataframes
     combined_df = pd.concat([db, new_df], ignore_index=True)
-    updated_df = combined_df.groupby(CARD_NAME, as_index=False)[QUANTITY].sum()
-    updated_df[QUANTITY] = updated_df[QUANTITY].astype(int)
     
     # save new df to database file
-    updated_df.to_excel(DATABASE, index=False)
+    combined_df.to_excel(DATABASE, index=False)
 
 
 def read_db():
@@ -47,7 +47,6 @@ def read_db():
 
 
 if __name__ == '__main__':
-    test_data = ['test', 'br', 'br' , 'blab', 'asdf', 'asdf','asdf']
     create_db()
-    write_db(test_data)
+    write_db(fetcher.get('https://manabox.app/decks/vYzyl7ykTz6UtEkrlQB1bA'))
     print(read_db())
