@@ -41,8 +41,8 @@ def is_powershell():
         return False
 
 def is_link_valid(link:str) -> bool:
-    allowed_domains = ('https://manabox.app/', 'https://moxfield.com/', 'https://edhrec.com/deckpreview/')
-    
+    allowed_domains = ('https://manabox.app/', 'https://moxfield.com/')#, 'https://edhrec.com/deckpreview/')
+    print(allowed_domains) 
     return link.startswith(allowed_domains)
 
 def get_link(prompt) -> str:

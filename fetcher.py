@@ -81,16 +81,14 @@ def get_moxfield_content(link:str) -> str:
     return cleaned_list
 
 def get_edhrec_content(link:str) -> str:
-    selector = '#__next > main > div.d-flex.flex-grow-1.p-3.pe-lg-0 > div > div.Main_left__B9nka > div.Container_container__A7FAx > div.Panels_container__jvZjo > div > div.shadow-sm.rounded-0.rounded-bottom-3.card > div > div.DecklistPanel_decklist__VZZae > div > ul'
-
-    return get_content(link, selector)
+    pass
 
 def get(link: str) -> str:
     
     DOMAINS = {
         'https://manabox.app/': get_manabox_content,
         'https://moxfield.com/decks/': get_moxfield_content,
-        'https://edhrec.com/deckpreview/': get_edhrec_content
+        #'https://edhrec.com/deckpreview/': get_edhrec_content
     }
 
     for domain, func in DOMAINS.items():

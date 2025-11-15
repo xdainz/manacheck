@@ -11,7 +11,7 @@ def main() -> None:
     # start screen
     clear()
     print(logo())
-    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield, EDHREC.{pink_end}{italic_end}')
+    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield.{pink_end}{italic_end}')
 
     # ask user for links
     search_link = get_link('search')
