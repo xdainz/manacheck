@@ -1,18 +1,13 @@
-from utils import logo, get_link, clean_data, get_matches, clear
+from utils import splash_screen, get_link, clean_data, get_matches
 from fetcher import get
 
 pink_start = '\033[35m'
 pink_end = '\033[0m'
-italic_start = '\033[3m'
-italic_end = '\033[0m'
-
 
 def main() -> None:
     # start screen
-    clear()
-    print(logo())
-    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield, EDHREC.{pink_end}{italic_end}')
-
+    splash_screen()
+    
     # data storer
     data_search: set = set() 
     data_repository: set = set()
