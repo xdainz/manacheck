@@ -3,20 +3,15 @@ import psutil
 
 bold_start = '\033[1m'
 bold_end = '\033[0m'
-pink_start ='\033[35m'
-pink_end = '\033[0m'
-italic_start = '\033[3m'
-italic_end = '\033[0m'
 
-def splash_screen() -> None:
-    clear()
+def logo() -> str:
     file_name = 'logo.txt'
+    logo_content = ''
 
     try:
         with open(file_name, 'r', encoding='utf-8') as file:
             logo_content = file.read()
 
-        print(f'\n{pink_start}{logo_content}{pink_end}')
 
     except FileNotFoundError:
         print(f'Error: {file_name} was not found.')
@@ -24,7 +19,7 @@ def splash_screen() -> None:
     except Exception as e:
         print(f'Erro: {e}')
     
-    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield, EDHREC.{pink_end}{italic_end}')
+    return logo_content
     
 
 def clear() -> None:
