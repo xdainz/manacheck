@@ -1,13 +1,18 @@
-from utils import splash_screen, get_link, get_matches
+from utils import logo, get_link, get_matches, clear
 from fetcher import get
 
 pink_start = '\033[35m'
 pink_end = '\033[0m'
+italic_start = '\033[3m'
+italic_end = '\033[0m'
+
 
 def main() -> None:
     # start screen
-    splash_screen()
-    
+    clear()
+    print(logo())
+    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield, EDHREC.{pink_end}{italic_end}')
+
     # ask user for links
     search_link = get_link('search')
     repository_link = get_link('repository')
