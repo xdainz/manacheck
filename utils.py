@@ -53,39 +53,24 @@ def get_link(prompt) -> str:
         return link
 
     raise ValueError(f'{link} is not a valid domain.')
-    
-def clean_data(raw_data:str) -> set[str]:
-    
-    to_ignore = ('commander', 'deck', 'planeswalkers', 'creatures', 'artifacts','enchantments',
-                 'instants', 'sorceries', 'lands', '//')
 
-    raw_list = raw_data.split('\n')
-    cleaned_set = set()
+def get_matches(search_list:list[dict], repository_list:list[dict]) -> list[str]:
     
-    for data in raw_list:
-        try:
-            # check if str can be typecasted to an int
-            int(data.strip())
-        except ValueError:
-            # if not assume its str
-            if not data.strip().lower().startswith(to_ignore) and len(data) >= 2: #shortest card has 2 letters (acording to google)
-                cleaned_set.add(data.strip())
-        
-    return cleaned_set
-
-def get_matches(search_list:set[str], repository_list:set[str]) -> set[str]:
+    search_card_names = {card['Name'] for card in search_list}
     
-    matches = set()
-    
-    for card in search_list:
-        if card in repository_list and card not in matches:
-            matches.add(card)
-    
+    matches = [
+        card for card in repository_list
+        if card['Name'] in search_card_names
+    ]
+   
     return matches
 
 if __name__ == '__main__':
     import fetcher
-    var = clean_data(fetcher.get_moxfield_content('https://moxfield.com/decks/mLvJIellBEGt7KPWqgwefQ'))
-    var2 = clean_data(fetcher.get_manabox_content('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw'))
-    print(var)
-    print(var2)
+    var = fetcher.get('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw')
+    var2 = fetcher.get('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw')
+    
+    matches = get_matches(var, var2)
+    
+    for match in matches:
+        print(match)
