@@ -51,7 +51,7 @@ def run_live_search(df):
         for line in ASCII_BANNER.split('\n'):
             if line:
                 # Add the line content, plus a newline character
-                formatted_output.append(('ansimagenta', line + '\n'))
+                formatted_output.append(('ansiwhite', line + '\n'))
         
         
         header_text = f"Card Search Results: {total_rows} / {total_data_len} | Ctrl-C to quit"
@@ -61,7 +61,7 @@ def run_live_search(df):
 
         # 5. DataFrame or No Match Message (unstyled)
         if not filtered_df.empty:
-            df_string = filtered_df.to_string(header=True, index=False, max_rows=100, max_cols=2)
+            df_string = filtered_df.to_string(header=True, index=False, max_rows=100, max_cols=5)
             # DataFrame string is added as one unstyled block
             formatted_output.append(('', df_string + '\n'))
         else:
@@ -113,8 +113,8 @@ def run_live_search(df):
     # --- Create and Run the Application ---
     
     style_config = Style.from_dict({
-        'separator': 'fg:ansimagenta',  
-        'prompt': 'fg:ansimagenta bold'
+        'separator': 'fg:ansiwhite',  
+        'prompt': 'fg:ansiwhite bold'
     })
 
     app = Application(
