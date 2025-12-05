@@ -36,14 +36,21 @@ export function parseManabox(htmlText: string): Card[] {
 
     return raw_card_list.map((card: any) => {
         const data = card[1];
+
+        const imgUrl = data?.images[1][0][1].imageUrlNormal[1];
+        const ck =
+            Math.round(data?.pricing[1].cardKingdom[1].value[1] * 100) / 100; // hack to round to 2 decimals
+
         return {
             Name: data?.name?.[1] ?? "",
             Set: (data?.setId?.[1] ?? "").toString().toUpperCase(),
-            "Collector Number": data?.collectorNumber?.[1] ?? "",
+            Collector_number: data?.collectorNumber?.[1] ?? "",
             Rarity: String(data?.rarity?.[1] ?? "").replace(/^./, (c) =>
                 c.toUpperCase()
             ),
             Quantity: Number(data?.quantity?.[1] ?? 0),
+            image_url: imgUrl,
+            ck_price: ck,
         } as Card;
     });
 }
