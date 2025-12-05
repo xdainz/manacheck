@@ -1,50 +1,66 @@
-# Manacheck: A simple MTG filtering tool
+# Manacheck: Web-based MTG decklist filter
 
-ManaCheck is a Python utility for comparing  MTG decklists from web platforms.
+Manacheck is a web app that lets you fetch and filter MTG decklists from supported sites.
 
-_"Searches the cards **you** want in the decklists some rando sent."_
+"Searches the cards **you** want in the decklists some rando sent."
 
-## 🚀 Setup
+## 🌐 For normal users
 
-### Prerequisites
+If you just want to use the app, visit:
 
--   Python: Requires `3.13` or higher.
+https://xdainz.github.io/manacheck/
 
-### Installation
+This link is a ready-to-use build.
 
-Clone the repository:
+## ⚙️ Supported sources
 
-```shell
+-   ManaBox: `https://manabox.app/`
+-   Moxfield: `https://moxfield.com/`
+
+## 👨‍💻 Collaborating on this project
+
+If you'd like to contribute or run a development instance for development/testing, follow these steps.
+
+1. Fork and clone the repository, then install dependencies:
+
+```bash
 git clone https://github.com/xdainz/manacheck.git
 cd manacheck
+npm install
 ```
 
-Install dependencies:
+### (If you are not changing parser or workers behaviour you can skip steps 2 & 4)
 
-```shell
-pip install -r requirements.txt
+2. Configure environment variables
+
+-   Copy the example file and **do not commit** your `.env.production`:
+
+```bash
+cp .env.example .env.production
 ```
 
-## 🐣 How to use Manacheck
+-   Edit `.env.production` and set at minimum:
 
-Run the main script:
-
-```shell
-python main.py
+```
+VITE_WORKER_BASE=https://your-worker.your-account.workers.dev
 ```
 
-You will be prompted for the URL of the decklists you want to filter
+This value is used when the frontend runs in production mode; in development the app uses the Vite dev proxy defined in `vite.config.ts`.
 
--   Search Link &rarr; the decklist that contains the cards you are looking for.
+3. Run the app locally
 
--   Repository Link &rarr; the decklist some dude posted and you want to filter through.
+```bash
+npm run dev
+```
 
-### 🌐 Currently supported sites:
+4. Setting up and publishing the Cloudflare Worker
 
--   [ManaBox](https://manabox.app/)
+-   Follow the instructions in `workers/README.md`
 
--   [Moxfield](https://moxfield.com/)
+5. Tests and contribution workflow
 
----
+-   Run tests before opening a PR:
 
-_Data collection relies on specific CSS Selectors on some sites. Maintenance will be required if the target websites change their HTML structure._
+```bash
+npm test
+```

@@ -1,0 +1,7 @@
+name = "manacheck-proxy"
+main = "workers/worker.js"
+type = "javascript"
+compatibility_date = "2025-12-05"
+workers_dev = true
+
+# Optional: to bind this worker to custom routes, add a `routes` entry or use the Cloudflare dashboard

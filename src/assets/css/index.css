@@ -1,0 +1,132 @@
+:root {
+    /* CSS custom properties only */
+    --font: "Cascadia Mono", system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --pretty-pink: #f6196d;
+    --highlight: #ff5f9c;
+    --cool-gray: #cacaca;
+    --bg: #222;
+    --bg-light: #333;
+    --bg-dark: #111;
+}
+
+/* Prevent layout overflow on small devices */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    line-height: 1.5;
+    font-weight: 400;
+    color: #fff;
+    background-color: var(--bg);
+
+    /* avoid accidental horizontal scroll on mobile */
+    overflow-x: hidden;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    font-family: var(--font);
+}
+
+.home-page {
+    align-items: center !important;
+    align-content: center !important;
+}
+
+.logo pre {
+    font: inherit;
+    font-size: clamp(0.425rem, 1.25vw, 1.9rem);
+    color: var(--pretty-pink);
+    justify-self: center;
+    letter-spacing: -0.0425em;
+    line-height: 1.09375;
+    white-space: pre;
+    transition: color 0.15s ease-in-out;
+}
+
+.logo a {
+    text-decoration: none !important;
+}
+.logo pre:hover {
+    color: var(--highlight);
+}
+
+.footer {
+    font-size: small;
+    color: var(--pretty-pink);
+}
+
+a {
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--highlight);
+}
+a:hover {
+    text-decoration: underline;
+}
+
+.cardbox {
+    font-size: small;
+    background-color: #444;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+.cardbox .label {
+    color: var(--cool-gray);
+    margin: 0;
+}
+
+.cardbox .label-value {
+    color: white;
+    font-weight: bolder;
+}
+
+.cardbox .image {
+    border-radius: 4.75% / 3.5% !important;
+    max-width: 100%;
+}
+
+.cardbox .price {
+    color: var(--pretty-pink);
+    font-size: xx-large;
+}
+
+.cardbox .no-price {
+    color: var(--pretty-pink);
+    font-size: large;
+}
+
+.cardboxgrid {
+    display: grid;
+    row-gap: 0.5rem;
+    column-gap: 2rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* mobile settings */
+@media (max-width: 768px) {
+    .logo pre {
+        font-size: 0.32em;
+    }
+
+    .cardboxgrid {
+        grid-template-columns: 1fr;
+    }
+
+    a {
+        text-decoration: underline;
+    }
+}

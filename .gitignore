@@ -1,6 +1,54 @@
+# custom ignores
 __pycache__
+**/copilot-instructions.md
+coverage/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
 .vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-*response.json
-*response.html
-.github/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment files (may contain secrets)
+.env
+.env.*
+!.env.example
+
+# Wrangler / Cloudflare files (may contain account ids / secrets)
+# If your `wrangler.toml` contains account ids/secrets, keep it ignored.
+# In this repo the template `workers/wrangler.toml` is safe to commit, so it's not ignored.
+
+# Python virtualenvs
+venv/
+.venv/
+env/
+
+# Python cache
+.pytest_cache/
+__pycache__/
+
+# Misc
+.cache/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+/.DS_Store
