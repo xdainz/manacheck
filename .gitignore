@@ -1,9 +1,7 @@
 # custom ignores
 __pycache__
-.vscode/*
-.DS_Store
-.github/
-.
+**/copilot-instructions.md
+
 # Logs
 logs
 *.log
