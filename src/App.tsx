@@ -1,12 +1,17 @@
-import DeckFetcherDemo from "./components/DeckFetcherDemo";
-import Logo from "./components/Logo";
+import { HashRouter, Route, Routes } from "react-router-dom";
+
+import Home from "./pages/Home";
+import Layout from "./layout/Layout";
 
 function App() {
     return (
-        <>
-            <Logo />
-            <DeckFetcherDemo />
-        </>
+        <HashRouter>
+            <Layout>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                </Routes>
+            </Layout>
+        </HashRouter>
     );
 }
 
