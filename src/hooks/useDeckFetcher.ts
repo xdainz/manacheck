@@ -74,14 +74,23 @@ export function parseMoxfield(dataObj: any): Card[] {
         Object.values(cardObj).forEach((entry: any) => {
             const card = entry.card;
             const quantity = entry.quantity ?? 0;
+
+            const baseImgUrl = "https://cards.scryfall.io/normal/front";
+            const cardScryfallId = card?.scryfall_id;
+            const firstNumber = cardScryfallId[0];
+            const secondNumber = cardScryfallId[1];
+            const imgUrl = `${baseImgUrl}/${firstNumber}/${secondNumber}/${cardScryfallId}.jpg`;
+
             cleaned.push({
                 Name: card?.name ?? "",
                 Set: (card?.set ?? "").toString().toUpperCase(),
-                "Collector Number": card?.cn ?? "",
+                Collector_number: card?.cn ?? "",
                 Rarity: String(card?.rarity ?? "").replace(/^./, (c) =>
                     c.toUpperCase()
                 ),
                 Quantity: Number(quantity),
+                image_url: imgUrl,
+                ck_price: card?.prices.ck,
             });
         });
     });
