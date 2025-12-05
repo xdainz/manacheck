@@ -1,30 +1,28 @@
-from utils import splash_screen, get_link, clean_data, get_matches
+from utils import logo, get_link, get_matches, clear
 from fetcher import get
 
 pink_start = '\033[35m'
 pink_end = '\033[0m'
+italic_start = '\033[3m'
+italic_end = '\033[0m'
+
 
 def main() -> None:
     # start screen
-    splash_screen()
-    
-    # data storer
-    data_search: set = set() 
-    data_repository: set = set()
+    clear()
+    print(logo())
+    print(f'\n{italic_start}{pink_start}Currently supported sites: ManaBox, Moxfield.{pink_end}{italic_end}')
 
     # ask user for links
     search_link = get_link('search')
     repository_link = get_link('repository')
-
-    # append fetched data
-    for data in clean_data(get(search_link)):
-        data_search.add(data)
     
-    for data in clean_data(get(repository_link)):
-        data_repository.add(data)
-
+    # data storer
+    data_search: list[dict] = get(search_link) 
+    data_repository: list[dict] = get(repository_link)
+    
     # check matching data
-    final_matches: set[str] = get_matches(data_search, data_repository)
+    final_matches: list[str] = get_matches(data_search, data_repository)
 
     if len(final_matches) >=1:
         print('\nMatches found:')

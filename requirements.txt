@@ -1,2 +1,6 @@
-selenium==4.35.0
 psutil==7.1.2
+requests==2.32.5
+bs4==0.0.2
+pandas==2.2.3
+openpyxl==3.1.5
+prompt_toolkit==3.0.52
