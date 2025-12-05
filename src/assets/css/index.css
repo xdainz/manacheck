@@ -1,0 +1,26 @@
+:root {
+    --font: "Cascadia Mono", system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --pretty-pink: #ce0d3e;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color: #fff;
+    background-color: #222;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    font-family: var(--font);
+
+    .pre pre {
+        font: inherit;
+        font-size: clamp(0.425rem, 1.25vw, 1rem);
+        color: var(--pretty-pink);
+        justify-self: center;
+        letter-spacing: -0.0425em;
+        line-height: 1.09375;
+        white-space: pre;
+    }
+}

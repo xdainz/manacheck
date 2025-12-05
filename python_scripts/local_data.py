@@ -58,7 +58,7 @@ def read_db():
 
 
 if __name__ == '__main__':
-    import fetcher
+    import python_scripts.fetcher as fetcher
     create_db()
     write_db(fetcher.get('https://manabox.app/decks/vYzyl7ykTz6UtEkrlQB1bA'))
     print(read_db())
