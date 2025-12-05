@@ -1,12 +1,5 @@
 import { useCallback, useState } from "react";
-
-type Card = {
-    Name: string;
-    Set: string;
-    "Collector Number": string | number;
-    Rarity: string;
-    Quantity: number;
-};
+import type { Card } from "../types/CardType";
 
 async function fetchText(url: string) {
     const res = await fetch(url);
@@ -43,14 +36,21 @@ export function parseManabox(htmlText: string): Card[] {
 
     return raw_card_list.map((card: any) => {
         const data = card[1];
+
+        const imgUrl = data?.images[1][0][1].imageUrlNormal[1];
+        const ck =
+            Math.round(data?.pricing[1].cardKingdom[1].value[1] * 100) / 100; // hack to round to 2 decimals
+
         return {
             Name: data?.name?.[1] ?? "",
             Set: (data?.setId?.[1] ?? "").toString().toUpperCase(),
-            "Collector Number": data?.collectorNumber?.[1] ?? "",
+            Collector_number: data?.collectorNumber?.[1] ?? "",
             Rarity: String(data?.rarity?.[1] ?? "").replace(/^./, (c) =>
                 c.toUpperCase()
             ),
             Quantity: Number(data?.quantity?.[1] ?? 0),
+            image_url: imgUrl,
+            ck_price: ck,
         } as Card;
     });
 }
@@ -74,14 +74,23 @@ export function parseMoxfield(dataObj: any): Card[] {
         Object.values(cardObj).forEach((entry: any) => {
             const card = entry.card;
             const quantity = entry.quantity ?? 0;
+
+            const baseImgUrl = "https://cards.scryfall.io/normal/front";
+            const cardScryfallId = card?.scryfall_id;
+            const firstNumber = cardScryfallId[0];
+            const secondNumber = cardScryfallId[1];
+            const imgUrl = `${baseImgUrl}/${firstNumber}/${secondNumber}/${cardScryfallId}.jpg`;
+
             cleaned.push({
                 Name: card?.name ?? "",
                 Set: (card?.set ?? "").toString().toUpperCase(),
-                "Collector Number": card?.cn ?? "",
+                Collector_number: card?.cn ?? "",
                 Rarity: String(card?.rarity ?? "").replace(/^./, (c) =>
                     c.toUpperCase()
                 ),
                 Quantity: Number(quantity),
+                image_url: imgUrl,
+                ck_price: card?.prices.ck,
             });
         });
     });

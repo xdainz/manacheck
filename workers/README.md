@@ -16,15 +16,22 @@ How it works
 Setup & deploy (quick)
 
 1. Install Wrangler (Cloudflare CLI):
+
     ```bash
     npm install -g wrangler
-    # or as a dev dependency in your project
-    # npm install --save-dev wrangler
+
     ```
-2. Replace `account_id` in `workers/wrangler.toml` with your Cloudflare account id.
+
+2. Login to Cloudflare:
+
+    ```bash
+    wrangler login
+
+    ```
+
 3. Edit `workers/worker.js` and ensure `ALLOWED_ORIGIN` matches your GitHub Pages origin (the worker in this repo is preconfigured for `https://xdainz.github.io`).
 
-4. (Optional) Configure your frontend to call the worker URL in production via Vite env var:
+4. Configure your frontend to call the worker URL in production via Vite env var:
     - Create a `.env.production` file with:
         ```bash
         VITE_WORKER_BASE=https://<your-worker-subdomain>.workers.dev
@@ -33,9 +40,8 @@ Setup & deploy (quick)
 5. Publish the worker:
     ```bash
     # from repo root
-    wrangler publish workers/worker.js --name manacheck-proxy
+    wrangler deploy workers/worker.js --name manacheck-proxy
     ```
-    Or use `wrangler.toml` with `wrangler publish` per Wrangler docs.
 
 Usage from your frontend
 
@@ -48,5 +54,3 @@ Notes & security
 -   By default `ALLOWED_ORIGIN` is `*` in the worker; change it to your GH Pages origin before deploying.
 -   This proxy can be abused if you expose it as an open proxy. You should validate / restrict allowed paths or add rate-limiting if you expect public traffic.
 -   Use caching to avoid hitting upstream rate-limits; you may increase TTL for popular decks.
-
-Optional: use Wrangler environment variables or secrets to provide a stricter allowed origin or credentials. See Cloudflare Workers docs.
