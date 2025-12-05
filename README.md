@@ -1,6 +1,6 @@
 # Manacheck: A simple MTG filtering tool
 
-ManaCheck is a Python utility for comparing  MTG decklists from web platforms.
+ManaCheck is a Python utility for comparing MTG decklists from web platforms.
 
 _"Searches the cards **you** want in the decklists some rando sent."_
 
