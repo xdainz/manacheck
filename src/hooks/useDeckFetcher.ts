@@ -1,12 +1,5 @@
 import { useCallback, useState } from "react";
-
-type Card = {
-    Name: string;
-    Set: string;
-    "Collector Number": string | number;
-    Rarity: string;
-    Quantity: number;
-};
+import type { Card } from "../types/CardType";
 
 async function fetchText(url: string) {
     const res = await fetch(url);
