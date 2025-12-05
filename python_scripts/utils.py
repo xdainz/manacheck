@@ -65,7 +65,7 @@ def get_matches(search_list:list[dict], repository_list:list[dict]) -> list[str]
     return matches
 
 if __name__ == '__main__':
-    import fetcher
+    import python_scripts.fetcher as fetcher
     var = fetcher.get('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw')
     var2 = fetcher.get('https://manabox.app/decks/91XFcE76SQKLoSk_FoIMrw')
     

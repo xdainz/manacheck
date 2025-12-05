@@ -1,5 +1,5 @@
-from utils import logo, get_link, get_matches, clear
-from fetcher import get
+from python_scripts.utils import logo, get_link, get_matches, clear
+from python_scripts.fetcher import get
 
 pink_start = '\033[35m'
 pink_end = '\033[0m'
