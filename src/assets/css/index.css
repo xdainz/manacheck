@@ -65,7 +65,6 @@ body {
 .footer {
     font-size: small;
     color: var(--pretty-pink);
-    background: var(--bg-light);
 }
 
 a {
