@@ -46,9 +46,10 @@ jobs:
             - name: Configure Pages
               uses: actions/configure-pages@v3
 
-            - name: Upload artifact for Pages
-              uses: actions/upload-pages-artifact@v1
+            - name: Upload artifact for Pages (use upload-artifact v4)
+              uses: actions/upload-artifact@v4
               with:
+                  name: pages
                   path: ./dist
 
             - name: Deploy to GitHub Pages
