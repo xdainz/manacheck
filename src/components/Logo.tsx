@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import logo from "../../logo.txt";
+import { Link } from "react-router-dom";
 
 function Logo() {
     const [logoText, setLogoText] = useState<string>("");
@@ -17,8 +18,10 @@ function Logo() {
             });
     }, []);
     return (
-        <div className="pre">
-            <pre>{logoText}</pre>
+        <div className="logo container m-3 pt-3">
+            <Link to="/">
+                <pre>{logoText}</pre>
+            </Link>
         </div>
     );
 }
