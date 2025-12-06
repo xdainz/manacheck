@@ -116,6 +116,34 @@ a:hover {
     box-sizing: border-box;
 }
 
+.button {
+    background-color: var(--pretty-pink);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    border: none;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.button:hover {
+    background: var(--highlight);
+}
+
+.button:active {
+    color: var(--pretty-pink);
+    background: var(--bg-light);
+}
+.box {
+    background-color: var(--bg-light);
+    padding: 1.5rem 2rem;
+    border-radius: 0.75rem;
+    max-width: 70vw;
+}
+
+.box label {
+    margin: 0.5rem;
+}
+
 /* mobile settings */
 @media (max-width: 768px) {
     .logo pre {
@@ -128,5 +156,11 @@ a:hover {
 
     a {
         text-decoration: underline;
+    }
+
+    .box {
+        padding: 1rem;
+        margin: 0;
+        max-width: 100vw;
     }
 }
