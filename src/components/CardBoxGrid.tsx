@@ -6,6 +6,9 @@ interface CardBoxGridProps {
 }
 
 function CardBoxGrid({ cardList }: CardBoxGridProps) {
+    if (cardList.length < 1) {
+        return <p className="text-center py-5">No matches found :^(</p>;
+    }
     return (
         <div className="cardboxgrid col-12">
             {cardList.map((c, i) => (
