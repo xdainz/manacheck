@@ -78,7 +78,7 @@ a:hover {
 
 .cardbox {
     font-size: small;
-    background-color: #444;
+    background-color: var(--bg-light);
     border-radius: 1rem;
     padding: 1rem;
 }
