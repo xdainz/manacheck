@@ -107,6 +107,21 @@ a:hover {
     font-size: large;
 }
 
+.search-result {
+    font-size: large;
+    margin: auto;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-result .price {
+    color: var(--pretty-pink);
+}
+
+.search-result p {
+    margin: 0;
+}
+
 .cardboxgrid {
     display: grid;
     row-gap: 0.5rem;
@@ -163,4 +178,21 @@ a:hover {
         margin: 0;
         max-width: 100vw;
     }
+
+    .search-result {
+        display: block;
+        text-align: center;
+        background: var(--bg-light) !important;
+    }
+
+    .search-result .price {
+        margin-left: 0;
+    }
+
+    .search-result .button {
+        margin: 0;
+    }
+}
+
+@media (max-width: 768px) {
 }

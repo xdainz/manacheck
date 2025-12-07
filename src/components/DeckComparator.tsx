@@ -3,7 +3,7 @@ import type { Card } from "../types/CardType";
 import useDeckFetcher from "../hooks/useDeckFetcher";
 import CardBoxGrid from "./CardBoxGrid";
 import { getMatches } from "../hooks/compareDecks";
-import ExportControls from "./ExportControls";
+import SearchResult from "./SearchResult";
 
 export default function DeckComparator() {
     const {
@@ -96,11 +96,10 @@ export default function DeckComparator() {
                 )}
             </div>
             {hasSearched && !isLoading && (
-                <div className="mx-auto pt-3">
-                    <h4>Matching Cards ({matches.length})</h4>
-                    {matches.length > 0 && <ExportControls list={matches} />}
+                <div>
+                    {matches.length > 0 && <SearchResult list={matches} />}
                     <CardBoxGrid cardList={matches} />
-                    {matches.length > 0 && <ExportControls list={matches} />}
+                    {matches.length > 0 && <SearchResult list={matches} />}
                 </div>
             )}
         </div>
