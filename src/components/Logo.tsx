@@ -18,7 +18,7 @@ function Logo() {
             });
     }, []);
     return (
-        <div className="logo container pt-3">
+        <div className="logo pt-3 mx-auto">
             <Link to="/">
                 <pre>{logoText}</pre>
             </Link>
