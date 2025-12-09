@@ -10,13 +10,26 @@ function SearchResult({ list }: { list: Card[] }) {
         ) / 100;
 
     return (
-        <div className="box mb-3 search-result row my-3">
-            <h2 className="col-sm-12 col-lg-3">Search Results</h2>
-            <p className="col-sm-6 col-lg-3">Cards Found: {list.length}</p>
-            <p className="col-sm-6 col-lg-3">
-                Total Price: <label className="price">${totalPrice}</label>
-            </p>
-            <ExportControls list={list} className="col-sm-12 col-lg-3" />
+        <div className="box mb-3 search-result mt-3">
+            <div className="row g-3 align-items-center">
+                <div className="col-12 col-md-6 col-lg-3">
+                    <h2 className="mb-0">Search Results</h2>
+                </div>
+                <div className="col-6 col-md-3 col-lg-3">
+                    <p className="mb-0">
+                        <strong>Cards Found:</strong> {list.length}
+                    </p>
+                </div>
+                <div className="col-6 col-md-3 col-lg-3">
+                    <p className="mb-0">
+                        <strong>Total Price:</strong>{" "}
+                        <span className="price">${totalPrice}</span>
+                    </p>
+                </div>
+                <div className="col-12 col-md-12 col-lg-3">
+                    <ExportControls list={list} className="w-100" />
+                </div>
+            </div>
         </div>
     );
 }
