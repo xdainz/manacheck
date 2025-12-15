@@ -2,7 +2,15 @@ import { useState } from "react";
 import type { Card } from "../types/CardType";
 import { exportList } from "../hooks/compareDecks";
 
-export default function ExportControls({ list }: { list: Card[] }) {
+interface ExportControlsProps {
+    list: Card[];
+    className: string;
+}
+
+export default function ExportControls({
+    list,
+    className,
+}: ExportControlsProps) {
     const [exporting, setExporting] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -20,17 +28,17 @@ export default function ExportControls({ list }: { list: Card[] }) {
     };
 
     return (
-        <div className="d-flex justify-content-between align-items-center mb-2">
-            <div>
-                {copied ? <span className="text-success">Copied!</span> : null}
-            </div>
+        <div className={className}>
             <button
-                className="button mx-auto my-3"
+                className="button"
                 onClick={handleExport}
                 disabled={exporting}
             >
                 {exporting ? "Copying…" : "Copy to clipboard"}
             </button>
+            <div>
+                {copied ? <span className="text-success">Copied!</span> : null}
+            </div>
         </div>
     );
 }

@@ -53,6 +53,7 @@ body {
     line-height: 1.09375;
     white-space: pre;
     transition: color 0.15s ease-in-out;
+    overflow: hidden;
 }
 
 .logo a {
@@ -78,9 +79,11 @@ a:hover {
 
 .cardbox {
     font-size: small;
-    background-color: #444;
+    background-color: var(--bg-light);
     border-radius: 1rem;
     padding: 1rem;
+    max-width: 100vw;
+    margin: auto;
 }
 .cardbox .label {
     color: var(--cool-gray);
@@ -107,12 +110,26 @@ a:hover {
     font-size: large;
 }
 
+.search-result {
+    font-size: large;
+    margin: auto;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-result .price {
+    color: var(--pretty-pink);
+}
+
+.search-result p {
+    margin: 0;
+}
+
 .cardboxgrid {
     display: grid;
     row-gap: 0.5rem;
-    column-gap: 2rem;
+    column-gap: 0.5rem;
     grid-template-columns: 1fr 1fr 1fr;
-    width: 100%;
     box-sizing: border-box;
 }
 
@@ -154,6 +171,11 @@ a:hover {
         grid-template-columns: 1fr;
     }
 
+    .cardbox{
+        max-width: 90vw;
+        margin: auto;
+    }
+
     a {
         text-decoration: underline;
     }
@@ -163,4 +185,21 @@ a:hover {
         margin: 0;
         max-width: 100vw;
     }
+
+    .search-result {
+        display: block;
+        text-align: center;
+        background: var(--bg-light) !important;
+    }
+
+    .search-result .price {
+        margin-left: 0;
+    }
+
+    .search-result .button {
+        margin: 0;
+    }
+}
+
+@media (max-width: 768px) {
 }
