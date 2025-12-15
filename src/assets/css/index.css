@@ -82,6 +82,8 @@ a:hover {
     background-color: var(--bg-light);
     border-radius: 1rem;
     padding: 1rem;
+    max-width: 100vw;
+    margin: auto;
 }
 .cardbox .label {
     color: var(--cool-gray);
@@ -126,9 +128,8 @@ a:hover {
 .cardboxgrid {
     display: grid;
     row-gap: 0.5rem;
-    column-gap: 2rem;
+    column-gap: 0.5rem;
     grid-template-columns: 1fr 1fr 1fr;
-    width: 100%;
     box-sizing: border-box;
 }
 
@@ -168,6 +169,11 @@ a:hover {
 
     .cardboxgrid {
         grid-template-columns: 1fr;
+    }
+
+    .cardbox{
+        max-width: 90vw;
+        margin: auto;
     }
 
     a {
