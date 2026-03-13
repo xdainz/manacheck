@@ -4,7 +4,7 @@
     --pretty-pink: #f6196d;
     --highlight: #ff5f9c;
     --cool-gray: #cacaca;
-    --bg: #222;
+    --bg: #111;
     --bg-light: #333;
     --bg-dark: #111;
 }
@@ -46,7 +46,7 @@ body {
 
 .logo pre {
     font: inherit;
-    font-size: clamp(0.425rem, 1.25vw, 1.9rem);
+    font-size: clamp(0.4rem, 1.2vw, .9rem);
     color: var(--pretty-pink);
     justify-self: center;
     letter-spacing: -0.0425em;
@@ -127,9 +127,11 @@ a:hover {
 
 .cardboxgrid {
     display: grid;
+    max-width: 800px;
+    margin: auto;
     row-gap: 0.5rem;
     column-gap: 0.5rem;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     box-sizing: border-box;
 }
 
@@ -164,7 +166,7 @@ a:hover {
 /* mobile settings */
 @media (max-width: 768px) {
     .logo pre {
-        font-size: 0.32em;
+        font-size: 0.4em;
     }
 
     .cardboxgrid {
@@ -199,7 +201,19 @@ a:hover {
     .search-result .button {
         margin: 0;
     }
+    
 }
 
-@media (max-width: 768px) {
+.submit-button{
+    margin: auto;
+    font-size: 1.2rem;
+}
+
+.deck-comparator {
+    max-width: 800px;
+    margin: auto;
+    
+    label {
+        font-size: 1.4rem;
+    }
 }

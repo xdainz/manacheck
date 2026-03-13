@@ -10,7 +10,7 @@ function SearchResult({ list }: { list: Card[] }) {
         ) / 100;
 
     return (
-        <div className="box mb-3 search-result mt-3">
+        <div className="box mb-3 search-result mt-3 deck-comparator">
             <div className="row g-3 align-items-center">
                 <div className="col-12 col-md-6 col-lg-3">
                     <h2 className="mb-0">Search Results</h2>
