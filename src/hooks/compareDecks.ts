@@ -16,7 +16,7 @@ export function getMatches(searchList: Card[], repositoryList: Card[]) {
 export async function exportList(list: Card[]): Promise<string> {
     // Build lines in the format: Quantity Name (Set) Collector_number
     const lines = list.map(
-        (c) => `${c.Quantity} ${c.Name} (${c.Set}) ${c.Collector_number}`
+        (c) => `${c.Quantity} ${c.Name} (${c.Set}) ${c.Collector_number}`,
     );
 
     const output = lines.join("\n");
@@ -31,7 +31,7 @@ export async function exportList(list: Card[]): Promise<string> {
             await navigator.clipboard.writeText(output);
             return output;
         }
-    } catch (e) {
+    } catch {
         // ignore and fall back to execCommand
     }
 
@@ -50,7 +50,7 @@ export async function exportList(list: Card[]): Promise<string> {
             document.execCommand("copy");
             document.body.removeChild(ta);
         }
-    } catch (e) {
+    } catch {
         // ignore copy failures
     }
 
