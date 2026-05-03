@@ -1,5 +1,46 @@
 import { useCallback, useState } from "react";
-import type { Card } from "../types/CardType";
+import type { Card } from "../types/types";
+
+type ManaboxImageEntry = [unknown, { imageUrlNormal?: [unknown, string] }];
+type ManaboxImages = [unknown, ManaboxImageEntry[]];
+type ManaboxPriceValue = [unknown, number];
+type ManaboxCardKingdom = [unknown, { value?: ManaboxPriceValue }];
+type ManaboxPricing = [unknown, { cardKingdom?: ManaboxCardKingdom }];
+type ManaboxCardData = {
+    images?: ManaboxImages;
+    pricing?: ManaboxPricing;
+    name?: [unknown, string];
+    setId?: [unknown, string | number];
+    collectorNumber?: [unknown, string | number];
+    rarity?: [unknown, string];
+    quantity?: [unknown, number];
+};
+type ManaboxCardEntry = [unknown, ManaboxCardData];
+type ManaboxCards = [unknown, ManaboxCardEntry[]];
+type ManaboxDeck = [unknown, { cards?: ManaboxCards }];
+type ManaboxProps = { deck?: ManaboxDeck };
+
+type MoxfieldCard = {
+    name?: string;
+    set?: string;
+    cn?: string | number;
+    rarity?: string;
+    scryfall_id?: string;
+    prices?: { ck?: number };
+};
+
+type MoxfieldCardEntry = {
+    card?: MoxfieldCard;
+    quantity?: number;
+};
+
+type MoxfieldBoard = {
+    cards?: Record<string, MoxfieldCardEntry>;
+};
+
+type MoxfieldDeck = {
+    boards?: Record<string, MoxfieldBoard>;
+};
 
 async function fetchText(url: string) {
     const res = await fetch(url);
@@ -24,9 +65,9 @@ export function parseManabox(htmlText: string): Card[] {
     const props = islands[1].getAttribute("props") || "";
     const unescaped = unescapeHtmlEntities(props);
 
-    let dataObj: any;
+    let dataObj: ManaboxProps;
     try {
-        dataObj = JSON.parse(unescaped);
+        dataObj = JSON.parse(unescaped) as ManaboxProps;
     } catch (e) {
         throw new Error("Failed to parse manabox JSON props: " + String(e));
     }
@@ -34,28 +75,30 @@ export function parseManabox(htmlText: string): Card[] {
     const raw_card_list = dataObj?.deck?.[1]?.cards?.[1];
     if (!Array.isArray(raw_card_list)) return [];
 
-    return raw_card_list.map((card: any) => {
+    return raw_card_list.map((card) => {
         const data = card[1];
 
-        const imgUrl = data?.images[1][0][1].imageUrlNormal[1];
+        const imgUrl = data?.images?.[1]?.[0]?.[1]?.imageUrlNormal?.[1];
         const ck =
-            Math.round(data?.pricing[1].cardKingdom[1].value[1] * 100) / 100; // hack to round to 2 decimals
+            Math.round(
+                (data?.pricing?.[1]?.cardKingdom?.[1]?.value?.[1] ?? 0) * 100,
+            ) / 100; // hack to round to 2 decimals
 
         return {
             Name: data?.name?.[1] ?? "",
             Set: (data?.setId?.[1] ?? "").toString().toUpperCase(),
             Collector_number: data?.collectorNumber?.[1] ?? "",
             Rarity: String(data?.rarity?.[1] ?? "").replace(/^./, (c) =>
-                c.toUpperCase()
+                c.toUpperCase(),
             ),
             Quantity: Number(data?.quantity?.[1] ?? 0),
-            image_url: imgUrl,
+            image_url: imgUrl ?? "",
             ck_price: ck,
         } as Card;
     });
 }
 
-export function parseMoxfield(dataObj: any): Card[] {
+export function parseMoxfield(dataObj: MoxfieldDeck): Card[] {
     const cleaned: Card[] = [];
     const categories = [
         "mainboard",
@@ -71,26 +114,28 @@ export function parseMoxfield(dataObj: any): Card[] {
     categories.forEach((cat) => {
         const cardObj = boards[cat]?.cards;
         if (!cardObj) return;
-        Object.values(cardObj).forEach((entry: any) => {
+        Object.values(cardObj).forEach((entry) => {
             const card = entry.card;
             const quantity = entry.quantity ?? 0;
 
             const baseImgUrl = "https://cards.scryfall.io/normal/front";
-            const cardScryfallId = card?.scryfall_id;
-            const firstNumber = cardScryfallId[0];
-            const secondNumber = cardScryfallId[1];
-            const imgUrl = `${baseImgUrl}/${firstNumber}/${secondNumber}/${cardScryfallId}.jpg`;
+            const cardScryfallId = card?.scryfall_id ?? "";
+            const firstNumber = cardScryfallId[0] ?? "";
+            const secondNumber = cardScryfallId[1] ?? "";
+            const imgUrl = cardScryfallId
+                ? `${baseImgUrl}/${firstNumber}/${secondNumber}/${cardScryfallId}.jpg`
+                : "";
 
             cleaned.push({
                 Name: card?.name ?? "",
                 Set: (card?.set ?? "").toString().toUpperCase(),
                 Collector_number: card?.cn ?? "",
                 Rarity: String(card?.rarity ?? "").replace(/^./, (c) =>
-                    c.toUpperCase()
+                    c.toUpperCase(),
                 ),
                 Quantity: Number(quantity),
                 image_url: imgUrl,
-                ck_price: card?.prices.ck,
+                ck_price: card?.prices?.ck ?? 0,
             });
         });
     });
@@ -103,54 +148,63 @@ export default function useDeckFetcher() {
     const [error, setError] = useState<string | null>(null);
     const [cards, setCards] = useState<Card[]>([]);
     // Optional production worker base (set VITE_WORKER_BASE in .env.production)
-    const WORKER_BASE =
-        (import.meta.env && (import.meta.env as any).VITE_WORKER_BASE) || "";
+    const WORKER_BASE = import.meta.env?.VITE_WORKER_BASE ?? "";
 
-    const fetchDeck = useCallback(async (link: string) => {
-        setLoading(true);
-        setError(null);
-        try {
-            if (link.startsWith("https://manabox.app/")) {
-                // During development use the Vite proxy to avoid CORS issues.
-                const path = link.replace("https://manabox.app", "");
-                const devFetch = `/api/manabox${path}`;
-                const prodFetch = WORKER_BASE
-                    ? `${WORKER_BASE}/api/manabox${path}`
-                    : link;
-                const fetchUrl = import.meta.env.DEV ? devFetch : prodFetch;
-                const text = await fetchText(fetchUrl);
-                const parsed = parseManabox(text);
-                setCards(parsed);
-            } else if (link.startsWith("https://moxfield.com/decks/")) {
-                // Convert public deck page URL to API path
-                const deckId = link.replace("https://moxfield.com/decks/", "");
+    const fetchDeck = useCallback(
+        async (link: string) => {
+            setLoading(true);
+            setError(null);
+            try {
+                if (link.startsWith("https://manabox.app/")) {
+                    // During development use the Vite proxy to avoid CORS issues.
+                    const path = link.replace("https://manabox.app", "");
+                    const devFetch = `/api/manabox${path}`;
+                    const prodFetch = WORKER_BASE
+                        ? `${WORKER_BASE}/api/manabox${path}`
+                        : link;
+                    const fetchUrl = import.meta.env.DEV ? devFetch : prodFetch;
+                    const text = await fetchText(fetchUrl);
+                    const parsed = parseManabox(text);
+                    setCards(parsed);
+                } else if (link.startsWith("https://moxfield.com/decks/")) {
+                    // Convert public deck page URL to API path
+                    const deckId = link.replace(
+                        "https://moxfield.com/decks/",
+                        "",
+                    );
 
-                const apiPath: string = `/v3/decks/all/${deckId}`;
+                    const apiPath: string = `/v3/decks/all/${deckId}`;
 
-                const prodUrl = `https://api2.moxfield.com${apiPath}`;
-                const workerUrl = WORKER_BASE
-                    ? `${WORKER_BASE}/api/moxfield${apiPath}`
-                    : prodUrl;
-                const api = import.meta.env.DEV
-                    ? `/api/moxfield${apiPath}`
-                    : workerUrl;
+                    const prodUrl = `https://api2.moxfield.com${apiPath}`;
+                    const workerUrl = WORKER_BASE
+                        ? `${WORKER_BASE}/api/moxfield${apiPath}`
+                        : prodUrl;
+                    const api = import.meta.env.DEV
+                        ? `/api/moxfield${apiPath}`
+                        : workerUrl;
 
-                const res = await fetch(api);
-                if (!res.ok)
-                    throw new Error(`Moxfield API error ${res.status}`);
-                const json = await res.json();
-                const parsed = parseMoxfield(json);
-                setCards(parsed);
-            } else {
-                throw new Error("Unsupported domain");
+                    const res = await fetch(api);
+                    if (!res.ok)
+                        throw new Error(`Moxfield API error ${res.status}`);
+                    const json = await res.json();
+                    const parsed = parseMoxfield(json);
+                    setCards(parsed);
+                } else {
+                    throw new Error("Unsupported domain");
+                }
+            } catch (e: unknown) {
+                if (e instanceof Error) setError(e?.message ?? String(e));
+                else {
+                    setError(`unknown error: $e`);
+                }
+
+                setCards([]);
+            } finally {
+                setLoading(false);
             }
-        } catch (e: any) {
-            setError(e?.message ?? String(e));
-            setCards([]);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+        },
+        [WORKER_BASE],
+    );
 
     return { loading, error, cards, fetchDeck };
 }

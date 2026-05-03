@@ -46,7 +46,7 @@ body {
 
 .logo pre {
     font: inherit;
-    font-size: clamp(0.4rem, 1.2vw, .9rem);
+    font-size: clamp(0.4rem, 1.2vw, 0.9rem);
     color: var(--pretty-pink);
     justify-self: center;
     letter-spacing: -0.0425em;
@@ -166,14 +166,14 @@ a:hover {
 /* mobile settings */
 @media (max-width: 768px) {
     .logo pre {
-        font-size: 0.4em;
+        font-size: 0.34rem;
     }
 
     .cardboxgrid {
         grid-template-columns: 1fr;
     }
 
-    .cardbox{
+    .cardbox {
         max-width: 90vw;
         margin: auto;
     }
@@ -201,10 +201,9 @@ a:hover {
     .search-result .button {
         margin: 0;
     }
-    
 }
 
-.submit-button{
+.submit-button {
     margin: auto;
     font-size: 1.2rem;
 }
@@ -212,7 +211,7 @@ a:hover {
 .deck-comparator {
     max-width: 800px;
     margin: auto;
-    
+
     label {
         font-size: 1.4rem;
     }

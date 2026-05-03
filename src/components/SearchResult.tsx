@@ -1,12 +1,12 @@
-import type { Card } from "../types/CardType";
+import type { Card } from "../types/types";
 import ExportControls from "./ExportControls";
 
 function SearchResult({ list }: { list: Card[] }) {
     const totalPrice =
         Math.round(
             list.reduce((accumulator, card) => {
-                return accumulator + card.ck_price;
-            }, 0) * 100
+                return accumulator + (isNaN(card.ck_price) ? 0 : card.ck_price);
+            }, 0) * 100,
         ) / 100;
 
     return (
