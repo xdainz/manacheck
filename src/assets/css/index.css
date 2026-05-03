@@ -166,7 +166,7 @@ a:hover {
 /* mobile settings */
 @media (max-width: 768px) {
     .logo pre {
-        font-size: 0.4em;
+        font-size: 0.34rem;
     }
 
     .cardboxgrid {
