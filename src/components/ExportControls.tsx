@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Card } from "../types/CardType";
+import type { Card } from "../types/types";
 import { exportList } from "../hooks/compareDecks";
 
 interface ExportControlsProps {

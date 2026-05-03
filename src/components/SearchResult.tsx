@@ -1,4 +1,4 @@
-import type { Card } from "../types/CardType";
+import type { Card } from "../types/types";
 import ExportControls from "./ExportControls";
 
 function SearchResult({ list }: { list: Card[] }) {

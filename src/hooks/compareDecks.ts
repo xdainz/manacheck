@@ -1,4 +1,4 @@
-import type { Card } from "../types/CardType";
+import type { Card } from "../types/types";
 
 export function getMatches(searchList: Card[], repositoryList: Card[]) {
     const searchNameSet = new Set<string>(searchList.map((card) => card.Name));

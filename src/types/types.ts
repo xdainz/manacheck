@@ -7,3 +7,8 @@ export interface Card {
     image_url: string | "";
     ck_price: number;
 }
+
+export interface Store {
+    name: string;
+    gSheetId: number;
+}

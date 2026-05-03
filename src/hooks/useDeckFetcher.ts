@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import type { Card } from "../types/CardType";
+import type { Card } from "../types/types";
 
 async function fetchText(url: string) {
     const res = await fetch(url);
