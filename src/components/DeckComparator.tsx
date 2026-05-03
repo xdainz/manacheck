@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import type { Card } from "../types/CardType";
+import { useState, useMemo } from "react";
 import useDeckFetcher from "../hooks/useDeckFetcher";
 import CardBoxGrid from "./CardBoxGrid";
 import { getMatches } from "../hooks/compareDecks";
@@ -22,49 +21,38 @@ export default function DeckComparator() {
 
     const [searchLink, setSearchLink] = useState("");
     const [repositoryLink, setRepositoryLink] = useState("");
-    const [matches, setMatches] = useState<Card[]>([]);
     const [hasSearched, setHasSearched] = useState(false);
 
     const handleFetch = async (e: React.FormEvent) => {
         e.preventDefault();
         setHasSearched(true);
-        setMatches([]);
 
         try {
-            // Fetch both decks in parallel
             await Promise.all([
                 searchFetchDeck(searchLink.trim()),
                 repositoryFetchDeck(repositoryLink.trim()),
             ]);
-        } catch (e) {
-            // errors are handled inside useDeckFetcher; nothing to do here
+        } catch {
+            // errors are handled inside useDeckFetcher
         }
     };
-
-    // When either deck updates (after fetch), compute matches.
-    useEffect(() => {
-        // Only compute once both fetches are idle (not loading)
-        if (searchLoading || repositoryLoading) return;
-
-        // If either list is empty, clear matches
-        if (!searchCards.length || !repositoryCards.length) {
-            setMatches([]);
-            return;
-        }
-
-        const found = getMatches(searchCards, repositoryCards);
-        setMatches(found);
-    }, [searchCards, repositoryCards, searchLoading, repositoryLoading]);
 
     const isLoading = searchLoading || repositoryLoading;
     const errorMessage = searchError || repositoryError;
 
+    const matches = useMemo(() => {
+        // keep UI empty while fetching
+        if (isLoading) return [];
+        if (!searchCards.length || !repositoryCards.length) return [];
+        return getMatches(searchCards, repositoryCards);
+    }, [isLoading, searchCards, repositoryCards]);
+
     return (
         <div className="container">
-            <div className="box mx-auto">
+            <div className="box mx-auto deck-comparator">
                 <h1>Decklist Comparator</h1>
                 <form onSubmit={handleFetch}>
-                    <label>Search Link:</label>
+                    <label className="mt-3">Search Link:</label>
                     <input
                         value={searchLink}
                         onChange={(e) => setSearchLink(e.target.value)}
@@ -72,7 +60,7 @@ export default function DeckComparator() {
                         className="form-control"
                         required
                     />
-                    <label>Repository Link:</label>
+                    <label className="mt-3">Repository Link:</label>
                     <input
                         value={repositoryLink}
                         onChange={(e) => setRepositoryLink(e.target.value)}
@@ -82,7 +70,7 @@ export default function DeckComparator() {
                     />
                     <button
                         type="submit"
-                        className="button mt-3"
+                        className="button mt-3 submit-button"
                         disabled={isLoading}
                     >
                         Compare

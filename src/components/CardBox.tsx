@@ -1,4 +1,4 @@
-import type { Card } from "../types/CardType";
+import type { Card } from "../types/types";
 
 function CardBox(card: Card) {
     return (
