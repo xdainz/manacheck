@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
     base: "/manacheck",
@@ -17,12 +17,12 @@ export default defineConfig({
                     proxy.on("proxyReq", (proxyReq) => {
                         proxyReq.setHeader(
                             "User-Agent",
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
                         );
                         proxyReq.setHeader("Referer", "https://manabox.app/");
                         proxyReq.setHeader(
                             "Accept",
-                            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+                            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                         );
                     });
                 },
@@ -37,11 +37,11 @@ export default defineConfig({
                     proxy.on("proxyReq", (proxyReq) => {
                         proxyReq.setHeader(
                             "User-Agent",
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
                         );
                         proxyReq.setHeader(
                             "Accept",
-                            "application/json, text/plain, */*"
+                            "application/json, text/plain, */*",
                         );
                     });
                 },
