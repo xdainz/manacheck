@@ -39,6 +39,9 @@ body {
     font-family: var(--font);
 }
 
+.max-width-800 {
+    max-width: 800px;
+}
 .home-page {
     align-items: center !important;
     align-content: center !important;
