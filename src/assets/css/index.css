@@ -270,14 +270,41 @@ a:focus-visible {
     box-shadow: var(--shadow);
     padding: 1.25rem;
     gap: 1rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(140px, 220px);
+    align-items: start;
     max-width: 100vw;
     margin: auto;
+}
+
+.cardbox.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.cardbox .col {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.cardbox .col:last-child {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.cardbox h5 {
+    margin-bottom: 0.4rem;
 }
 
 .cardbox .label {
     color: var(--text-muted);
     margin: 0;
     font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.35rem;
+    row-gap: 0.15rem;
 }
 
 .cardbox .label-value {
@@ -287,7 +314,9 @@ a:focus-visible {
 
 .cardbox .image {
     border-radius: 4.75% / 3.5% !important;
-    max-width: 100%;
+    width: 100%;
+    max-width: 220px;
+    display: block;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
@@ -450,15 +479,17 @@ a:focus-visible {
     }
 
     .cardbox {
-        max-width: 90vw;
-        margin: auto;
-        flex-direction: column;
-        text-align: center;
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 1rem;
+        grid-template-columns: minmax(0, 1fr) minmax(90px, 120px);
+        text-align: left;
     }
 
     .cardbox .image {
-        max-width: 70%;
-        margin: 0 auto;
+        max-width: 120px;
+        margin: 0;
     }
 
     a {
