@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import logo from "../../logo.txt";
 import { Link } from "react-router-dom";
 
-function Logo() {
+interface LogoProps {
+    className?: string;
+}
+
+function Logo({ className }: LogoProps) {
     const [logoText, setLogoText] = useState<string>("");
 
     useEffect(() => {
@@ -17,8 +21,10 @@ function Logo() {
                 setLogoText("Failed to load logo");
             });
     }, []);
+    const wrapperClass = className ? `logo ${className}` : "logo";
+
     return (
-        <div className="container logo pt-3 mx-auto">
+        <div className={wrapperClass}>
             <Link to="/">
                 <pre>{logoText}</pre>
             </Link>

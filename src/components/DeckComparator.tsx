@@ -51,8 +51,8 @@ export default function DeckComparator() {
         <div className="container">
             <div className="box mx-auto deck-comparator">
                 <h1>Decklist Comparator</h1>
-                <form onSubmit={handleFetch}>
-                    <label className="mt-3">Search Link:</label>
+                <form onSubmit={handleFetch} className="form-stack">
+                    <label>Search Link:</label>
                     <input
                         value={searchLink}
                         onChange={(e) => setSearchLink(e.target.value)}
@@ -60,7 +60,7 @@ export default function DeckComparator() {
                         className="form-control"
                         required
                     />
-                    <label className="mt-3">Repository Link:</label>
+                    <label>Repository Link:</label>
                     <input
                         value={repositoryLink}
                         onChange={(e) => setRepositoryLink(e.target.value)}
@@ -70,7 +70,7 @@ export default function DeckComparator() {
                     />
                     <button
                         type="submit"
-                        className="button mt-3 submit-button"
+                        className="button submit-button"
                         disabled={isLoading}
                     >
                         Compare

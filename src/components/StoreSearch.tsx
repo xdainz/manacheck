@@ -183,7 +183,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
         <div className="container">
             <div className="box mx-auto deck-comparator">
                 <h1>Search in {storeName}'s stock</h1>
-                <form onSubmit={handleFetch}>
+                <form onSubmit={handleFetch} className="form-stack">
                     <input
                         value={searchLink}
                         onChange={(e) => setSearchLink(e.target.value)}
@@ -193,7 +193,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                     />
                     <button
                         type="submit"
-                        className="button mt-3 submit-button"
+                        className="button submit-button"
                         disabled={isLoading}
                     >
                         Search

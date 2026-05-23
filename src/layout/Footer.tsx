@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 function Footer() {
     return (
         <>
@@ -15,8 +13,6 @@ function Footer() {
                 <a href="https://github.com/xdainz" target="_blank">
                     xdainz
                 </a>
-                <br />
-                <Link to={"/Wombat"}>Wombat</Link>
             </div>
         </>
     );

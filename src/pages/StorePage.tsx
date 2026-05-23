@@ -11,8 +11,7 @@ function StorePage() {
         }
 
         return (
-            <div className="container mt-3 max-width-800">
-                <h1>{name}</h1>
+            <div className="container">
                 <StoreSearch storeName={name} />
             </div>
         );

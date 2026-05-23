@@ -37,7 +37,7 @@ function SearchResult({
                     <ExportControls
                         list={list}
                         groups={groups}
-                        className="w-100"
+                        className="export-controls w-100"
                     />
                 </div>
             </div>
