@@ -151,7 +151,7 @@ export default function useDeckFetcher() {
     const WORKER_BASE = import.meta.env?.VITE_WORKER_BASE ?? "";
 
     const fetchDeck = useCallback(
-        async (link: string) => {
+        async (link: string): Promise<Card[]> => {
             setLoading(true);
             setError(null);
             try {
@@ -166,6 +166,7 @@ export default function useDeckFetcher() {
                     const text = await fetchText(fetchUrl);
                     const parsed = parseManabox(text);
                     setCards(parsed);
+                    return parsed;
                 } else if (link.startsWith("https://moxfield.com/decks/")) {
                     // Convert public deck page URL to API path
                     const deckId = link.replace(
@@ -189,6 +190,7 @@ export default function useDeckFetcher() {
                     const json = await res.json();
                     const parsed = parseMoxfield(json);
                     setCards(parsed);
+                    return parsed;
                 } else {
                     throw new Error("Unsupported domain");
                 }
@@ -199,6 +201,7 @@ export default function useDeckFetcher() {
                 }
 
                 setCards([]);
+                return [];
             } finally {
                 setLoading(false);
             }

@@ -1,7 +1,14 @@
+import type { ExportGroup } from "../hooks/compareDecks";
 import type { Card } from "../types/types";
 import ExportControls from "./ExportControls";
 
-function SearchResult({ list }: { list: Card[] }) {
+function SearchResult({
+    list,
+    groups,
+}: {
+    list: Card[];
+    groups?: ExportGroup[];
+}) {
     const totalPrice =
         Math.round(
             list.reduce((accumulator, card) => {
@@ -27,7 +34,11 @@ function SearchResult({ list }: { list: Card[] }) {
                     </p>
                 </div>
                 <div className="col-12 col-md-12 col-lg-3">
-                    <ExportControls list={list} className="w-100" />
+                    <ExportControls
+                        list={list}
+                        groups={groups}
+                        className="w-100"
+                    />
                 </div>
             </div>
         </div>
