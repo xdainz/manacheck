@@ -1,17 +1,17 @@
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Layout from "./layout/Layout";
 
 function App() {
     return (
-        <HashRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             <Layout>
                 <Routes>
                     <Route path="/" element={<Home />} />
                 </Routes>
             </Layout>
-        </HashRouter>
+        </BrowserRouter>
     );
 }
 
