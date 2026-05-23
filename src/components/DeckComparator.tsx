@@ -53,21 +53,43 @@ export default function DeckComparator() {
                 <h1>Decklist Comparator</h1>
                 <form onSubmit={handleFetch} className="form-stack">
                     <label>Search Link:</label>
-                    <input
-                        value={searchLink}
-                        onChange={(e) => setSearchLink(e.target.value)}
-                        placeholder="List you are looking for..."
-                        className="form-control"
-                        required
-                    />
+                    <div className="input-row">
+                        <input
+                            value={searchLink}
+                            onChange={(e) => setSearchLink(e.target.value)}
+                            placeholder="List you are looking for..."
+                            className="form-control"
+                            required
+                        />
+                        <button
+                            type="button"
+                            className="input-clear"
+                            onClick={() => setSearchLink("")}
+                            disabled={!searchLink || isLoading}
+                            aria-label="Clear search link"
+                        >
+                            Clear
+                        </button>
+                    </div>
                     <label>Repository Link:</label>
-                    <input
-                        value={repositoryLink}
-                        onChange={(e) => setRepositoryLink(e.target.value)}
-                        placeholder="List to filter through..."
-                        className="form-control"
-                        required
-                    />
+                    <div className="input-row">
+                        <input
+                            value={repositoryLink}
+                            onChange={(e) => setRepositoryLink(e.target.value)}
+                            placeholder="List to filter through..."
+                            className="form-control"
+                            required
+                        />
+                        <button
+                            type="button"
+                            className="input-clear"
+                            onClick={() => setRepositoryLink("")}
+                            disabled={!repositoryLink || isLoading}
+                            aria-label="Clear repository link"
+                        >
+                            Clear
+                        </button>
+                    </div>
                     <button
                         type="submit"
                         className="button submit-button"
@@ -76,18 +98,42 @@ export default function DeckComparator() {
                         Compare
                     </button>
                 </form>
-                {isLoading && <div>Loading…</div>}
                 {errorMessage && (
                     <div style={{ color: "crimson" }}>
                         Error: {errorMessage}
                     </div>
                 )}
             </div>
-            {hasSearched && !isLoading && (
+            {hasSearched && (
                 <div>
-                    {matches.length > 0 && <SearchResult list={matches} />}
-                    <CardBoxGrid cardList={matches} />
-                    {matches.length > 0 && <SearchResult list={matches} />}
+                    {isLoading ? (
+                        <>
+                            <div
+                                className="box mb-3 mt-3 search-result skeleton-result"
+                                role="status"
+                                aria-live="polite"
+                                aria-busy="true"
+                            >
+                                <div className="skeleton-block skeleton-line skeleton-title" />
+                                <div className="skeleton-row">
+                                    <div className="skeleton-block skeleton-line skeleton-sm" />
+                                    <div className="skeleton-block skeleton-line skeleton-md" />
+                                </div>
+                                <div className="skeleton-block skeleton-line skeleton-price" />
+                            </div>
+                            <CardBoxGrid cardList={[]} loading />
+                        </>
+                    ) : (
+                        <>
+                            {matches.length > 0 && (
+                                <SearchResult margin_top="3" list={matches} />
+                            )}
+                            <CardBoxGrid cardList={matches} />
+                            {matches.length > 0 && (
+                                <SearchResult margin_top="2" list={matches} />
+                            )}
+                        </>
+                    )}
                 </div>
             )}
         </div>
