@@ -13,14 +13,18 @@ export function getMatches(searchList: Card[], repositoryList: Card[]) {
     return matches;
 }
 
-export async function exportList(list: Card[]): Promise<string> {
-    // Build lines in the format: Quantity Name (Set) Collector_number
-    const lines = list.map(
+export type ExportGroup = {
+    title: string;
+    cards: Card[];
+};
+
+function formatList(list: Card[]): string[] {
+    return list.map(
         (c) => `${c.Quantity} ${c.Name} (${c.Set}) ${c.Collector_number}`,
     );
+}
 
-    const output = lines.join("\n");
-
+async function copyOutput(output: string): Promise<void> {
     // Try navigator.clipboard first (async, secure context)
     try {
         if (
@@ -29,7 +33,7 @@ export async function exportList(list: Card[]): Promise<string> {
             navigator.clipboard.writeText
         ) {
             await navigator.clipboard.writeText(output);
-            return output;
+            return;
         }
     } catch {
         // ignore and fall back to execCommand
@@ -53,6 +57,25 @@ export async function exportList(list: Card[]): Promise<string> {
     } catch {
         // ignore copy failures
     }
+}
+
+export async function exportList(list: Card[]): Promise<string> {
+    const output = formatList(list).join("\n");
+    await copyOutput(output);
+    return output;
+}
+
+export async function exportGroupedList(
+    groups: ExportGroup[],
+): Promise<string> {
+    const output = groups
+        .map((group) => {
+            const lines = formatList(group.cards);
+            return [group.title, ...lines].join("\n");
+        })
+        .join("\n\n");
+
+    await copyOutput(output);
 
     return output;
 }

@@ -39,6 +39,13 @@ body {
     font-family: var(--font);
 }
 
+.pink-text {
+    color: var(--pretty-pink);
+}
+
+.max-width-800 {
+    max-width: 800px;
+}
 .home-page {
     align-items: center !important;
     align-content: center !important;
