@@ -1,7 +1,7 @@
 function Footer() {
     return (
         <>
-            <div className="footer mt-5 text-center">
+            <div className="footer mt-5 mb-3 text-center">
                 <a
                     href="https://github.com/xdainz/manacheck"
                     target="_blank"
