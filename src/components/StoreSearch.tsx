@@ -183,37 +183,77 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
         <div className="container">
             <div className="box mx-auto deck-comparator">
                 <h1>Search in {storeName}'s stock</h1>
-                <form onSubmit={handleFetch}>
-                    <input
-                        value={searchLink}
-                        onChange={(e) => setSearchLink(e.target.value)}
-                        placeholder="Paste here your manabox/moxfield link."
-                        className="form-control"
-                        required
-                    />
+                <form onSubmit={handleFetch} className="form-stack">
+                    <div className="input-row">
+                        <input
+                            value={searchLink}
+                            onChange={(e) => setSearchLink(e.target.value)}
+                            placeholder="Paste here your manabox/moxfield link."
+                            className="form-control"
+                            required
+                            aria-label="Deck link"
+                        />
+                        <button
+                            type="button"
+                            className="input-clear"
+                            onClick={() => setSearchLink("")}
+                            disabled={!searchLink || isLoading}
+                            aria-label="Clear deck link"
+                        >
+                            Clear
+                        </button>
+                    </div>
                     <button
                         type="submit"
-                        className="button mt-3 submit-button"
+                        className="button submit-button"
                         disabled={isLoading}
                     >
                         Search
                     </button>
                 </form>
-                {isLoading && <div>Loading…</div>}
                 {errorMessage && (
                     <div style={{ color: "crimson" }}>
                         Error: {errorMessage}
                     </div>
                 )}
             </div>
-            {hasSearched && !isLoading && (
+            {hasSearched && (
                 <div>
-                    {matches.length > 0 && (
-                        <SearchResult list={matches} groups={groupedMatches} />
-                    )}
-                    <CardBoxGrid cardList={matches} />
-                    {matches.length > 0 && (
-                        <SearchResult list={matches} groups={groupedMatches} />
+                    {isLoading ? (
+                        <>
+                            <div
+                                className="box mt-3 mb-3 search-result skeleton-result"
+                                role="status"
+                                aria-live="polite"
+                                aria-busy="true"
+                            >
+                                <div className="skeleton-block skeleton-line skeleton-title" />
+                                <div className="skeleton-row">
+                                    <div className="skeleton-block skeleton-line skeleton-sm" />
+                                    <div className="skeleton-block skeleton-line skeleton-md" />
+                                </div>
+                                <div className="skeleton-block skeleton-line skeleton-price" />
+                            </div>
+                            <CardBoxGrid cardList={[]} loading />
+                        </>
+                    ) : (
+                        <>
+                            {matches.length > 0 && (
+                                <SearchResult
+                                    margin_top="3"
+                                    list={matches}
+                                    groups={groupedMatches}
+                                />
+                            )}
+                            <CardBoxGrid cardList={matches} />
+                            {matches.length > 0 && (
+                                <SearchResult
+                                    margin_top="2"
+                                    list={matches}
+                                    groups={groupedMatches}
+                                />
+                            )}
+                        </>
                     )}
                 </div>
             )}

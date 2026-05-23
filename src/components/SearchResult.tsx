@@ -5,9 +5,11 @@ import ExportControls from "./ExportControls";
 function SearchResult({
     list,
     groups,
+    margin_top,
 }: {
     list: Card[];
     groups?: ExportGroup[];
+    margin_top: string;
 }) {
     const totalPrice =
         Math.round(
@@ -17,7 +19,11 @@ function SearchResult({
         ) / 100;
 
     return (
-        <div className="box mb-3 search-result mt-3 deck-comparator">
+        <div
+            className={
+                "box mb-2 search-result deck-comparator mt-" + margin_top
+            }
+        >
             <div className="row g-3 align-items-center">
                 <div className="col-12 col-md-6 col-lg-3">
                     <h2 className="mb-0">Search Results</h2>
@@ -37,7 +43,7 @@ function SearchResult({
                     <ExportControls
                         list={list}
                         groups={groups}
-                        className="w-100"
+                        className="export-controls w-100"
                     />
                 </div>
             </div>
