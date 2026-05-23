@@ -16,7 +16,7 @@ function Footer() {
                     xdainz
                 </a>
                 <br />
-                <Link to={"/store"}>Stores (Experimental)</Link>
+                <Link to={"/Wombat"}>Wombat</Link>
             </div>
         </>
     );
