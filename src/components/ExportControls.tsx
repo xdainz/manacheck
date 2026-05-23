@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { exportGroupedList, exportList } from "../hooks/compareDecks";
+import type { ExportGroup } from "../hooks/compareDecks";
 import type { Card } from "../types/types";
-import { exportList } from "../hooks/compareDecks";
 
 interface ExportControlsProps {
     list: Card[];
+    groups?: ExportGroup[];
     className: string;
 }
 
 export default function ExportControls({
     list,
+    groups,
     className,
 }: ExportControlsProps) {
     const [exporting, setExporting] = useState(false);
@@ -17,7 +20,11 @@ export default function ExportControls({
     const handleExport = async () => {
         setExporting(true);
         try {
-            await exportList(list);
+            if (groups && groups.length > 0) {
+                await exportGroupedList(groups);
+            } else {
+                await exportList(list);
+            }
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch (e) {
