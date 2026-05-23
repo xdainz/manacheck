@@ -39,6 +39,10 @@ body {
     font-family: var(--font);
 }
 
+.pink-text {
+    color: var(--pretty-pink);
+}
+
 .max-width-800 {
     max-width: 800px;
 }
