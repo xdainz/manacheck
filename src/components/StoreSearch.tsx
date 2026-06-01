@@ -222,7 +222,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                     {isLoading ? (
                         <>
                             <div
-                                className="box mt-3 mb-3 search-result skeleton-result"
+                                className="box mt-3 mb-3 deck-comparator skeleton-result"
                                 role="status"
                                 aria-live="polite"
                                 aria-busy="true"

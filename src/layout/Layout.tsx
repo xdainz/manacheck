@@ -13,7 +13,7 @@ function Layout({ children }: LayoutProps) {
             <header className="site-header">
                 <div className="site-header-inner">
                     <Logo className="site-logo" />
-                    <nav className="site-nav" aria-label="Primary">
+                    <nav className="site-nav mx-auto" aria-label="Primary">
                         <NavLink
                             to="/"
                             end

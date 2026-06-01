@@ -49,8 +49,8 @@ body {
     color: var(--pretty-pink);
 }
 
-.max-width-800 {
-    max-width: 800px;
+.max-width {
+    max-width: 90vw;
     width: 100%;
     margin: 0 auto;
 }
@@ -428,8 +428,8 @@ a:focus-visible {
 }
 
 .skeleton-result {
-    display: grid;
     gap: 0.6rem;
+    max-width: 90vw;
 }
 
 .search-result {
