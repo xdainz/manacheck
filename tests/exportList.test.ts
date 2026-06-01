@@ -2,7 +2,7 @@
 
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { exportList } from "../src/hooks/compareDecks";
-import type { Card } from "../src/types/CardType";
+import type { Card } from "../src/types/types";
 
 const sample: Card[] = [
     {

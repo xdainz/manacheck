@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { getMatches } from "../src/hooks/compareDecks";
-import type { Card } from "../src/types/CardType";
+import type { Card } from "../src/types/types";
 
 describe("getMatches", () => {
     it("returns repository cards present in search list by Name", () => {
