@@ -48,7 +48,7 @@ export default function DeckComparator() {
     }, [isLoading, searchCards, repositoryCards]);
 
     return (
-        <div className="container">
+        <div>
             <div className="box mx-auto deck-comparator">
                 <h1>Decklist Comparator</h1>
                 <form onSubmit={handleFetch} className="form-stack">

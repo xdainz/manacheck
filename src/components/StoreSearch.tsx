@@ -180,7 +180,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
     }, [isLoading, searchCards, storeDecks]);
 
     return (
-        <div className="container">
+        <div>
             <div className="box mx-auto deck-comparator">
                 <h1>Search in {storeName}'s stock</h1>
                 <form onSubmit={handleFetch} className="form-stack">

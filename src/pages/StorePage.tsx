@@ -6,12 +6,17 @@ function StorePage() {
     const { name } = useParams();
 
     if (name) {
-        if (!storeList.some((item) => item.name === name)) {
+        if (
+            !storeList.some(
+                (item) =>
+                    item.name.toLocaleLowerCase() === name.toLocaleLowerCase(),
+            )
+        ) {
             // redirect to 404
         }
 
         return (
-            <div className="container">
+            <div className="container home-page">
                 <StoreSearch storeName={name} />
             </div>
         );
