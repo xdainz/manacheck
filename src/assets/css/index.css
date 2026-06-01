@@ -34,19 +34,6 @@ body {
     font-weight: 400;
     color: var(--text);
     background-color: var(--bg);
-    background-image:
-        radial-gradient(
-            1200px 800px at 12% -10%,
-            rgba(246, 25, 109, 0.18),
-            transparent 60%
-        ),
-        radial-gradient(
-            900px 700px at 92% 0%,
-            rgba(255, 95, 156, 0.12),
-            transparent 55%
-        ),
-        linear-gradient(180deg, #121212 0%, #0d0d0d 100%);
-
     /* avoid accidental horizontal scroll on mobile */
     overflow-x: hidden;
 
@@ -62,8 +49,8 @@ body {
     color: var(--pretty-pink);
 }
 
-.max-width-800 {
-    max-width: 800px;
+.max-width {
+    max-width: 90vw;
     width: 100%;
     margin: 0 auto;
 }
@@ -119,14 +106,12 @@ body {
 
 .nav-link:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .nav-link.active {
     color: var(--pretty-pink);
     border-color: var(--pretty-pink);
     background: rgba(246, 25, 109, 0.12);
-    box-shadow: 0 10px 24px rgba(246, 25, 109, 0.18);
 }
 
 .app-shell {
@@ -199,7 +184,6 @@ h2 {
 
 .logo pre:hover {
     color: var(--highlight);
-    text-shadow: 0 0 14px rgba(255, 95, 156, 0.45);
 }
 
 .footer {
@@ -210,7 +194,7 @@ h2 {
 a {
     font-weight: bold;
     text-decoration: none;
-    color: var(--highlight);
+    color: var(--pretty-pink);
     text-underline-offset: 0.2em;
     text-decoration-thickness: 2px;
 }
@@ -444,8 +428,8 @@ a:focus-visible {
 }
 
 .skeleton-result {
-    display: grid;
     gap: 0.6rem;
+    max-width: 90vw;
 }
 
 .search-result {
@@ -498,28 +482,24 @@ a:focus-visible {
     cursor: pointer;
     transition:
         background-color 0.15s ease-in-out,
+        border 0.15s ease-in-out,
         transform 0.15s ease-in-out,
         box-shadow 0.15s ease-in-out;
-    box-shadow: 0 8px 18px rgba(246, 25, 109, 0.25);
+    border: 2px solid var(--pretty-pink);
 }
 
 .button:hover {
     background: var(--highlight);
     transform: translateY(-1px);
+    border: 2px solid var(--highlight);
 }
 
 .button:active {
-    color: var(--pretty-pink);
+    color: var(--highlight);
     background: var(--bg-light);
     transform: translateY(0);
     box-shadow: none;
-}
-
-.button:focus-visible {
-    outline: none;
-    box-shadow:
-        0 0 0 3px var(--focus-ring),
-        0 8px 18px rgba(246, 25, 109, 0.25);
+    border: 2px solid var(--highlight);
 }
 
 .button:disabled {
@@ -534,7 +514,7 @@ a:focus-visible {
     border-radius: 0.75rem;
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
-    width: min(900px, 100%);
+    width: 90vw;
 }
 
 .submit-button {
