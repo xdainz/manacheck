@@ -48,7 +48,7 @@ export default function DeckComparator() {
     }, [isLoading, searchCards, repositoryCards]);
 
     return (
-        <div className="container">
+        <div>
             <div className="box mx-auto deck-comparator">
                 <h1>Decklist Comparator</h1>
                 <form onSubmit={handleFetch} className="form-stack">
@@ -107,9 +107,9 @@ export default function DeckComparator() {
             {hasSearched && (
                 <div>
                     {isLoading ? (
-                        <>
+                        <div className="max-width">
                             <div
-                                className="box mb-3 mt-3 search-result skeleton-result"
+                                className="box mb-3 mt-3 deck-comparator skeleton-result"
                                 role="status"
                                 aria-live="polite"
                                 aria-busy="true"
@@ -122,7 +122,7 @@ export default function DeckComparator() {
                                 <div className="skeleton-block skeleton-line skeleton-price" />
                             </div>
                             <CardBoxGrid cardList={[]} loading />
-                        </>
+                        </div>
                     ) : (
                         <>
                             {matches.length > 0 && (
