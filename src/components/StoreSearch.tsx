@@ -82,57 +82,85 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
     const [storeDecks, setStoreDecks] = useState<CachedStoreDeck[]>([]);
     const [storeLoading, setStoreLoading] = useState(false);
     const [storeError, setStoreError] = useState<string | null>(null);
+    const [storeProgress, setStoreProgress] = useState({
+        current: 0,
+        total: 0,
+    });
+    const [lastUpdated, setLastUpdated] = useState<number | null>(null);
 
-    const loadStoreDecks = useCallback(async () => {
-        if (!store) {
-            setStoreError("Store not found.");
-            setStoreCards([]);
-            setStoreDecks([]);
-            return [];
-        }
+    const cachedTimestamp = useMemo(() => {
+        if (!store) return null;
+        const cacheKey = `manacheck.store.${store.gSheetId}.decks`;
+        const cached = getStoreCache(cacheKey);
+        return cached?.timestamp ?? null;
+    }, [store]);
 
-        setStoreLoading(true);
-        setStoreError(null);
-
-        try {
-            const cacheKey = `manacheck.store.${store.gSheetId}.decks`;
-            const cached = getStoreCache(cacheKey);
-            if (cached && Date.now() - cached.timestamp < STORE_CACHE_TTL_MS) {
-                const cachedCards = flattenDecks(cached.decks);
-                setStoreCards(cachedCards);
-                setStoreDecks(cached.decks);
-                return cachedCards;
+    const loadStoreDecks = useCallback(
+        async (forceRefresh = false) => {
+            if (!store) {
+                setStoreError("Store not found.");
+                setStoreCards([]);
+                setStoreDecks([]);
+                return [];
             }
 
-            const rows = await fetchSheetCsv(store.gSheetId);
-            const decks: CachedStoreDeck[] = [];
+            setStoreLoading(true);
+            setStoreError(null);
+            setStoreProgress({ current: 0, total: 0 });
 
-            for (const row of rows) {
-                const url = row.URL.trim();
-                if (!url) continue;
-                const cards = await storeFetchDeck(url);
-                decks.push({
-                    name: row.NAME ?? "",
-                    url,
-                    cards,
-                });
+            try {
+                const cacheKey = `manacheck.store.${store.gSheetId}.decks`;
+                const cached = getStoreCache(cacheKey);
+                if (
+                    cached &&
+                    !forceRefresh &&
+                    Date.now() - cached.timestamp < STORE_CACHE_TTL_MS
+                ) {
+                    const cachedCards = flattenDecks(cached.decks);
+                    setStoreCards(cachedCards);
+                    setStoreDecks(cached.decks);
+                    setLastUpdated(cached.timestamp);
+                    return cachedCards;
+                }
+
+                const rows = await fetchSheetCsv(store.gSheetId);
+                const trimmedRows = rows.filter((row) => row.URL.trim());
+                setStoreProgress({ current: 0, total: trimmedRows.length });
+                const decks: CachedStoreDeck[] = [];
+
+                for (const [index, row] of trimmedRows.entries()) {
+                    const url = row.URL.trim();
+                    const cards = await storeFetchDeck(url);
+                    decks.push({
+                        name: row.NAME ?? "",
+                        url,
+                        cards,
+                    });
+                    setStoreProgress({
+                        current: index + 1,
+                        total: trimmedRows.length,
+                    });
+                }
+
+                const merged = flattenDecks(decks);
+                setStoreCards(merged);
+                setStoreDecks(decks);
+                const timestamp = Date.now();
+                setStoreCache(cacheKey, { timestamp, decks });
+                setLastUpdated(timestamp);
+                return merged;
+            } catch (e: unknown) {
+                const message = e instanceof Error ? e.message : String(e);
+                setStoreError(message);
+                setStoreCards([]);
+                setStoreDecks([]);
+                return [];
+            } finally {
+                setStoreLoading(false);
             }
-
-            const merged = flattenDecks(decks);
-            setStoreCards(merged);
-            setStoreDecks(decks);
-            setStoreCache(cacheKey, { timestamp: Date.now(), decks });
-            return merged;
-        } catch (e: unknown) {
-            const message = e instanceof Error ? e.message : String(e);
-            setStoreError(message);
-            setStoreCards([]);
-            setStoreDecks([]);
-            return [];
-        } finally {
-            setStoreLoading(false);
-        }
-    }, [store, storeFetchDeck]);
+        },
+        [store, storeFetchDeck],
+    );
 
     const handleFetch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -178,6 +206,12 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
             })
             .filter((group): group is ExportGroup => Boolean(group));
     }, [isLoading, searchCards, storeDecks]);
+
+    const lastUpdatedLabel = useMemo(() => {
+        const value = lastUpdated ?? cachedTimestamp;
+        if (!value) return "Never";
+        return new Date(value).toLocaleString();
+    }, [lastUpdated, cachedTimestamp]);
 
     return (
         <div>
@@ -257,6 +291,43 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                     )}
                 </div>
             )}
+            {storeLoading && (
+                <div className="modal-backdrop" aria-live="polite">
+                    <div className="modal-card" role="status" aria-busy="true">
+                        <h2>Fetching decklists</h2>
+                        <progress
+                            className="progress-bar"
+                            value={
+                                storeProgress.total
+                                    ? storeProgress.current
+                                    : undefined
+                            }
+                            max={storeProgress.total || 1}
+                        />
+                        <p className="progress-text">
+                            {storeProgress.total
+                                ? `${storeProgress.current}/${storeProgress.total} decklists fetched`
+                                : "Starting..."}
+                        </p>
+                    </div>
+                </div>
+            )}
+            <div className="deck-comparator store-helper mt-3">
+                <p>
+                    Store data automatically updates every hour + whatever it
+                    takes for Moxfield's API to update, if you want to update
+                    manually click {""}
+                    <button
+                        type="button"
+                        className="refetch-button"
+                        onClick={() => loadStoreDecks(true)}
+                        disabled={storeLoading}
+                    >
+                        here.
+                    </button>
+                    {""} (Last updated at: {lastUpdatedLabel})
+                </p>
+            </div>
         </div>
     );
 }

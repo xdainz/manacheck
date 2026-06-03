@@ -77,7 +77,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 - `bun run dev` - start the Vite dev server.
 - `bun run build` - typecheck and build.
-- `bun run test` - run vitest.
+- `bun run test` - run vitest (Only run tests if the behavior it tests is modified).
 - `bun run lint` - run eslint.
 - `bun run preview` - preview the production build.
 

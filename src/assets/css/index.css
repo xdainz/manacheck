@@ -523,6 +523,73 @@ a:focus-visible {
     width: fit-content;
 }
 
+.store-progress {
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: grid;
+    place-items: center;
+    z-index: 50;
+    padding: 1.5rem;
+}
+
+.modal-card {
+    background: linear-gradient(180deg, var(--surface-strong), var(--surface));
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    width: min(420px, 90vw);
+    display: grid;
+    gap: 0.75rem;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 0.6rem;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-bar::-webkit-progress-bar {
+    background-color: var(--bg-light);
+    border-radius: 999px;
+}
+
+.progress-bar::-webkit-progress-value {
+    background-color: var(--pretty-pink);
+    border-radius: 999px;
+}
+
+.progress-bar::-moz-progress-bar {
+    background-color: var(--pretty-pink);
+    border-radius: 999px;
+}
+
+.refetch-button {
+    all: unset;
+    color: var(--pretty-pink);
+}
+
+.refetch-button:hover {
+    text-decoration: underline;
+}
+
+.store-helper {
+    margin-top: 3rem!;
+    color: var(--text-muted);
+    text-align: justify;
+    font-size: small;
+}
+
 .deck-comparator {
     max-width: 900px;
     margin: auto;
