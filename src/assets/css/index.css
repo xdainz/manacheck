@@ -584,7 +584,6 @@ a:focus-visible {
 }
 
 .store-helper {
-    margin-top: 3rem!;
     color: var(--text-muted);
     text-align: justify;
     font-size: small;
