@@ -61,7 +61,7 @@ const es: Record<TranslationKey, string> = {
     "comparator.clearRepository": "Borrar enlace del repositorio",
     "comparator.submit": "Comparar",
     "common.error": "Error:",
-    "common.supportedSites": "Sitios compatibles:\n- Manabox\n- Moxfield.",
+    "common.supportedSites": "Sitios compatibles:\n- Manabox\n- Moxfield",
     "store.title": "Busca en el stock de {store}",
     "store.placeholder": "Pega aquí tu enlace de manabox/moxfield.",
     "store.clearLink": "Borrar enlace del mazo",
