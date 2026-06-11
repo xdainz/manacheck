@@ -1,4 +1,4 @@
-import type { ExportGroup } from "../hooks/compareDecks";
+import type { ExportGroup } from "../lib/export";
 import type { Card } from "../types/types";
 import ExportControls from "./ExportControls";
 
@@ -11,6 +11,7 @@ function SearchResult({
     groups?: ExportGroup[];
     margin_top: string;
 }) {
+    // Intentionally sums single-card prices, ignoring Quantity (see CLAUDE.md)
     const totalPrice =
         Math.round(
             list.reduce((accumulator, card) => {

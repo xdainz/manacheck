@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getMatches } from "../src/hooks/compareDecks";
+import { getMatches } from "../src/lib/matching";
 import type { Card } from "../src/types/types";
 
 describe("getMatches", () => {

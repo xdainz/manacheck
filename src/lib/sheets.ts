@@ -1,9 +1,9 @@
-type SheetRow = {
+export type SheetRow = {
     NAME: string;
     URL: string;
 };
 
-// defaults
+// Google Sheet that holds one tab (gid) per store, with NAME and URL columns.
 const googleSheetId = "1tSxr2csJL4O19_Q0ARCDsxHzguy9d66X8aLD30c7OiM";
 const defaultUrl = `https://docs.google.com/spreadsheets/d/${googleSheetId}/export?format=csv&gid=`;
 
@@ -17,7 +17,7 @@ export async function fetchSheetCsv(storeId: number): Promise<SheetRow[]> {
     return parseCsv(csvText);
 }
 
-function parseCsv(csvText: string): SheetRow[] {
+export function parseCsv(csvText: string): SheetRow[] {
     const lines = csvText.trim().split(/\r?\n/);
     if (lines.length === 0) return [];
 

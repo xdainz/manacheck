@@ -1,11 +1,15 @@
 import { useCallback, useMemo, useState } from "react";
 import { storeList } from "../constants";
-import { getMatches } from "../hooks/compareDecks";
-import type { ExportGroup } from "../hooks/compareDecks";
-import { fetchSheetCsv } from "../hooks/fetchDeckList";
+import { fetchDeckCards } from "../lib/deckFetch";
+import type { ExportGroup } from "../lib/export";
+import { fetchSheetCsv } from "../lib/sheets";
+import type { SheetRow } from "../lib/sheets";
 import useDeckFetcher from "../hooks/useDeckFetcher";
+import useMatches from "../hooks/useMatches";
 import type { Card } from "../types/types";
 import CardBoxGrid from "./CardBoxGrid";
+import DeckLinkInput from "./DeckLinkInput";
+import ResultSkeleton from "./ResultSkeleton";
 import SearchResult from "./SearchResult";
 
 interface StoreSearchProps {
@@ -13,6 +17,7 @@ interface StoreSearchProps {
 }
 
 const STORE_CACHE_TTL_MS = 60 * 60 * 1000;
+const FETCH_CONCURRENCY = 4;
 
 type CachedStoreDeck = {
     name: string;
@@ -64,6 +69,38 @@ function flattenDecks(decks: CachedStoreDeck[]): Card[] {
     return merged;
 }
 
+// Fetch every deck with a small worker pool; a deck that fails to fetch or
+// parse resolves as empty instead of failing the whole store load.
+async function fetchStoreDecks(
+    rows: SheetRow[],
+    onProgress: (done: number) => void,
+): Promise<CachedStoreDeck[]> {
+    const decks: CachedStoreDeck[] = new Array(rows.length);
+    let nextIndex = 0;
+    let done = 0;
+
+    async function workerLoop() {
+        while (nextIndex < rows.length) {
+            const index = nextIndex++;
+            const row = rows[index];
+            const url = row.URL.trim();
+            let cards: Card[] = [];
+            try {
+                cards = await fetchDeckCards(url);
+            } catch {
+                // skip decks that fail; the rest of the store still loads
+            }
+            decks[index] = { name: row.NAME ?? "", url, cards };
+            done++;
+            onProgress(done);
+        }
+    }
+
+    const poolSize = Math.min(FETCH_CONCURRENCY, rows.length);
+    await Promise.all(Array.from({ length: poolSize }, workerLoop));
+    return decks;
+}
+
 export default function StoreSearch({ storeName }: StoreSearchProps) {
     const store = storeList.find((item) => item.name === storeName);
 
@@ -73,8 +110,6 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
         cards: searchCards,
         fetchDeck: searchFetchDeck,
     } = useDeckFetcher();
-
-    const { fetchDeck: storeFetchDeck } = useDeckFetcher();
 
     const [searchLink, setSearchLink] = useState("");
     const [hasSearched, setHasSearched] = useState(false);
@@ -126,21 +161,13 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                 const rows = await fetchSheetCsv(store.gSheetId);
                 const trimmedRows = rows.filter((row) => row.URL.trim());
                 setStoreProgress({ current: 0, total: trimmedRows.length });
-                const decks: CachedStoreDeck[] = [];
 
-                for (const [index, row] of trimmedRows.entries()) {
-                    const url = row.URL.trim();
-                    const cards = await storeFetchDeck(url);
-                    decks.push({
-                        name: row.NAME ?? "",
-                        url,
-                        cards,
-                    });
+                const decks = await fetchStoreDecks(trimmedRows, (done) =>
                     setStoreProgress({
-                        current: index + 1,
+                        current: done,
                         total: trimmedRows.length,
-                    });
-                }
+                    }),
+                );
 
                 const merged = flattenDecks(decks);
                 setStoreCards(merged);
@@ -159,7 +186,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                 setStoreLoading(false);
             }
         },
-        [store, storeFetchDeck],
+        [store],
     );
 
     const handleFetch = async (e: React.FormEvent) => {
@@ -172,19 +199,14 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                 loadStoreDecks(),
             ]);
         } catch {
-            // errors are handled inside useDeckFetcher
+            // errors are handled inside useDeckFetcher / loadStoreDecks
         }
     };
 
     const isLoading = searchLoading || storeLoading;
     const errorMessage = searchError || storeError;
 
-    const matches = useMemo(() => {
-        // keep UI empty while fetching
-        if (isLoading) return [];
-        if (!searchCards.length || !storeCards.length) return [];
-        return getMatches(searchCards, storeCards);
-    }, [isLoading, searchCards, storeCards]);
+    const matches = useMatches(isLoading, searchCards, storeCards);
 
     const groupedMatches = useMemo((): ExportGroup[] => {
         if (isLoading) return [];
@@ -218,25 +240,14 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
             <div className="box mx-auto deck-comparator">
                 <h1>Search in {storeName}'s stock</h1>
                 <form onSubmit={handleFetch} className="form-stack">
-                    <div className="input-row">
-                        <input
-                            value={searchLink}
-                            onChange={(e) => setSearchLink(e.target.value)}
-                            placeholder="Paste here your manabox/moxfield link."
-                            className="form-control"
-                            required
-                            aria-label="Deck link"
-                        />
-                        <button
-                            type="button"
-                            className="input-clear"
-                            onClick={() => setSearchLink("")}
-                            disabled={!searchLink || isLoading}
-                            aria-label="Clear deck link"
-                        >
-                            Clear
-                        </button>
-                    </div>
+                    <DeckLinkInput
+                        value={searchLink}
+                        onChange={setSearchLink}
+                        placeholder="Paste here your manabox/moxfield link."
+                        clearAriaLabel="Clear deck link"
+                        inputAriaLabel="Deck link"
+                        disabled={isLoading}
+                    />
                     <button
                         type="submit"
                         className="button submit-button"
@@ -254,22 +265,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
             {hasSearched && (
                 <div>
                     {isLoading ? (
-                        <>
-                            <div
-                                className="box mt-3 mb-3 deck-comparator skeleton-result"
-                                role="status"
-                                aria-live="polite"
-                                aria-busy="true"
-                            >
-                                <div className="skeleton-block skeleton-line skeleton-title" />
-                                <div className="skeleton-row">
-                                    <div className="skeleton-block skeleton-line skeleton-sm" />
-                                    <div className="skeleton-block skeleton-line skeleton-md" />
-                                </div>
-                                <div className="skeleton-block skeleton-line skeleton-price" />
-                            </div>
-                            <CardBoxGrid cardList={[]} loading />
-                        </>
+                        <ResultSkeleton />
                     ) : (
                         <>
                             {matches.length > 0 && (

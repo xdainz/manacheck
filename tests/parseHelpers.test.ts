@@ -3,12 +3,16 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { parseManabox, parseMoxfield } from "../src/hooks/useDeckFetcher";
+import {
+    DeckParseError,
+    parseManabox,
+    parseMoxfield,
+} from "../src/lib/parsers";
 
 describe("parseManabox", () => {
     it("parses minimal manabox html with props", () => {
         // Construct a minimal data object matching the updated manabox shape
-        const dataObj: any = {
+        const dataObj = {
             deck: [
                 null,
                 {
@@ -71,11 +75,25 @@ describe("parseManabox", () => {
         // ck_price is rounded to 2 decimals in the parser
         expect(parsed[0].ck_price).toBeCloseTo(3.46, 2);
     });
+
+    it("throws DeckParseError when the page has no deck island", () => {
+        const html = `<html><body><p>Some unrelated page</p></body></html>`;
+        expect(() => parseManabox(html)).toThrow(DeckParseError);
+    });
+
+    it("throws DeckParseError when the props shape is unrecognized", () => {
+        const escaped = JSON.stringify({ deck: [null, {}] }).replace(
+            /"/g,
+            "&quot;",
+        );
+        const html = `<html><body><astro-island></astro-island><astro-island props="${escaped}"></astro-island></body></html>`;
+        expect(() => parseManabox(html)).toThrow(DeckParseError);
+    });
 });
 
 describe("parseMoxfield", () => {
     it("parses moxfield-like object", () => {
-        const obj: any = {
+        const obj = {
             boards: {
                 mainboard: {
                     cards: {
@@ -110,5 +128,9 @@ describe("parseMoxfield", () => {
             "https://cards.scryfall.io/normal/front"
         );
         expect(parsed[0].ck_price).toBe(1.23);
+    });
+
+    it("throws DeckParseError when the response has no boards", () => {
+        expect(() => parseMoxfield({})).toThrow(DeckParseError);
     });
 });
