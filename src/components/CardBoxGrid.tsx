@@ -51,6 +51,7 @@ function CardBoxGrid({
                     Quantity={c.Quantity}
                     image_url={c.image_url}
                     ck_price={c.ck_price}
+                    special_price={c.special_price}
                     key={`${c.Name}-${i}`}
                 />
             ))}

@@ -1,6 +1,30 @@
+import { useState } from "react";
 import type { Card } from "../types/types";
 
+const SPECIAL_PRICE_HINT =
+    "This card might be priced differently, ask the seller.";
+
 function CardBox(card: Card) {
+    const [showHint, setShowHint] = useState(false);
+
+    // Tooltip opens on hover/focus via CSS; the click toggle covers touch
+    // devices, where neither hover nor title attributes work.
+    const specialPriceMark = card.special_price ? (
+        <span
+            className={
+                "special-price-asterisk" + (showHint ? " show-tooltip" : "")
+            }
+            role="button"
+            tabIndex={0}
+            aria-label={SPECIAL_PRICE_HINT}
+            data-tooltip={SPECIAL_PRICE_HINT}
+            onClick={() => setShowHint((value) => !value)}
+            onBlur={() => setShowHint(false)}
+        >
+            *
+        </span>
+    ) : null;
+
     return (
         <div className="cardbox row">
             <div className="col">
@@ -22,9 +46,14 @@ function CardBox(card: Card) {
                     <label className="label-value">{card.Quantity}</label>
                 </p>
                 {card.ck_price ? (
-                    <p className="price">${card.ck_price}</p>
+                    <p className="price">
+                        ${card.ck_price}
+                        {specialPriceMark}
+                    </p>
                 ) : (
-                    <p className="no-price">Pricing Unavailable</p>
+                    <p className="no-price">
+                        Pricing Unavailable{specialPriceMark}
+                    </p>
                 )}
             </div>
             <div className="col">
