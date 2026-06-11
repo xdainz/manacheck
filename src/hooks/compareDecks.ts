@@ -10,7 +10,7 @@ export function getMatches(searchList: Card[], repositoryList: Card[]) {
         }
     }
 
-    return matches;
+    return matches.sort((a, b) => a.Name.localeCompare(b.Name));
 }
 
 export type ExportGroup = {
