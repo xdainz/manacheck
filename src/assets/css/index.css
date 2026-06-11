@@ -114,6 +114,36 @@ body {
     background: rgba(246, 25, 109, 0.12);
 }
 
+.lang-toggle {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.lang-button {
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition:
+        border-color 0.15s ease-in-out,
+        color 0.15s ease-in-out,
+        background-color 0.15s ease-in-out;
+}
+
+.lang-button:hover {
+    background: var(--surface-strong);
+}
+
+.lang-button.active {
+    color: var(--pretty-pink);
+    border-color: var(--pretty-pink);
+    background: rgba(246, 25, 109, 0.12);
+}
+
 .app-shell {
     min-height: 100vh;
     display: flex;

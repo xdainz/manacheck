@@ -1,12 +1,15 @@
 import { useState } from "react";
 import useDeckFetcher from "../hooks/useDeckFetcher";
 import useMatches from "../hooks/useMatches";
+import useTranslation from "../hooks/useTranslation";
 import CardBoxGrid from "./CardBoxGrid";
 import DeckLinkInput from "./DeckLinkInput";
 import ResultSkeleton from "./ResultSkeleton";
 import SearchResult from "./SearchResult";
 
 export default function DeckComparator() {
+    const { t } = useTranslation();
+
     const {
         loading: searchLoading,
         error: searchError,
@@ -47,22 +50,22 @@ export default function DeckComparator() {
     return (
         <div>
             <div className="box mx-auto deck-comparator">
-                <h1>Decklist Comparator</h1>
+                <h1>{t("comparator.title")}</h1>
                 <form onSubmit={handleFetch} className="form-stack">
-                    <label>Search Link:</label>
+                    <label>{t("comparator.searchLabel")}</label>
                     <DeckLinkInput
                         value={searchLink}
                         onChange={setSearchLink}
-                        placeholder="List you are looking for..."
-                        clearAriaLabel="Clear search link"
+                        placeholder={t("comparator.searchPlaceholder")}
+                        clearAriaLabel={t("comparator.clearSearch")}
                         disabled={isLoading}
                     />
-                    <label>Repository Link:</label>
+                    <label>{t("comparator.repositoryLabel")}</label>
                     <DeckLinkInput
                         value={repositoryLink}
                         onChange={setRepositoryLink}
-                        placeholder="List to filter through..."
-                        clearAriaLabel="Clear repository link"
+                        placeholder={t("comparator.repositoryPlaceholder")}
+                        clearAriaLabel={t("comparator.clearRepository")}
                         disabled={isLoading}
                     />
                     <button
@@ -70,12 +73,12 @@ export default function DeckComparator() {
                         className="button submit-button"
                         disabled={isLoading}
                     >
-                        Compare
+                        {t("comparator.submit")}
                     </button>
                 </form>
                 {errorMessage && (
                     <div style={{ color: "crimson" }}>
-                        Error: {errorMessage}
+                        {t("common.error")} {errorMessage}
                     </div>
                 )}
             </div>
