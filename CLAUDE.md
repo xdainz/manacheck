@@ -91,7 +91,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Tooling
 
-- Version pins in [mise.toml](mise.toml): Node 25, Bun 1.3.13, pnpm latest.
+- Version pins in [mise.toml](mise.toml)
 - React + Vite app configuration: [vite.config.ts](vite.config.ts).
 - Types: [src/types/types.ts](src/types/types.ts).
 - Tests: [tests/compareDecks.test.ts](tests/compareDecks.test.ts), [tests/exportList.test.ts](tests/exportList.test.ts), [tests/parseHelpers.test.ts](tests/parseHelpers.test.ts).
