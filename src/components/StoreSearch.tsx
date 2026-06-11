@@ -1,11 +1,16 @@
 import { useCallback, useMemo, useState } from "react";
 import { storeList } from "../constants";
-import { getMatches } from "../hooks/compareDecks";
-import type { ExportGroup } from "../hooks/compareDecks";
-import { fetchSheetCsv } from "../hooks/fetchDeckList";
+import { fetchDeckCards } from "../lib/deckFetch";
+import type { ExportGroup } from "../lib/export";
+import { fetchSheetCsv } from "../lib/sheets";
+import type { SheetRow } from "../lib/sheets";
 import useDeckFetcher from "../hooks/useDeckFetcher";
+import useMatches from "../hooks/useMatches";
+import useTranslation from "../hooks/useTranslation";
 import type { Card } from "../types/types";
 import CardBoxGrid from "./CardBoxGrid";
+import DeckLinkInput from "./DeckLinkInput";
+import ResultSkeleton from "./ResultSkeleton";
 import SearchResult from "./SearchResult";
 
 interface StoreSearchProps {
@@ -13,6 +18,7 @@ interface StoreSearchProps {
 }
 
 const STORE_CACHE_TTL_MS = 60 * 60 * 1000;
+const FETCH_CONCURRENCY = 4;
 
 type CachedStoreDeck = {
     name: string;
@@ -58,13 +64,56 @@ function flattenDecks(decks: CachedStoreDeck[]): Card[] {
     const merged: Card[] = [];
     decks.forEach((deck) => {
         if (Array.isArray(deck.cards)) {
-            merged.push(...deck.cards);
+            // A trailing "*" on the decklist name marks special pricing.
+            if (deck.name.trim().endsWith("*")) {
+                merged.push(
+                    ...deck.cards.map((card) => ({
+                        ...card,
+                        special_price: true,
+                    })),
+                );
+            } else {
+                merged.push(...deck.cards);
+            }
         }
     });
     return merged;
 }
 
+// Fetch every deck with a small worker pool; a deck that fails to fetch or
+// parse resolves as empty instead of failing the whole store load.
+async function fetchStoreDecks(
+    rows: SheetRow[],
+    onProgress: (done: number) => void,
+): Promise<CachedStoreDeck[]> {
+    const decks: CachedStoreDeck[] = new Array(rows.length);
+    let nextIndex = 0;
+    let done = 0;
+
+    async function workerLoop() {
+        while (nextIndex < rows.length) {
+            const index = nextIndex++;
+            const row = rows[index];
+            const url = row.URL.trim();
+            let cards: Card[] = [];
+            try {
+                cards = await fetchDeckCards(url);
+            } catch {
+                // skip decks that fail; the rest of the store still loads
+            }
+            decks[index] = { name: row.NAME ?? "", url, cards };
+            done++;
+            onProgress(done);
+        }
+    }
+
+    const poolSize = Math.min(FETCH_CONCURRENCY, rows.length);
+    await Promise.all(Array.from({ length: poolSize }, workerLoop));
+    return decks;
+}
+
 export default function StoreSearch({ storeName }: StoreSearchProps) {
+    const { t } = useTranslation();
     const store = storeList.find((item) => item.name === storeName);
 
     const {
@@ -73,8 +122,6 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
         cards: searchCards,
         fetchDeck: searchFetchDeck,
     } = useDeckFetcher();
-
-    const { fetchDeck: storeFetchDeck } = useDeckFetcher();
 
     const [searchLink, setSearchLink] = useState("");
     const [hasSearched, setHasSearched] = useState(false);
@@ -98,7 +145,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
     const loadStoreDecks = useCallback(
         async (forceRefresh = false) => {
             if (!store) {
-                setStoreError("Store not found.");
+                setStoreError(t("store.notFound"));
                 setStoreCards([]);
                 setStoreDecks([]);
                 return [];
@@ -126,21 +173,13 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                 const rows = await fetchSheetCsv(store.gSheetId);
                 const trimmedRows = rows.filter((row) => row.URL.trim());
                 setStoreProgress({ current: 0, total: trimmedRows.length });
-                const decks: CachedStoreDeck[] = [];
 
-                for (const [index, row] of trimmedRows.entries()) {
-                    const url = row.URL.trim();
-                    const cards = await storeFetchDeck(url);
-                    decks.push({
-                        name: row.NAME ?? "",
-                        url,
-                        cards,
-                    });
+                const decks = await fetchStoreDecks(trimmedRows, (done) =>
                     setStoreProgress({
-                        current: index + 1,
+                        current: done,
                         total: trimmedRows.length,
-                    });
-                }
+                    }),
+                );
 
                 const merged = flattenDecks(decks);
                 setStoreCards(merged);
@@ -159,7 +198,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                 setStoreLoading(false);
             }
         },
-        [store, storeFetchDeck],
+        [store, t],
     );
 
     const handleFetch = async (e: React.FormEvent) => {
@@ -172,19 +211,14 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                 loadStoreDecks(),
             ]);
         } catch {
-            // errors are handled inside useDeckFetcher
+            // errors are handled inside useDeckFetcher / loadStoreDecks
         }
     };
 
     const isLoading = searchLoading || storeLoading;
     const errorMessage = searchError || storeError;
 
-    const matches = useMemo(() => {
-        // keep UI empty while fetching
-        if (isLoading) return [];
-        if (!searchCards.length || !storeCards.length) return [];
-        return getMatches(searchCards, storeCards);
-    }, [isLoading, searchCards, storeCards]);
+    const matches = useMatches(isLoading, searchCards, storeCards);
 
     const groupedMatches = useMemo((): ExportGroup[] => {
         if (isLoading) return [];
@@ -209,67 +243,41 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
 
     const lastUpdatedLabel = useMemo(() => {
         const value = lastUpdated ?? cachedTimestamp;
-        if (!value) return "Never";
+        if (!value) return t("store.never");
         return new Date(value).toLocaleString();
-    }, [lastUpdated, cachedTimestamp]);
+    }, [lastUpdated, cachedTimestamp, t]);
 
     return (
         <div>
             <div className="box mx-auto deck-comparator">
-                <h1>Search in {storeName}'s stock</h1>
+                <h1>{t("store.title", { store: storeName })}</h1>
                 <form onSubmit={handleFetch} className="form-stack">
-                    <div className="input-row">
-                        <input
-                            value={searchLink}
-                            onChange={(e) => setSearchLink(e.target.value)}
-                            placeholder="Paste here your manabox/moxfield link."
-                            className="form-control"
-                            required
-                            aria-label="Deck link"
-                        />
-                        <button
-                            type="button"
-                            className="input-clear"
-                            onClick={() => setSearchLink("")}
-                            disabled={!searchLink || isLoading}
-                            aria-label="Clear deck link"
-                        >
-                            Clear
-                        </button>
-                    </div>
+                    <DeckLinkInput
+                        value={searchLink}
+                        onChange={setSearchLink}
+                        placeholder={t("store.placeholder")}
+                        clearAriaLabel={t("store.clearLink")}
+                        inputAriaLabel={t("store.inputLabel")}
+                        disabled={isLoading}
+                    />
                     <button
                         type="submit"
                         className="button submit-button"
                         disabled={isLoading}
                     >
-                        Search
+                        {t("store.submit")}
                     </button>
                 </form>
                 {errorMessage && (
                     <div style={{ color: "crimson" }}>
-                        Error: {errorMessage}
+                        {t("common.error")} {errorMessage}
                     </div>
                 )}
             </div>
             {hasSearched && (
                 <div>
                     {isLoading ? (
-                        <>
-                            <div
-                                className="box mt-3 mb-3 deck-comparator skeleton-result"
-                                role="status"
-                                aria-live="polite"
-                                aria-busy="true"
-                            >
-                                <div className="skeleton-block skeleton-line skeleton-title" />
-                                <div className="skeleton-row">
-                                    <div className="skeleton-block skeleton-line skeleton-sm" />
-                                    <div className="skeleton-block skeleton-line skeleton-md" />
-                                </div>
-                                <div className="skeleton-block skeleton-line skeleton-price" />
-                            </div>
-                            <CardBoxGrid cardList={[]} loading />
-                        </>
+                        <ResultSkeleton />
                     ) : (
                         <>
                             {matches.length > 0 && (
@@ -294,7 +302,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
             {storeLoading && (
                 <div className="modal-backdrop" aria-live="polite">
                     <div className="modal-card" role="status" aria-busy="true">
-                        <h2>Fetching decklists</h2>
+                        <h2>{t("store.fetching")}</h2>
                         <progress
                             className="progress-bar"
                             value={
@@ -306,26 +314,27 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                         />
                         <p className="progress-text">
                             {storeProgress.total
-                                ? `${storeProgress.current}/${storeProgress.total} decklists fetched`
-                                : "Starting..."}
+                                ? t("store.progress", {
+                                      current: storeProgress.current,
+                                      total: storeProgress.total,
+                                  })
+                                : t("store.starting")}
                         </p>
                     </div>
                 </div>
             )}
             <div className="deck-comparator store-helper mt-3">
                 <p>
-                    Store data automatically updates every hour + whatever it
-                    takes for Moxfield's API to update, if you want to update
-                    manually click {""}
+                    {t("store.helper")}{" "}
                     <button
                         type="button"
                         className="refetch-button"
                         onClick={() => loadStoreDecks(true)}
                         disabled={storeLoading}
                     >
-                        here.
-                    </button>
-                    {""} (Last updated at: {lastUpdatedLabel})
+                        {t("store.helperHere")}
+                    </button>{" "}
+                    {t("store.lastUpdated", { date: lastUpdatedLabel })}
                 </p>
             </div>
         </div>

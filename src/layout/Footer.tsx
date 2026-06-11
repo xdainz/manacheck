@@ -1,4 +1,8 @@
+import useTranslation from "../hooks/useTranslation";
+
 function Footer() {
+    const { t } = useTranslation();
+
     return (
         <>
             <div className="footer mb-3 text-center">
@@ -9,7 +13,7 @@ function Footer() {
                 >
                     Manacheck
                 </a>{" "}
-                was developed by{" "}
+                {t("footer.developedBy")}{" "}
                 <a href="https://github.com/xdainz" target="_blank">
                     xdainz
                 </a>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Manacheck</title>
+        <script type="text/javascript">
+            // GitHub Pages SPA fallback (https://github.com/rafgraph/spa-github-pages)
+            // Redirects 404s to the app root, encoding the path in the query
+            // string so index.html can restore it before the router loads.
+            // pathSegmentsToKeep = 1 keeps the "/manacheck" project base path.
+            var pathSegmentsToKeep = 1;
+
+            var l = window.location;
+            l.replace(
+                l.protocol +
+                    "//" +
+                    l.hostname +
+                    (l.port ? ":" + l.port : "") +
+                    l.pathname
+                        .split("/")
+                        .slice(0, 1 + pathSegmentsToKeep)
+                        .join("/") +
+                    "/?/" +
+                    l.pathname
+                        .slice(1)
+                        .split("/")
+                        .slice(pathSegmentsToKeep)
+                        .join("/")
+                        .replace(/&/g, "~and~") +
+                    (l.search
+                        ? "&" + l.search.slice(1).replace(/&/g, "~and~")
+                        : "") +
+                    l.hash,
+            );
+        </script>
+    </head>
+    <body></body>
+</html>

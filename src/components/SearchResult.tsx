@@ -1,4 +1,5 @@
-import type { ExportGroup } from "../hooks/compareDecks";
+import useTranslation from "../hooks/useTranslation";
+import type { ExportGroup } from "../lib/export";
 import type { Card } from "../types/types";
 import ExportControls from "./ExportControls";
 
@@ -11,6 +12,9 @@ function SearchResult({
     groups?: ExportGroup[];
     margin_top: string;
 }) {
+    const { t } = useTranslation();
+
+    // Intentionally sums single-card prices, ignoring Quantity (see CLAUDE.md)
     const totalPrice =
         Math.round(
             list.reduce((accumulator, card) => {
@@ -26,16 +30,16 @@ function SearchResult({
         >
             <div className="row g-3 align-items-center">
                 <div className="col-12 col-md-6 col-lg-3">
-                    <h2 className="mb-0">Search Results</h2>
+                    <h2 className="mb-0">{t("result.title")}</h2>
                 </div>
                 <div className="col-6 col-md-3 col-lg-3">
                     <p className="mb-0">
-                        <strong>Cards Found:</strong> {list.length}
+                        <strong>{t("result.cardsFound")}</strong> {list.length}
                     </p>
                 </div>
                 <div className="col-6 col-md-3 col-lg-3">
                     <p className="mb-0">
-                        <strong>Total Price:</strong>{" "}
+                        <strong>{t("result.totalPrice")}</strong>{" "}
                         <span className="price">${totalPrice}</span>
                     </p>
                 </div>

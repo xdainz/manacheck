@@ -1,26 +1,24 @@
 import { useParams } from "react-router-dom";
 import StoreSearch from "../components/StoreSearch";
 import { storeList } from "../constants";
+import NotFound from "./NotFound";
 
 function StorePage() {
     const { name } = useParams();
 
-    if (name) {
-        if (
-            !storeList.some(
-                (item) =>
-                    item.name.toLocaleLowerCase() === name.toLocaleLowerCase(),
-            )
-        ) {
-            // redirect to 404
-        }
+    const store = storeList.find(
+        (item) => item.name.toLocaleLowerCase() === name?.toLocaleLowerCase(),
+    );
 
-        return (
-            <div className="container home-page">
-                <StoreSearch storeName={name} />
-            </div>
-        );
+    if (!store) {
+        return <NotFound />;
     }
+
+    return (
+        <div className="container home-page">
+            <StoreSearch storeName={store.name} />
+        </div>
+    );
 }
 
 export default StorePage;
