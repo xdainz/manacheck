@@ -6,6 +6,7 @@ export interface Card {
     Quantity: number;
     image_url: string;
     ck_price: number;
+    special_price?: boolean;
 }
 
 export interface Store {

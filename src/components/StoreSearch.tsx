@@ -63,7 +63,17 @@ function flattenDecks(decks: CachedStoreDeck[]): Card[] {
     const merged: Card[] = [];
     decks.forEach((deck) => {
         if (Array.isArray(deck.cards)) {
-            merged.push(...deck.cards);
+            // A trailing "*" on the decklist name marks special pricing.
+            if (deck.name.trim().endsWith("*")) {
+                merged.push(
+                    ...deck.cards.map((card) => ({
+                        ...card,
+                        special_price: true,
+                    })),
+                );
+            } else {
+                merged.push(...deck.cards);
+            }
         }
     });
     return merged;
