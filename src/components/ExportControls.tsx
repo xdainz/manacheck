@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { exportGroupedList, exportList } from "../hooks/compareDecks";
-import type { ExportGroup } from "../hooks/compareDecks";
+import { exportGroupedList, exportList } from "../lib/export";
+import type { ExportGroup } from "../lib/export";
 import type { Card } from "../types/types";
 
 interface ExportControlsProps {

@@ -4,7 +4,7 @@ export interface Card {
     Collector_number: string | number;
     Rarity: string;
     Quantity: number;
-    image_url: string | "";
+    image_url: string;
     ck_price: number;
 }
 

@@ -1,7 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import useDeckFetcher from "../hooks/useDeckFetcher";
+import useMatches from "../hooks/useMatches";
 import CardBoxGrid from "./CardBoxGrid";
-import { getMatches } from "../hooks/compareDecks";
+import DeckLinkInput from "./DeckLinkInput";
+import ResultSkeleton from "./ResultSkeleton";
 import SearchResult from "./SearchResult";
 
 export default function DeckComparator() {
@@ -40,12 +42,7 @@ export default function DeckComparator() {
     const isLoading = searchLoading || repositoryLoading;
     const errorMessage = searchError || repositoryError;
 
-    const matches = useMemo(() => {
-        // keep UI empty while fetching
-        if (isLoading) return [];
-        if (!searchCards.length || !repositoryCards.length) return [];
-        return getMatches(searchCards, repositoryCards);
-    }, [isLoading, searchCards, repositoryCards]);
+    const matches = useMatches(isLoading, searchCards, repositoryCards);
 
     return (
         <div>
@@ -53,43 +50,21 @@ export default function DeckComparator() {
                 <h1>Decklist Comparator</h1>
                 <form onSubmit={handleFetch} className="form-stack">
                     <label>Search Link:</label>
-                    <div className="input-row">
-                        <input
-                            value={searchLink}
-                            onChange={(e) => setSearchLink(e.target.value)}
-                            placeholder="List you are looking for..."
-                            className="form-control"
-                            required
-                        />
-                        <button
-                            type="button"
-                            className="input-clear"
-                            onClick={() => setSearchLink("")}
-                            disabled={!searchLink || isLoading}
-                            aria-label="Clear search link"
-                        >
-                            Clear
-                        </button>
-                    </div>
+                    <DeckLinkInput
+                        value={searchLink}
+                        onChange={setSearchLink}
+                        placeholder="List you are looking for..."
+                        clearAriaLabel="Clear search link"
+                        disabled={isLoading}
+                    />
                     <label>Repository Link:</label>
-                    <div className="input-row">
-                        <input
-                            value={repositoryLink}
-                            onChange={(e) => setRepositoryLink(e.target.value)}
-                            placeholder="List to filter through..."
-                            className="form-control"
-                            required
-                        />
-                        <button
-                            type="button"
-                            className="input-clear"
-                            onClick={() => setRepositoryLink("")}
-                            disabled={!repositoryLink || isLoading}
-                            aria-label="Clear repository link"
-                        >
-                            Clear
-                        </button>
-                    </div>
+                    <DeckLinkInput
+                        value={repositoryLink}
+                        onChange={setRepositoryLink}
+                        placeholder="List to filter through..."
+                        clearAriaLabel="Clear repository link"
+                        disabled={isLoading}
+                    />
                     <button
                         type="submit"
                         className="button submit-button"
@@ -108,20 +83,7 @@ export default function DeckComparator() {
                 <div>
                     {isLoading ? (
                         <div className="max-width">
-                            <div
-                                className="box mb-3 mt-3 deck-comparator skeleton-result"
-                                role="status"
-                                aria-live="polite"
-                                aria-busy="true"
-                            >
-                                <div className="skeleton-block skeleton-line skeleton-title" />
-                                <div className="skeleton-row">
-                                    <div className="skeleton-block skeleton-line skeleton-sm" />
-                                    <div className="skeleton-block skeleton-line skeleton-md" />
-                                </div>
-                                <div className="skeleton-block skeleton-line skeleton-price" />
-                            </div>
-                            <CardBoxGrid cardList={[]} loading />
+                            <ResultSkeleton />
                         </div>
                     ) : (
                         <>

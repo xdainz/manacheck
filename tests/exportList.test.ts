@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { exportList } from "../src/hooks/compareDecks";
+import { exportList } from "../src/lib/export";
 import type { Card } from "../src/types/types";
 
 const sample: Card[] = [
@@ -27,25 +27,26 @@ const sample: Card[] = [
 
 const expectedOutput = `1 Emmara, Soul of the Accord (GRN) 168\n2 Alpha (X) 1`;
 
+function setClipboard(value: unknown) {
+    Object.defineProperty(navigator, "clipboard", {
+        value,
+        configurable: true,
+    });
+}
+
+function removeClipboard() {
+    delete (navigator as { clipboard?: unknown }).clipboard;
+}
+
 describe("exportList", () => {
     afterEach(() => {
-        // cleanup any global mocks
         vi.restoreAllMocks();
-        // remove navigator.clipboard if we injected it
-        try {
-            // @ts-ignore
-            if ((navigator as any).clipboard)
-                delete (navigator as any).clipboard;
-        } catch (e) {
-            // ignore
-        }
+        removeClipboard();
     });
 
     it("uses navigator.clipboard.writeText when available and returns the formatted string", async () => {
         const writeText = vi.fn().mockResolvedValue(undefined);
-        // attach fake clipboard on existing navigator
-        // @ts-ignore
-        (navigator as any).clipboard = { writeText };
+        setClipboard({ writeText });
 
         const out = await exportList(sample);
         expect(writeText).toHaveBeenCalledWith(expectedOutput);
@@ -53,24 +54,23 @@ describe("exportList", () => {
     });
 
     it("falls back to document.execCommand when navigator.clipboard is not available", async () => {
-        // remove clipboard from navigator if present
-        // @ts-ignore
-        if ((navigator as any).clipboard) delete (navigator as any).clipboard;
+        removeClipboard();
 
-        // ensure execCommand exists on document
-        if (!(document as any).execCommand) {
-            // @ts-ignore
-            (document as any).execCommand = () => false;
+        // jsdom does not implement execCommand; define it so it can be spied on
+        if (!document.execCommand) {
+            Object.defineProperty(document, "execCommand", {
+                value: () => false,
+                configurable: true,
+                writable: true,
+            });
         }
 
         const execSpy = vi
-            .spyOn(document as any, "execCommand")
+            .spyOn(document, "execCommand")
             .mockImplementation(() => true);
 
         const out = await exportList(sample);
         expect(execSpy).toHaveBeenCalledWith("copy");
         expect(out).toBe(expectedOutput);
-
-        execSpy.mockRestore();
     });
 });
