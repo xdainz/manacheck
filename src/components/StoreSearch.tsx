@@ -6,6 +6,7 @@ import { fetchSheetCsv } from "../lib/sheets";
 import type { SheetRow } from "../lib/sheets";
 import useDeckFetcher from "../hooks/useDeckFetcher";
 import useMatches from "../hooks/useMatches";
+import useTranslation from "../hooks/useTranslation";
 import type { Card } from "../types/types";
 import CardBoxGrid from "./CardBoxGrid";
 import DeckLinkInput from "./DeckLinkInput";
@@ -112,6 +113,7 @@ async function fetchStoreDecks(
 }
 
 export default function StoreSearch({ storeName }: StoreSearchProps) {
+    const { t } = useTranslation();
     const store = storeList.find((item) => item.name === storeName);
 
     const {
@@ -143,7 +145,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
     const loadStoreDecks = useCallback(
         async (forceRefresh = false) => {
             if (!store) {
-                setStoreError("Store not found.");
+                setStoreError(t("store.notFound"));
                 setStoreCards([]);
                 setStoreDecks([]);
                 return [];
@@ -196,7 +198,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                 setStoreLoading(false);
             }
         },
-        [store],
+        [store, t],
     );
 
     const handleFetch = async (e: React.FormEvent) => {
@@ -241,21 +243,21 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
 
     const lastUpdatedLabel = useMemo(() => {
         const value = lastUpdated ?? cachedTimestamp;
-        if (!value) return "Never";
+        if (!value) return t("store.never");
         return new Date(value).toLocaleString();
-    }, [lastUpdated, cachedTimestamp]);
+    }, [lastUpdated, cachedTimestamp, t]);
 
     return (
         <div>
             <div className="box mx-auto deck-comparator">
-                <h1>Search in {storeName}'s stock</h1>
+                <h1>{t("store.title", { store: storeName })}</h1>
                 <form onSubmit={handleFetch} className="form-stack">
                     <DeckLinkInput
                         value={searchLink}
                         onChange={setSearchLink}
-                        placeholder="Paste here your manabox/moxfield link."
-                        clearAriaLabel="Clear deck link"
-                        inputAriaLabel="Deck link"
+                        placeholder={t("store.placeholder")}
+                        clearAriaLabel={t("store.clearLink")}
+                        inputAriaLabel={t("store.inputLabel")}
                         disabled={isLoading}
                     />
                     <button
@@ -263,12 +265,12 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                         className="button submit-button"
                         disabled={isLoading}
                     >
-                        Search
+                        {t("store.submit")}
                     </button>
                 </form>
                 {errorMessage && (
                     <div style={{ color: "crimson" }}>
-                        Error: {errorMessage}
+                        {t("common.error")} {errorMessage}
                     </div>
                 )}
             </div>
@@ -300,7 +302,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
             {storeLoading && (
                 <div className="modal-backdrop" aria-live="polite">
                     <div className="modal-card" role="status" aria-busy="true">
-                        <h2>Fetching decklists</h2>
+                        <h2>{t("store.fetching")}</h2>
                         <progress
                             className="progress-bar"
                             value={
@@ -312,26 +314,27 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                         />
                         <p className="progress-text">
                             {storeProgress.total
-                                ? `${storeProgress.current}/${storeProgress.total} decklists fetched`
-                                : "Starting..."}
+                                ? t("store.progress", {
+                                      current: storeProgress.current,
+                                      total: storeProgress.total,
+                                  })
+                                : t("store.starting")}
                         </p>
                     </div>
                 </div>
             )}
             <div className="deck-comparator store-helper mt-3">
                 <p>
-                    Store data automatically updates every hour + whatever it
-                    takes for Moxfield's API to update, if you want to update
-                    manually click {""}
+                    {t("store.helper")}{" "}
                     <button
                         type="button"
                         className="refetch-button"
                         onClick={() => loadStoreDecks(true)}
                         disabled={storeLoading}
                     >
-                        here.
-                    </button>
-                    {""} (Last updated at: {lastUpdatedLabel})
+                        {t("store.helperHere")}
+                    </button>{" "}
+                    {t("store.lastUpdated", { date: lastUpdatedLabel })}
                 </p>
             </div>
         </div>

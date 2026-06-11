@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation";
 import type { Card } from "../types/types";
 import CardBox from "./CardBox";
 
@@ -12,6 +13,8 @@ function CardBoxGrid({
     loading = false,
     skeletonCount = 4,
 }: CardBoxGridProps) {
+    const { t } = useTranslation();
+
     if (loading) {
         return (
             <div className="cardboxgrid col-12" aria-busy="true">
@@ -38,7 +41,7 @@ function CardBoxGrid({
     }
 
     if (cardList.length < 1) {
-        return <p className="text-center py-5">No matches found :^(</p>;
+        return <p className="text-center py-5">{t("grid.noMatches")}</p>;
     }
     return (
         <div className="cardboxgrid col-12">

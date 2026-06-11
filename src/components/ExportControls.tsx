@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useTranslation from "../hooks/useTranslation";
 import { exportGroupedList, exportList } from "../lib/export";
 import type { ExportGroup } from "../lib/export";
 import type { Card } from "../types/types";
@@ -14,6 +15,7 @@ export default function ExportControls({
     groups,
     className,
 }: ExportControlsProps) {
+    const { t } = useTranslation();
     const [exporting, setExporting] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -41,10 +43,12 @@ export default function ExportControls({
                 onClick={handleExport}
                 disabled={exporting}
             >
-                {exporting ? "Copying…" : "Copy to clipboard"}
+                {exporting ? t("export.copying") : t("export.copy")}
             </button>
             <div>
-                {copied ? <span className="text-success">Copied!</span> : null}
+                {copied ? (
+                    <span className="text-success">{t("export.copied")}</span>
+                ) : null}
             </div>
         </div>
     );
