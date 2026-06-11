@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { storeList } from "../constants";
 import Logo from "../components/Logo";
+import SupportedSitesTooltip from "../components/SupportedSitesTooltip";
 import useTranslation from "../hooks/useTranslation";
 import Footer from "./Footer";
 
@@ -17,6 +18,7 @@ function Layout({ children }: LayoutProps) {
                 <div className="site-header-inner">
                     <Logo className="site-logo" />
                     <nav className="site-nav mx-auto" aria-label="Primary">
+                        <SupportedSitesTooltip />
                         <NavLink
                             to="/"
                             end
