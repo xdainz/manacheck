@@ -6,9 +6,7 @@ export type ExportGroup = {
 };
 
 function formatList(list: Card[]): string[] {
-    return list.map(
-        (c) => `${c.Quantity} ${c.Name} (${c.Set}) ${c.Collector_number}`,
-    );
+    return list.map((c) => `${c.name} (${c.set}) ${c.collector_number}`);
 }
 
 async function copyOutput(output: string): Promise<void> {

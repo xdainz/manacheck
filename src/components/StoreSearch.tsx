@@ -224,12 +224,12 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
         if (isLoading) return [];
         if (!searchCards.length || !storeDecks.length) return [];
 
-        const searchNameSet = new Set(searchCards.map((card) => card.Name));
+        const searchNameSet = new Set(searchCards.map((card) => card.name));
 
         return storeDecks
             .map((deck) => {
                 const cards = deck.cards.filter((card) =>
-                    searchNameSet.has(card.Name),
+                    searchNameSet.has(card.name),
                 );
                 if (cards.length === 0) return null;
 

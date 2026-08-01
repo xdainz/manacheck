@@ -29,24 +29,24 @@ function CardBox(card: Card) {
     return (
         <div className="cardbox row">
             <div className="col">
-                <h5>{card.Name}</h5>
+                <h5>{card.name}</h5>
                 <p className="label">
                     {t("card.set")}{" "}
-                    <label className="label-value">{card.Set}</label>
+                    <label className="label-value">{card.set}</label>
                 </p>
                 <p className="label">
                     {t("card.number")}{" "}
                     <label className="label-value">
-                        {card.Collector_number}
+                        {card.collector_number}
                     </label>
                 </p>
                 <p className="label">
                     {t("card.rarity")}{" "}
-                    <label className="label-value">{card.Rarity}</label>
+                    <label className="label-value">{card.rarity}</label>
                 </p>
                 <p className="label">
                     {t("card.quantity")}{" "}
-                    <label className="label-value">{card.Quantity}</label>
+                    <label className="label-value">{card.quantity}</label>
                 </p>
                 {card.ck_price ? (
                     <p className="price">
@@ -63,7 +63,7 @@ function CardBox(card: Card) {
             <div className="col">
                 <img
                     src={card.image_url}
-                    alt={card.Name + " image"}
+                    alt={card.name + " image"}
                     className="image"
                 />
             </div>

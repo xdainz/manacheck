@@ -47,15 +47,20 @@ function CardBoxGrid({
         <div className="cardboxgrid col-12">
             {cardList.map((c, i) => (
                 <CardBox
-                    Name={c.Name}
-                    Set={c.Set}
-                    Collector_number={c.Collector_number}
-                    Rarity={c.Rarity}
-                    Quantity={c.Quantity}
+                    name={c.name}
+                    type={c.type}
+                    color_identity={c.color_identity}
+                    cmc={c.cmc}
+                    isFoil={c.isFoil}
+                    set={c.set}
+                    collector_number={c.collector_number}
+                    rarity={c.rarity}
+                    quantity={c.quantity}
                     image_url={c.image_url}
                     ck_price={c.ck_price}
                     special_price={c.special_price}
-                    key={`${c.Name}-${i}`}
+                    oracle_text={c.oracle_text}
+                    key={`${c.name}-${i}`}
                 />
             ))}
         </div>
