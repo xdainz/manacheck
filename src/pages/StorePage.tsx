@@ -15,7 +15,23 @@ function StorePage() {
     }
 
     return (
-        <div className="container home-page">
+        <div className="container store-page">
+            <div className="box store-banner">
+                <img
+                    className="store-logo"
+                    src={store.image_banner}
+                    alt={store.full_name + " logo"}
+                />
+                <h1>
+                    <a
+                        className="store-website"
+                        href={store.website}
+                        target="_blank"
+                    >
+                        {store.full_name}
+                    </a>
+                </h1>
+            </div>
             <StoreSearch storeName={store.name} />
         </div>
     );

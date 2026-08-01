@@ -8,10 +8,10 @@ import useDeckFetcher from "../hooks/useDeckFetcher";
 import useMatches from "../hooks/useMatches";
 import useTranslation from "../hooks/useTranslation";
 import type { Card } from "../types/types";
-import CardBoxGrid from "./CardBoxGrid";
 import DeckLinkInput from "./DeckLinkInput";
 import ResultSkeleton from "./ResultSkeleton";
 import SearchResult from "./SearchResult";
+import StoreCardBoxGrid from "./StoreCardBoxGrid";
 
 interface StoreSearchProps {
     storeName: string;
@@ -287,7 +287,7 @@ export default function StoreSearch({ storeName }: StoreSearchProps) {
                                     groups={groupedMatches}
                                 />
                             )}
-                            <CardBoxGrid cardList={matches} />
+                            <StoreCardBoxGrid cardList={matches} />
                             {matches.length > 0 && (
                                 <SearchResult
                                     margin_top="2"

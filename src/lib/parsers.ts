@@ -33,6 +33,7 @@ type MoxfieldCard = {
 type MoxfieldCardEntry = {
     card?: MoxfieldCard;
     quantity?: number;
+    isFoil: boolean;
 };
 
 type MoxfieldBoard = {
@@ -146,7 +147,7 @@ export function parseMoxfield(dataObj: MoxfieldDeck): Card[] {
                 type: "TEST VALUE",
                 color_identity: "TEST VALUE",
                 cmc: 777,
-                isFoil: true,
+                isFoil: entry.isFoil || false,
                 set: (card?.set ?? "").toString().toUpperCase(),
                 collector_number: (card?.cn ?? "").toString(),
                 rarity: String(card?.rarity ?? "").replace(/^./, (c) =>
