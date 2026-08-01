@@ -67,6 +67,7 @@ function StoreCardBox(card: Card) {
                     <div className={card.isFoil ? "foil" : ""}></div>
                 </div>
             </div>
+            <button className="button">Agregar al carrito</button>
         </div>
     );
 }

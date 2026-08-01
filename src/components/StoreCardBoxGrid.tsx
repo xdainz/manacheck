@@ -41,10 +41,10 @@ function StoreCardBoxGrid({
     }
 
     if (cardList.length < 1) {
-        return <p className="text-center py-5">{t("grid.noMatches")}</p>;
+        return <p className="text-center py-5">{t("grid.noCards")}</p>;
     }
     return (
-        <div className="cardboxgrid col-12">
+        <div className="cardboxgrid store-cardboxgrid col-12">
             {cardList.map((c, i) => (
                 <StoreCardBox
                     name={c.name}

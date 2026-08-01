@@ -565,6 +565,11 @@ a:focus-visible {
     padding: 0.5rem 0;
 }
 
+.store-cardboxgrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 100%;
+}
+
 .cardboxgrid > .cardbox {
     animation: fade-up 0.35s ease-out both;
 }
@@ -698,6 +703,10 @@ a:focus-visible {
 .deck-comparator {
     max-width: 900px;
     margin: auto;
+}
+
+.store-deck-comparator {
+    max-width: 100%;
 }
 
 .deck-comparator form {

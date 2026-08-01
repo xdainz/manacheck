@@ -41,6 +41,7 @@ const en = {
     "card.specialPriceHint":
         "This card might be priced differently, ask the seller.",
     "grid.noMatches": "No matches found :^(",
+    "grid.noCards": "No cards found :^(",
     "notFound.title": "Page not found.",
     "notFound.goPrefix": "Go ",
     "notFound.goLink": "back",
@@ -90,6 +91,7 @@ const es: Record<TranslationKey, string> = {
     "card.specialPriceHint":
         "Esta carta podría tener un precio diferente, pregunta al vendedor.",
     "grid.noMatches": "No se encontraron coincidencias :^(",
+    "grid.noCards": "No se encontraron cartas :^(",
     "notFound.title": "Página no encontrada.",
     "notFound.goPrefix": "",
     "notFound.goLink": "Volver",
