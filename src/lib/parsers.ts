@@ -27,7 +27,7 @@ type MoxfieldCard = {
     cn?: string | number;
     rarity?: string;
     scryfall_id?: string;
-    prices?: { ck?: number };
+    prices?: { ck?: number; ck_foil?: number };
 };
 
 type MoxfieldCardEntry = {
@@ -155,7 +155,9 @@ export function parseMoxfield(dataObj: MoxfieldDeck): Card[] {
                 ),
                 quantity: Number(quantity),
                 image_url: imgUrl,
-                ck_price: card?.prices?.ck ?? 0,
+                ck_price: entry.isFoil
+                    ? (card?.prices?.ck_foil ?? 0)
+                    : (card?.prices?.ck ?? 0),
                 oracle_text: "TEST VALUE",
             });
         });
