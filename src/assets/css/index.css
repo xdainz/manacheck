@@ -568,6 +568,7 @@ a:focus-visible {
 .store-cardboxgrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     max-width: 100%;
+    padding: 0;
 }
 
 .cardboxgrid > .cardbox {
@@ -675,6 +676,7 @@ a:focus-visible {
 }
 
 .advanced-search-chip {
+    appearance: none;
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -685,22 +687,44 @@ a:focus-visible {
     font-size: 0.85rem;
     cursor: pointer;
     margin: 0;
+    color: var(--text-muted);
 }
 
-.advanced-search-chip:has(input:checked) {
+.advanced-search-chip.selected {
     border-color: var(--highlight);
     color: var(--highlight);
 }
 
-.advanced-search-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-muted);
+.advanced-search-foil-chip {
     font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    margin: 0;
+}
+
+.advanced-search-result-count {
+    color: var(--text);
+}
+
+.advanced-search .dropdown-menu {
+    background-color: var(--surface-strong);
+    border: 1px solid var(--border);
+    border-radius: 0.65rem;
+    max-height: 16rem;
+    overflow-y: auto;
+}
+
+.advanced-search .dropdown-item {
+    color: var(--text);
+}
+
+.advanced-search .dropdown-item:hover,
+.advanced-search .dropdown-item:focus {
+    background-color: var(--surface);
+    color: var(--text);
+}
+
+.advanced-search .dropdown-item.active,
+.advanced-search .dropdown-item:active {
+    background-color: var(--highlight);
+    color: #111;
 }
 
 .advanced-search-footer {
@@ -956,6 +980,56 @@ a:focus-visible {
     padding: 0;
 }
 
+.store-results-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+    width: 100%;
+}
+
+.store-results-sidebar {
+    min-width: 0;
+}
+
+.store-results-sidebar .advanced-search {
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0 !important;
+}
+
+.store-results-main {
+    min-width: 0;
+}
+
+.store-results-main .store-cardboxgrid {
+    width: 100%;
+}
+
+.store-cardbox {
+    grid-template-columns: minmax(0, 1fr) minmax(110px, 160px);
+}
+
+.store-cardbox h5 {
+    line-height: 1.35;
+    min-height: 2.7rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.store-cardbox .image {
+    max-width: 160px;
+}
+
+.store-cardbox .store-cardbox-action {
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
 .store-logo {
     max-width: 200px;
     max-height: 200px;
@@ -995,6 +1069,10 @@ a:focus-visible {
 
     .cardboxgrid {
         grid-template-columns: 1fr;
+    }
+
+    .store-results-layout {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .cardbox {

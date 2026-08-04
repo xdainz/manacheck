@@ -20,7 +20,6 @@ const SORT_OPTIONS: SortOption[] = [
     "name-desc",
     "price-asc",
     "price-desc",
-    "quantity-desc",
 ];
 
 const SORT_LABEL_KEYS: Record<SortOption, TranslationKey> = {
@@ -83,7 +82,7 @@ function StoreAdvancedSearch({
     return (
         <div className="box advanced-search mb-3">
             <div className="row g-3">
-                <div className="col-12 col-md-6">
+                <div className="col-12">
                     <label htmlFor="search-name">
                         {t("search.nameLabel")}
                     </label>
@@ -99,7 +98,7 @@ function StoreAdvancedSearch({
                     />
                 </div>
 
-                <div className="col-12 col-md-6">
+                <div className="col-12">
                     <span className="advanced-search-group-label">
                         {t("search.priceRange")}
                     </span>
@@ -126,7 +125,7 @@ function StoreAdvancedSearch({
                 </div>
 
                 {availableSets.length > 0 ? (
-                    <div className="col-12 col-md-6">
+                    <div className="col-12">
                         <label htmlFor="search-sets">
                             {t("search.sets")}
                         </label>
@@ -187,22 +186,21 @@ function StoreAdvancedSearch({
                 ) : null}
 
                 {availableRarities.length > 0 ? (
-                    <div className="col-12 col-md-6">
+                    <div className="col-12">
                         <span className="advanced-search-group-label">
                             {t("search.rarities")}
                         </span>
                         <div className="advanced-search-chip-group">
                             {availableRarities.map((rarity) => (
-                                <label
-                                    className="advanced-search-chip"
+                                <button
+                                    type="button"
+                                    className={`advanced-search-chip${
+                                        filters.rarities.includes(rarity)
+                                            ? " selected"
+                                            : ""
+                                    }`}
                                     key={rarity}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={filters.rarities.includes(
-                                            rarity,
-                                        )}
-                                        onChange={() =>
+                                    onClick={() =>
                                             onChange({
                                                 ...filters,
                                                 rarities: toggleValue(
@@ -211,31 +209,33 @@ function StoreAdvancedSearch({
                                                 ),
                                             })
                                         }
-                                    />
+                                >
                                     {rarity}
-                                </label>
+                                </button>
                             ))}
                         </div>
                     </div>
                 ) : null}
 
-                <div className="col-6 col-md-3 d-flex align-items-end">
-                    <label className="advanced-search-checkbox">
-                        <input
-                            type="checkbox"
-                            checked={filters.foilOnly}
-                            onChange={(e) =>
+                <div className="col-12">
+                    <button
+                        type="button"
+                        className={`advanced-search-chip advanced-search-foil-chip${
+                            filters.foilOnly ? " selected foil-text" : ""
+                        }`}
+                        onClick={() =>
                                 onChange({
                                     ...filters,
-                                    foilOnly: e.target.checked,
+                                foilOnly: !filters.foilOnly,
                                 })
                             }
-                        />
+                        aria-pressed={filters.foilOnly}
+                    >
                         {t("search.foilOnly")}
-                    </label>
+                    </button>
                 </div>
 
-                <div className="col-6 col-md-3">
+                <div className="col-12">
                     <label htmlFor="search-sort">{t("search.sortBy")}</label>
                     <select
                         id="search-sort"
@@ -258,7 +258,7 @@ function StoreAdvancedSearch({
             </div>
 
             <div className="advanced-search-footer">
-                <p className="mb-0 text-muted">
+                <p className="mb-0 advanced-search-result-count">
                     {t("search.resultCount", {
                         count: resultCount,
                         total: totalCount,

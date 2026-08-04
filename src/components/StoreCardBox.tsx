@@ -25,7 +25,7 @@ function StoreCardBox(card: Card) {
     ) : null;
 
     return (
-        <div className="cardbox row">
+        <div className="cardbox row store-cardbox">
             <div className="col">
                 <h5>{card.name}</h5>
                 <p className="label">
@@ -67,7 +67,9 @@ function StoreCardBox(card: Card) {
                     <div className={card.isFoil ? "foil" : ""}></div>
                 </div>
             </div>
-            <button className="button">Agregar al carrito</button>
+            <button className="button store-cardbox-action">
+                Agregar al carrito
+            </button>
         </div>
     );
 }

@@ -9,7 +9,7 @@ import { fetchSheetCsv, type SheetRow } from "../lib/sheets";
 import { fetchDeckCards } from "../lib/deckFetch";
 import useTranslation from "../hooks/useTranslation";
 import useStoreSearch from "../hooks/useStoreSearch";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const STORE_CACHE_TTL_MS = 60 * 60 * 1000;
 const FETCH_CONCURRENCY = 4;
@@ -118,20 +118,10 @@ function StorePage() {
     const [storeCards, setStoreCards] = useState<Card[]>([]);
     const [storeLoading, setStoreLoading] = useState(false);
     const [storeError, setStoreError] = useState<string | null>(null);
-    const [storeProgress, setStoreProgress] = useState({
+    const [, setStoreProgress] = useState({
         current: 0,
         total: 0,
     });
-
-    const handleFetch = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        try {
-            await Promise.all([loadStoreDecks()]);
-        } catch {
-            // errors are handled inside useDeckFetcher / loadStoreDecks
-        }
-    };
     const [lastUpdated, setLastUpdated] = useState<number | null>(null);
 
     const cachedTimestamp = useMemo(() => {
@@ -141,11 +131,15 @@ function StorePage() {
         return cached?.timestamp ?? null;
     }, [store]);
 
+    const applyStoreCards = useCallback((nextCards: Card[]) => {
+        setStoreCards(nextCards);
+    }, []);
+
     const loadStoreDecks = useCallback(
         async (forceRefresh = false) => {
             if (!store) {
                 setStoreError(t("store.notFound"));
-                setStoreCards([]);
+                applyStoreCards([]);
                 return [];
             }
 
@@ -162,7 +156,7 @@ function StorePage() {
                     Date.now() - cached.timestamp < STORE_CACHE_TTL_MS
                 ) {
                     const cachedCards = flattenDecks(cached.decks);
-                    setStoreCards(cachedCards);
+                    applyStoreCards(cachedCards);
                     setLastUpdated(cached.timestamp);
                     return cachedCards;
                 }
@@ -179,7 +173,7 @@ function StorePage() {
                 );
 
                 const merged = flattenDecks(decks);
-                setStoreCards(merged);
+                applyStoreCards(merged);
                 const timestamp = Date.now();
                 setStoreCache(cacheKey, { timestamp, decks });
                 setLastUpdated(timestamp);
@@ -187,13 +181,13 @@ function StorePage() {
             } catch (e: unknown) {
                 const message = e instanceof Error ? e.message : String(e);
                 setStoreError(message);
-                setStoreCards([]);
+                applyStoreCards([]);
                 return [];
             } finally {
                 setStoreLoading(false);
             }
         },
-        [store, t],
+        [applyStoreCards, store, t],
     );
 
     const {
@@ -216,6 +210,35 @@ function StorePage() {
         return new Date(value).toLocaleString();
     }, [lastUpdated, cachedTimestamp, t]);
 
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            void loadStoreDecks();
+        }, 0);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [loadStoreDecks]);
+
+    useEffect(() => {
+        if (!store) return;
+
+        const intervalId = window.setInterval(() => {
+            if (storeLoading) return;
+
+            const cacheKey = `manacheck.store.${store.gSheetId}.decks`;
+
+            const cached = getStoreCache(cacheKey);
+
+            const cacheExpired =
+                !cached || Date.now() - cached.timestamp >= STORE_CACHE_TTL_MS;
+
+            if (cacheExpired) {
+                void loadStoreDecks(true);
+            }
+        }, 60_000);
+
+        return () => window.clearInterval(intervalId);
+    }, [loadStoreDecks, store, storeLoading]);
+
     if (!store) {
         return <NotFound />;
     }
@@ -223,8 +246,6 @@ function StorePage() {
     return (
         <div className="container store-page">
             {storeError ? "error" : null}
-            {storeProgress ? <p>{storeProgress.current}</p> : null}
-            <button onClick={handleFetch}>load cards</button>
             <div className="box store-banner">
                 <img
                     className="store-logo"
@@ -243,19 +264,36 @@ function StorePage() {
                 <h3 className="align-self-end">CK = ${store.ck_price}</h3>
             </div>
             {storeCards.length > 0 ? (
-                <StoreAdvancedSearch
-                    filters={filters}
-                    onChange={setFilters}
-                    onReset={resetFilters}
-                    availableSets={availableSets}
-                    availableRarities={availableRarities}
-                    priceBounds={priceBounds}
-                    resultCount={filteredCards.length}
-                    totalCount={storeCards.length}
-                />
-            ) : null}
-            <StoreCardBoxGrid cardList={paginatedCards} />
-            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+                <div className="store-results-layout pt-3">
+                    <StoreAdvancedSearch
+                        filters={filters}
+                        onChange={setFilters}
+                        onReset={resetFilters}
+                        availableSets={availableSets}
+                        availableRarities={availableRarities}
+                        priceBounds={priceBounds}
+                        resultCount={filteredCards.length}
+                        totalCount={storeCards.length}
+                    />
+                    <div className="store-results-main">
+                        <StoreCardBoxGrid cardList={paginatedCards} />
+                        <Pagination
+                            page={page}
+                            totalPages={totalPages}
+                            onPageChange={setPage}
+                        />
+                    </div>
+                </div>
+            ) : (
+                <>
+                    <StoreCardBoxGrid cardList={paginatedCards} />
+                    <Pagination
+                        page={page}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                    />
+                </>
+            )}
             <div className="store-deck-comparator store-helper mt-3">
                 <p>
                     {t("store.helper")}{" "}
