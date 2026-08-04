@@ -11,12 +11,20 @@ function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
 
     if (totalPages <= 1) return null;
 
+    const targetElement = document.querySelector("#store-banner");
+
     return (
         <div className="pagination">
             <button
                 type="button"
                 className="input-clear"
-                onClick={() => onPageChange(page - 1)}
+                onClick={() => {
+                    onPageChange(page - 1);
+                    targetElement?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }}
                 disabled={page <= 1}
             >
                 {t("pagination.previous")}
@@ -27,7 +35,13 @@ function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
             <button
                 type="button"
                 className="input-clear"
-                onClick={() => onPageChange(page + 1)}
+                onClick={() => {
+                    onPageChange(page + 1);
+                    targetElement?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }}
                 disabled={page >= totalPages}
             >
                 {t("pagination.next")}

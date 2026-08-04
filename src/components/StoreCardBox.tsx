@@ -68,7 +68,7 @@ function StoreCardBox(card: Card) {
                 </div>
             </div>
             <button className="button store-cardbox-action">
-                Agregar al carrito
+                {t("store.cartAddButton")}
             </button>
         </div>
     );

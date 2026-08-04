@@ -246,7 +246,8 @@ function StorePage() {
     return (
         <div className="container store-page">
             {storeError ? "error" : null}
-            <div className="box store-banner">
+            <div className="alert">{t("store.cart_disclaimer")} </div>
+            <div className="box store-banner" id="store-banner">
                 <img
                     className="store-logo"
                     src={store.image_banner}

@@ -45,6 +45,12 @@ body {
     font-family: var(--font);
 }
 
+.alert {
+    padding: 1.2rem;
+    background-color: var(--pretty-pink);
+    color: var(--text);
+}
+
 .pink-text {
     color: var(--pretty-pink);
 }
@@ -621,6 +627,16 @@ a:focus-visible {
     box-shadow: none;
 }
 
+.close-button {
+    color: var(--pretty-pink);
+    text-decoration: none;
+    font-size: x-large;
+}
+
+.close-button:hover {
+    color: var(--highlight);
+}
+
 .box {
     background: linear-gradient(180deg, var(--surface-strong), var(--surface));
     padding: 1.5rem 2rem;
@@ -644,6 +660,7 @@ a:focus-visible {
 }
 
 .advanced-search {
+    padding: 1rem;
     width: 100%;
 }
 
@@ -979,6 +996,7 @@ a:focus-visible {
     align-items: center;
     width: 100%;
     padding: 0;
+    scroll-margin-top: 1rem;
 }
 
 .store-ck {

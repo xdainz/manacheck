@@ -24,6 +24,8 @@ const en = {
     "store.helper":
         "Store data automatically updates every hour + whatever it takes for Moxfield's API to update, if you want to update manually click",
     "store.helperHere": "here.",
+    "store.cartAddButton": "Add to cart",
+    "store.cart_disclaimer": "The cart feature is still in development :)",
     "store.lastUpdated": "(Last updated at: {date})",
     "store.never": "Never",
     "store.notFound": "Store not found.",
@@ -94,6 +96,9 @@ const es: Record<TranslationKey, string> = {
     "store.helper":
         "Los datos de la tienda se actualizan automáticamente cada hora + lo que tarde la API de Moxfield en actualizarse, si quieres actualizar manualmente haz clic",
     "store.helperHere": "aquí.",
+    "store.cartAddButton": "Agregar al carrito",
+    "store.cart_disclaimer":
+        "La funcionalidad de carrito se encuentra en desarrollo :)",
     "store.lastUpdated": "(Última actualización: {date})",
     "store.never": "Nunca",
     "store.notFound": "Tienda no encontrada.",

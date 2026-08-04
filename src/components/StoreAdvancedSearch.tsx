@@ -56,9 +56,7 @@ function StoreAdvancedSearch({
     const filteredSets = useMemo(() => {
         const query = setSearchInput.toLowerCase();
         return query
-            ? availableSets.filter((set) =>
-                  set.toLowerCase().includes(query),
-              )
+            ? availableSets.filter((set) => set.toLowerCase().includes(query))
             : availableSets;
     }, [setSearchInput, availableSets]);
 
@@ -80,12 +78,10 @@ function StoreAdvancedSearch({
     };
 
     return (
-        <div className="box advanced-search mb-3">
+        <div className="box advanced-search">
             <div className="row g-3">
                 <div className="col-12">
-                    <label htmlFor="search-name">
-                        {t("search.nameLabel")}
-                    </label>
+                    <label htmlFor="search-name">{t("search.nameLabel")}</label>
                     <input
                         id="search-name"
                         type="text"
@@ -126,9 +122,7 @@ function StoreAdvancedSearch({
 
                 {availableSets.length > 0 ? (
                     <div className="col-12">
-                        <label htmlFor="search-sets">
-                            {t("search.sets")}
-                        </label>
+                        <label htmlFor="search-sets">{t("search.sets")}</label>
                         <div className="position-relative">
                             <input
                                 id="search-sets"
@@ -154,11 +148,11 @@ function StoreAdvancedSearch({
                             {filters.set ? (
                                 <button
                                     type="button"
-                                    className="btn btn-sm btn-link position-absolute end-0 top-50 translate-middle-y"
+                                    className="btn btn-sm btn-link position-absolute end-0 top-50 translate-middle-y close-button"
                                     onClick={handleSetClear}
                                     title="Clear set filter"
                                 >
-                                    ✕
+                                    &times;
                                 </button>
                             ) : null}
                             {showSetDropdown && filteredSets.length > 0 ? (
@@ -172,9 +166,7 @@ function StoreAdvancedSearch({
                                                     ? "active"
                                                     : ""
                                             }`}
-                                            onClick={() =>
-                                                handleSetSelect(set)
-                                            }
+                                            onClick={() => handleSetSelect(set)}
                                         >
                                             {set}
                                         </button>
@@ -201,14 +193,14 @@ function StoreAdvancedSearch({
                                     }`}
                                     key={rarity}
                                     onClick={() =>
-                                            onChange({
-                                                ...filters,
-                                                rarities: toggleValue(
-                                                    filters.rarities,
-                                                    rarity,
-                                                ),
-                                            })
-                                        }
+                                        onChange({
+                                            ...filters,
+                                            rarities: toggleValue(
+                                                filters.rarities,
+                                                rarity,
+                                            ),
+                                        })
+                                    }
                                 >
                                     {rarity}
                                 </button>
@@ -224,11 +216,11 @@ function StoreAdvancedSearch({
                             filters.foilOnly ? " selected foil-text" : ""
                         }`}
                         onClick={() =>
-                                onChange({
-                                    ...filters,
+                            onChange({
+                                ...filters,
                                 foilOnly: !filters.foilOnly,
-                                })
-                            }
+                            })
+                        }
                         aria-pressed={filters.foilOnly}
                     >
                         {t("search.foilOnly")}
