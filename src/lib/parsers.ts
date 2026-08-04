@@ -27,12 +27,13 @@ type MoxfieldCard = {
     cn?: string | number;
     rarity?: string;
     scryfall_id?: string;
-    prices?: { ck?: number };
+    prices?: { ck?: number; ck_foil?: number };
 };
 
 type MoxfieldCardEntry = {
     card?: MoxfieldCard;
     quantity?: number;
+    isFoil: boolean;
 };
 
 type MoxfieldBoard = {
@@ -96,13 +97,13 @@ export function parseManabox(htmlText: string): Card[] {
             ) / 100; // hack to round to 2 decimals
 
         return {
-            Name: data?.name?.[1] ?? "",
-            Set: (data?.setId?.[1] ?? "").toString().toUpperCase(),
-            Collector_number: data?.collectorNumber?.[1] ?? "",
-            Rarity: String(data?.rarity?.[1] ?? "").replace(/^./, (c) =>
+            name: data?.name?.[1] ?? "",
+            set: (data?.setId?.[1] ?? "").toString().toUpperCase(),
+            collector_number: data?.collectorNumber?.[1] ?? "",
+            rarity: String(data?.rarity?.[1] ?? "").replace(/^./, (c) =>
                 c.toUpperCase(),
             ),
-            Quantity: Number(data?.quantity?.[1] ?? 0),
+            quantity: Number(data?.quantity?.[1] ?? 0),
             image_url: imgUrl ?? "",
             ck_price: ck,
         } as Card;
@@ -142,15 +143,18 @@ export function parseMoxfield(dataObj: MoxfieldDeck): Card[] {
                 : "";
 
             cleaned.push({
-                Name: card?.name ?? "",
-                Set: (card?.set ?? "").toString().toUpperCase(),
-                Collector_number: card?.cn ?? "",
-                Rarity: String(card?.rarity ?? "").replace(/^./, (c) =>
+                name: card?.name ?? "",
+                isFoil: entry.isFoil || false,
+                set: (card?.set ?? "").toString().toUpperCase(),
+                collector_number: (card?.cn ?? "").toString(),
+                rarity: String(card?.rarity ?? "").replace(/^./, (c) =>
                     c.toUpperCase(),
                 ),
-                Quantity: Number(quantity),
+                quantity: Number(quantity),
                 image_url: imgUrl,
-                ck_price: card?.prices?.ck ?? 0,
+                ck_price: entry.isFoil
+                    ? (card?.prices?.ck_foil ?? 0)
+                    : (card?.prices?.ck ?? 0),
             });
         });
     });

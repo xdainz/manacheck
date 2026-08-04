@@ -6,26 +6,28 @@ import type { Card } from "../src/types/types";
 
 const sample: Card[] = [
     {
-        Name: "Emmara, Soul of the Accord",
-        Set: "GRN",
-        Collector_number: "168",
-        Rarity: "Rare",
-        Quantity: 1,
+        name: "Emmara, Soul of the Accord",
+        set: "GRN",
+        collector_number: "168",
+        rarity: "Rare",
+        isFoil: true,
+        quantity: 1,
         image_url: "",
         ck_price: 0,
     },
     {
-        Name: "Alpha",
-        Set: "X",
-        Collector_number: "1",
-        Rarity: "Common",
-        Quantity: 2,
+        name: "Alpha",
+        set: "X",
+        collector_number: "1",
+        rarity: "Common",
+        isFoil: false,
+        quantity: 2,
         image_url: "",
         ck_price: 0,
     },
 ];
 
-const expectedOutput = `1 Emmara, Soul of the Accord (GRN) 168\n2 Alpha (X) 1`;
+const expectedOutput = `Emmara, Soul of the Accord (GRN) 168\nAlpha (X) 1`;
 
 function setClipboard(value: unknown) {
     Object.defineProperty(navigator, "clipboard", {

@@ -68,9 +68,9 @@ describe("parseManabox", () => {
 
         const parsed = parseManabox(html);
         expect(parsed).toHaveLength(1);
-        expect(parsed[0].Name).toBe("Alpha");
-        expect(parsed[0].Set).toBe("XYZ");
-        expect(parsed[0].Quantity).toBe(2);
+        expect(parsed[0].name).toBe("Alpha");
+        expect(parsed[0].set).toBe("XYZ");
+        expect(parsed[0].quantity).toBe(2);
         expect(parsed[0].image_url).toBe("https://example.com/img.jpg");
         // ck_price is rounded to 2 decimals in the parser
         expect(parsed[0].ck_price).toBeCloseTo(3.46, 2);
@@ -108,6 +108,7 @@ describe("parseMoxfield", () => {
                                 prices: { ck: 1.23 },
                             },
                             quantity: 4,
+                            isFoil: false,
                         },
                     },
                 },
@@ -121,11 +122,11 @@ describe("parseMoxfield", () => {
 
         const parsed = parseMoxfield(obj);
         expect(parsed.length).toBeGreaterThan(0);
-        expect(parsed[0].Name).toBe("Beta");
-        expect(parsed[0].Set).toBe("AB");
-        expect(parsed[0].Quantity).toBe(4);
+        expect(parsed[0].name).toBe("Beta");
+        expect(parsed[0].set).toBe("AB");
+        expect(parsed[0].quantity).toBe(4);
         expect(parsed[0].image_url).toContain(
-            "https://cards.scryfall.io/normal/front"
+            "https://cards.scryfall.io/normal/front",
         );
         expect(parsed[0].ck_price).toBe(1.23);
     });
