@@ -48,9 +48,6 @@ function CardBoxGrid({
             {cardList.map((c, i) => (
                 <CardBox
                     name={c.name}
-                    type={c.type}
-                    color_identity={c.color_identity}
-                    cmc={c.cmc}
                     isFoil={c.isFoil}
                     set={c.set}
                     collector_number={c.collector_number}
@@ -59,7 +56,6 @@ function CardBoxGrid({
                     image_url={c.image_url}
                     ck_price={c.ck_price}
                     special_price={c.special_price}
-                    oracle_text={c.oracle_text}
                     key={`${c.name}-${i}`}
                 />
             ))}
