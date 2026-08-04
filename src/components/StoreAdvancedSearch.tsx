@@ -2,6 +2,7 @@ import useTranslation from "../hooks/useTranslation";
 import type { TranslationKey } from "../lib/translations";
 import type { SortOption, StoreSearchFilters } from "../lib/storeSearch";
 import PriceRangeSlider from "./PriceRangeSlider";
+import { useState, useMemo } from "react";
 
 interface StoreAdvancedSearchProps {
     filters: StoreSearchFilters;
@@ -47,9 +48,37 @@ function StoreAdvancedSearch({
     totalCount,
 }: StoreAdvancedSearchProps) {
     const { t } = useTranslation();
+    const [setSearchInput, setSetSearchInput] = useState("");
+    const [showSetDropdown, setShowSetDropdown] = useState(false);
 
     const priceMin = filters.minPrice ?? priceBounds.min;
     const priceMax = filters.maxPrice ?? priceBounds.max;
+
+    const filteredSets = useMemo(() => {
+        const query = setSearchInput.toLowerCase();
+        return query
+            ? availableSets.filter((set) =>
+                  set.toLowerCase().includes(query),
+              )
+            : availableSets;
+    }, [setSearchInput, availableSets]);
+
+    const handleSetInputChange = (value: string) => {
+        setSetSearchInput(value);
+        setShowSetDropdown(true);
+    };
+
+    const handleSetSelect = (set: string) => {
+        onChange({ ...filters, set });
+        setSetSearchInput("");
+        setShowSetDropdown(false);
+    };
+
+    const handleSetClear = () => {
+        onChange({ ...filters, set: null });
+        setSetSearchInput("");
+        setShowSetDropdown(false);
+    };
 
     return (
         <div className="box advanced-search mb-3">
@@ -101,24 +130,59 @@ function StoreAdvancedSearch({
                         <label htmlFor="search-sets">
                             {t("search.sets")}
                         </label>
-                        <select
-                            id="search-sets"
-                            className="form-control"
-                            value={filters.set ?? ""}
-                            onChange={(e) =>
-                                onChange({
-                                    ...filters,
-                                    set: e.target.value || null,
-                                })
-                            }
-                        >
-                            <option value="">{t("search.allSets")}</option>
-                            {availableSets.map((set) => (
-                                <option value={set} key={set}>
-                                    {set}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="position-relative">
+                            <input
+                                id="search-sets"
+                                type="text"
+                                className="form-control"
+                                placeholder={t("search.allSets")}
+                                value={
+                                    filters.set
+                                        ? setSearchInput || filters.set
+                                        : setSearchInput
+                                }
+                                onChange={(e) =>
+                                    handleSetInputChange(e.target.value)
+                                }
+                                onFocus={() => setShowSetDropdown(true)}
+                                onBlur={() =>
+                                    setTimeout(
+                                        () => setShowSetDropdown(false),
+                                        100,
+                                    )
+                                }
+                            />
+                            {filters.set ? (
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-link position-absolute end-0 top-50 translate-middle-y"
+                                    onClick={handleSetClear}
+                                    title="Clear set filter"
+                                >
+                                    ✕
+                                </button>
+                            ) : null}
+                            {showSetDropdown && filteredSets.length > 0 ? (
+                                <div className="dropdown-menu show position-absolute w-100 mt-1">
+                                    {filteredSets.map((set) => (
+                                        <button
+                                            key={set}
+                                            type="button"
+                                            className={`dropdown-item ${
+                                                filters.set === set
+                                                    ? "active"
+                                                    : ""
+                                            }`}
+                                            onClick={() =>
+                                                handleSetSelect(set)
+                                            }
+                                        >
+                                            {set}
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : null}
+                        </div>
                     </div>
                 ) : null}
 
