@@ -153,6 +153,7 @@ body {
 .app-main {
     flex: 1;
     padding: clamp(1.5rem, 2.5vw, 2.75rem) 1rem 2.5rem;
+    padding-top: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 2vw, 1.75rem);
@@ -691,8 +692,8 @@ a:focus-visible {
 }
 
 .advanced-search-chip.selected {
-    border-color: var(--highlight);
-    color: var(--highlight);
+    border-color: var(--pretty-pink);
+    color: var(--pretty-pink);
 }
 
 .advanced-search-foil-chip {
@@ -970,14 +971,18 @@ a:focus-visible {
 }
 
 .store-page {
-    background: black;
+    padding: 0;
 }
 
 .store-banner {
     display: flex;
     align-items: center;
-    max-width: 100%;
+    width: 100%;
     padding: 0;
+}
+
+.store-ck {
+    color: var(--pretty-pink);
 }
 
 .store-results-layout {

@@ -252,16 +252,18 @@ function StorePage() {
                     src={store.image_banner}
                     alt={store.full_name + " logo"}
                 />
-                <h1>
-                    <a
-                        className="store-website"
-                        href={store.website}
-                        target="_blank"
-                    >
-                        {store.full_name}
-                    </a>
-                </h1>
-                <h3 className="align-self-end">CK = ${store.ck_price}</h3>
+                <div>
+                    <h1>
+                        <a
+                            className="store-website"
+                            href={store.website}
+                            target="_blank"
+                        >
+                            {store.full_name}
+                        </a>
+                    </h1>
+                    <h5 className="store-ck">CK ${store.ck_price}</h5>
+                </div>
             </div>
             {storeCards.length > 0 ? (
                 <div className="store-results-layout pt-3">
