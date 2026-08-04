@@ -144,9 +144,6 @@ export function parseMoxfield(dataObj: MoxfieldDeck): Card[] {
 
             cleaned.push({
                 name: card?.name ?? "",
-                type: "TEST VALUE",
-                color_identity: "TEST VALUE",
-                cmc: 777,
                 isFoil: entry.isFoil || false,
                 set: (card?.set ?? "").toString().toUpperCase(),
                 collector_number: (card?.cn ?? "").toString(),
@@ -158,7 +155,6 @@ export function parseMoxfield(dataObj: MoxfieldDeck): Card[] {
                 ck_price: entry.isFoil
                     ? (card?.prices?.ck_foil ?? 0)
                     : (card?.prices?.ck ?? 0),
-                oracle_text: "TEST VALUE",
             });
         });
     });

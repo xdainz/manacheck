@@ -1,8 +1,5 @@
 export interface Card {
     name: string;
-    type: string;
-    color_identity: string;
-    cmc: number;
     isFoil: boolean;
     set: string;
     collector_number: string;
@@ -11,7 +8,6 @@ export interface Card {
     image_url: string;
     ck_price: number;
     special_price?: boolean;
-    oracle_text: string;
 }
 
 export interface Store {

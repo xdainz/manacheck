@@ -6,20 +6,22 @@ describe("getMatches", () => {
     it("returns repository cards present in search list by Name", () => {
         const searchList: Card[] = [
             {
-                Name: "Alpha",
-                Set: "X",
-                Collector_number: "1",
-                Rarity: "Rare",
-                Quantity: 1,
+                name: "Alpha",
+                set: "X",
+                collector_number: "1",
+                rarity: "Rare",
+                isFoil: true,
+                quantity: 1,
                 image_url: "",
                 ck_price: 0,
             },
             {
-                Name: "Gamma",
-                Set: "Y",
-                Collector_number: "2",
-                Rarity: "Common",
-                Quantity: 2,
+                name: "Gamma",
+                set: "Y",
+                collector_number: "2",
+                rarity: "Common",
+                isFoil: false,
+                quantity: 2,
                 image_url: "",
                 ck_price: 0,
             },
@@ -27,20 +29,22 @@ describe("getMatches", () => {
 
         const repositoryList: Card[] = [
             {
-                Name: "Alpha",
-                Set: "X",
-                Collector_number: "1",
-                Rarity: "Rare",
-                Quantity: 1,
+                name: "Alpha",
+                set: "X",
+                collector_number: "1",
+                rarity: "Rare",
+                isFoil: true,
+                quantity: 1,
                 image_url: "",
                 ck_price: 0,
             },
             {
-                Name: "Beta",
-                Set: "Z",
-                Collector_number: "3",
-                Rarity: "Uncommon",
-                Quantity: 1,
+                name: "Beta",
+                set: "Z",
+                collector_number: "3",
+                rarity: "Uncommon",
+                isFoil: true,
+                quantity: 1,
                 image_url: "",
                 ck_price: 0,
             },
@@ -48,17 +52,18 @@ describe("getMatches", () => {
 
         const matches = getMatches(searchList, repositoryList);
         expect(matches).toHaveLength(1);
-        expect(matches[0].Name).toBe("Alpha");
+        expect(matches[0].name).toBe("Alpha");
     });
 
     it("returns empty array when there are no name matches", () => {
         const searchList: Card[] = [
             {
-                Name: "Delta",
-                Set: "A",
-                Collector_number: "4",
-                Rarity: "Common",
-                Quantity: 1,
+                name: "Delta",
+                set: "A",
+                collector_number: "4",
+                rarity: "Common",
+                isFoil: true,
+                quantity: 1,
                 image_url: "",
                 ck_price: 0,
             },
@@ -66,11 +71,12 @@ describe("getMatches", () => {
 
         const repositoryList: Card[] = [
             {
-                Name: "Beta",
-                Set: "Z",
-                Collector_number: "3",
-                Rarity: "Uncommon",
-                Quantity: 1,
+                name: "Beta",
+                set: "Z",
+                collector_number: "3",
+                rarity: "Uncommon",
+                isFoil: false,
+                quantity: 1,
                 image_url: "",
                 ck_price: 0,
             },
