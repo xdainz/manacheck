@@ -2,10 +2,13 @@ import { useParams } from "react-router-dom";
 import { storeList } from "../constants";
 import NotFound from "./NotFound";
 import StoreCardBoxGrid from "../components/StoreCardBoxGrid";
+import StoreAdvancedSearch from "../components/StoreAdvancedSearch";
+import Pagination from "../components/Pagination";
 import type { Card } from "../types/types";
 import { fetchSheetCsv, type SheetRow } from "../lib/sheets";
 import { fetchDeckCards } from "../lib/deckFetch";
 import useTranslation from "../hooks/useTranslation";
+import useStoreSearch from "../hooks/useStoreSearch";
 import { useCallback, useMemo, useState } from "react";
 
 const STORE_CACHE_TTL_MS = 60 * 60 * 1000;
@@ -193,6 +196,20 @@ function StorePage() {
         [store, t],
     );
 
+    const {
+        filters,
+        setFilters,
+        filteredCards,
+        paginatedCards,
+        page,
+        totalPages,
+        setPage,
+        availableSets,
+        availableRarities,
+        priceBounds,
+        resetFilters,
+    } = useStoreSearch(storeCards);
+
     const lastUpdatedLabel = useMemo(() => {
         const value = lastUpdated ?? cachedTimestamp;
         if (!value) return t("store.never");
@@ -225,7 +242,20 @@ function StorePage() {
                 </h1>
                 <h3 className="align-self-end">CK = ${store.ck_price}</h3>
             </div>
-            <StoreCardBoxGrid cardList={storeCards} />
+            {storeCards.length > 0 ? (
+                <StoreAdvancedSearch
+                    filters={filters}
+                    onChange={setFilters}
+                    onReset={resetFilters}
+                    availableSets={availableSets}
+                    availableRarities={availableRarities}
+                    priceBounds={priceBounds}
+                    resultCount={filteredCards.length}
+                    totalCount={storeCards.length}
+                />
+            ) : null}
+            <StoreCardBoxGrid cardList={paginatedCards} />
+            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
             <div className="store-deck-comparator store-helper mt-3">
                 <p>
                     {t("store.helper")}{" "}

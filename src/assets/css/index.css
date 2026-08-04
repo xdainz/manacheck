@@ -641,6 +641,172 @@ a:focus-visible {
     color: var(--text-muted);
 }
 
+.advanced-search {
+    width: 100%;
+}
+
+.advanced-search label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.advanced-search select.form-control {
+    width: 100%;
+}
+
+.advanced-search-group-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.advanced-search-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-height: 8.5rem;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+}
+
+.advanced-search-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin: 0;
+}
+
+.advanced-search-chip:has(input:checked) {
+    border-color: var(--highlight);
+    color: var(--highlight);
+}
+
+.advanced-search-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin: 0;
+}
+
+.advanced-search-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.price-range-slider {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.price-range-readout {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.price-range-track-wrap {
+    position: relative;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.price-range-track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 999px;
+    background-color: var(--border);
+}
+
+.price-range-fill {
+    position: absolute;
+    height: 4px;
+    border-radius: 999px;
+    background-color: var(--pretty-pink);
+}
+
+.price-range-input {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    pointer-events: none;
+}
+
+.price-range-input::-webkit-slider-runnable-track {
+    background: transparent;
+}
+
+.price-range-input::-moz-range-track {
+    background: transparent;
+}
+
+.price-range-input::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    pointer-events: auto;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--highlight);
+    border: 2px solid var(--bg);
+    cursor: pointer;
+    margin-top: -6px;
+}
+
+.price-range-input::-moz-range-thumb {
+    pointer-events: auto;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--highlight);
+    border: 2px solid var(--bg);
+    cursor: pointer;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.pagination-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
 .modal-backdrop {
     position: fixed;
     inset: 0;
