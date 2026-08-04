@@ -1,15 +1,24 @@
 export interface Card {
-    Name: string;
-    Set: string;
-    Collector_number: string | number;
-    Rarity: string;
-    Quantity: number;
+    name: string;
+    type: string;
+    color_identity: string;
+    cmc: number;
+    isFoil: boolean;
+    set: string;
+    collector_number: string;
+    rarity: string;
+    quantity: number;
     image_url: string;
     ck_price: number;
     special_price?: boolean;
+    oracle_text: string;
 }
 
 export interface Store {
     name: string;
+    full_name: string;
+    image_banner: string;
+    ck_price: number;
+    website: string;
     gSheetId: number;
 }

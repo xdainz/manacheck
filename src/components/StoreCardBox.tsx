@@ -2,14 +2,12 @@ import { useState } from "react";
 import useTranslation from "../hooks/useTranslation";
 import type { Card } from "../types/types";
 
-function CardBox(card: Card) {
+function StoreCardBox(card: Card) {
     const { t } = useTranslation();
     const [showHint, setShowHint] = useState(false);
 
     const specialPriceHint = t("card.specialPriceHint");
 
-    // Tooltip opens on hover/focus via CSS; the click toggle covers touch
-    // devices, where neither hover nor title attributes work.
     const specialPriceMark = card.special_price ? (
         <span
             className={
@@ -27,7 +25,7 @@ function CardBox(card: Card) {
     ) : null;
 
     return (
-        <div className="cardbox row">
+        <div className="cardbox row store-cardbox">
             <div className="col">
                 <h5>{card.name}</h5>
                 <p className="label">
@@ -41,13 +39,12 @@ function CardBox(card: Card) {
                     </label>
                 </p>
                 <p className="label">
-                    {t("card.rarity")}{" "}
-                    <label className="label-value">{card.rarity}</label>
-                </p>
-                <p className="label">
                     {t("card.quantity")}{" "}
                     <label className="label-value">{card.quantity}</label>
                 </p>
+
+                {card.isFoil ? <p className="label foil-text">Foil</p> : null}
+
                 {card.ck_price ? (
                     <p className="price">
                         ${card.ck_price}
@@ -61,14 +58,20 @@ function CardBox(card: Card) {
                 )}
             </div>
             <div className="col">
-                <img
-                    src={card.image_url}
-                    alt={card.name + " image"}
-                    className="image"
-                />
+                <div className="card-image">
+                    <img
+                        src={card.image_url}
+                        alt={card.name + " image"}
+                        className="image"
+                    />
+                    <div className={card.isFoil ? "foil" : ""}></div>
+                </div>
             </div>
+            <button className="button store-cardbox-action">
+                {t("store.cartAddButton")}
+            </button>
         </div>
     );
 }
 
-export default CardBox;
+export default StoreCardBox;

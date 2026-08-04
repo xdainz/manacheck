@@ -1,6 +1,6 @@
 import useTranslation from "../hooks/useTranslation";
 import type { Card } from "../types/types";
-import CardBox from "./CardBox";
+import StoreCardBox from "./StoreCardBox";
 
 interface CardBoxGridProps {
     cardList: Card[];
@@ -8,7 +8,7 @@ interface CardBoxGridProps {
     skeletonCount?: number;
 }
 
-function CardBoxGrid({
+function StoreCardBoxGrid({
     cardList,
     loading = false,
     skeletonCount = 4,
@@ -41,12 +41,12 @@ function CardBoxGrid({
     }
 
     if (cardList.length < 1) {
-        return <p className="text-center py-5">{t("grid.noMatches")}</p>;
+        return <p className="text-center py-5">{t("grid.noCards")}</p>;
     }
     return (
-        <div className="cardboxgrid col-12">
+        <div className="cardboxgrid store-cardboxgrid col-12">
             {cardList.map((c, i) => (
-                <CardBox
+                <StoreCardBox
                     name={c.name}
                     type={c.type}
                     color_identity={c.color_identity}
@@ -67,4 +67,4 @@ function CardBoxGrid({
     );
 }
 
-export default CardBoxGrid;
+export default StoreCardBoxGrid;
