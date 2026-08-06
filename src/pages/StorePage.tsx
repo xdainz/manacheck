@@ -255,13 +255,17 @@ function StorePage() {
                 />
                 <div>
                     <h1>
-                        <a
-                            className="store-website"
-                            href={store.website}
-                            target="_blank"
-                        >
-                            {store.full_name}
-                        </a>
+                        {store.website ? (
+                            <a
+                                className="store-website"
+                                href={store.website}
+                                target="_blank"
+                            >
+                                {store.full_name}🔗
+                            </a>
+                        ) : (
+                            store.full_name
+                        )}
                     </h1>
                     <h5 className="store-ck">CK ${store.ck_price}</h5>
                 </div>
