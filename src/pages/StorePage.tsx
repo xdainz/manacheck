@@ -10,6 +10,7 @@ import { fetchDeckCards } from "../lib/deckFetch";
 import useTranslation from "../hooks/useTranslation";
 import useStoreSearch from "../hooks/useStoreSearch";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import StoreSearchDeck from "../components/StoreSearchDeck";
 
 const STORE_CACHE_TTL_MS = 60 * 60 * 1000;
 const FETCH_CONCURRENCY = 4;
@@ -268,6 +269,12 @@ function StorePage() {
                         )}
                     </h1>
                     <h5 className="store-ck">CK ${store.ck_price}</h5>
+                </div>
+                <div>
+                    <StoreSearchDeck
+                        storeDeckList={storeCards}
+                        onChangeValue={setStoreCards}
+                    />
                 </div>
             </div>
             {storeCards.length > 0 ? (

@@ -917,6 +917,15 @@ a:focus-visible {
     max-width: 100%;
 }
 
+.store-deck-search {
+    width: 100%;
+}
+
+.deck-input {
+    width: 100%!;
+    box-sizing: border-box!;
+}
+
 .deck-comparator form {
     display: grid;
     gap: 0.85rem;
