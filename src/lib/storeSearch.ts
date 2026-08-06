@@ -1,11 +1,6 @@
 import type { Card } from "../types/types";
 
-export type SortOption =
-    | "name-asc"
-    | "name-desc"
-    | "price-asc"
-    | "price-desc"
-    | "quantity-desc";
+export type SortOption = "name-asc" | "name-desc" | "price-asc" | "price-desc";
 
 export interface StoreSearchFilters {
     query: string;
@@ -24,7 +19,7 @@ export const defaultStoreSearchFilters: StoreSearchFilters = {
     foilOnly: false,
     minPrice: null,
     maxPrice: null,
-    sortBy: "name-asc",
+    sortBy: "price-desc",
 };
 
 const RARITY_ORDER = ["Common", "Uncommon", "Rare", "Mythic"];
@@ -94,9 +89,6 @@ export function sortStoreCards(cards: Card[], sortBy: SortOption): Card[] {
             break;
         case "price-desc":
             sorted.sort((a, b) => (b.ck_price ?? 0) - (a.ck_price ?? 0));
-            break;
-        case "quantity-desc":
-            sorted.sort((a, b) => (b.quantity ?? 0) - (a.quantity ?? 0));
             break;
     }
     return sorted;

@@ -27,7 +27,6 @@ const SORT_LABEL_KEYS: Record<SortOption, TranslationKey> = {
     "name-desc": "search.sort.name-desc",
     "price-asc": "search.sort.price-asc",
     "price-desc": "search.sort.price-desc",
-    "quantity-desc": "search.sort.quantity-desc",
 };
 
 function toggleValue(list: string[], value: string): string[] {
