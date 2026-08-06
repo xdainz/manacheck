@@ -652,6 +652,24 @@ a:focus-visible {
     width: fit-content;
 }
 
+.clear-button {
+    margin: 0 0 0 0.5rem;
+    font-size: 1.2rem;
+    width: fit-content;
+    background-color: transparent;
+    color: var(--pretty-pink);
+}
+
+.clear-button:hover {
+    background: var(--surface-strong);
+    color: var(--highlight);
+    border: 2px solid var(--highlight);
+}
+
+.clear-button:active {
+    background: var(--bg-light);
+}
+
 .store-progress {
     display: grid;
     gap: 0.35rem;
@@ -917,6 +935,15 @@ a:focus-visible {
     max-width: 100%;
 }
 
+.store-deck-search {
+    width: 100%;
+}
+
+.deck-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .deck-comparator form {
     display: grid;
     gap: 0.85rem;
@@ -994,9 +1021,19 @@ a:focus-visible {
 .store-banner {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
     width: 100%;
     padding: 0;
     scroll-margin-top: 1rem;
+}
+
+.store-banner-search {
+    flex: 1 1 420px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: 1rem;
 }
 
 .store-ck {
@@ -1141,6 +1178,12 @@ a:focus-visible {
 
     .submit-button {
         width: 100%;
+    }
+
+    .store-banner-search {
+        flex-basis: 100%;
+        max-width: 100%;
+        margin-left: 0;
     }
 }
 

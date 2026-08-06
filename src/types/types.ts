@@ -15,6 +15,6 @@ export interface Store {
     full_name: string;
     image_banner: string;
     ck_price: number;
-    website: string;
+    website?: string;
     gSheetId: number;
 }

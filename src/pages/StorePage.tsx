@@ -10,6 +10,7 @@ import { fetchDeckCards } from "../lib/deckFetch";
 import useTranslation from "../hooks/useTranslation";
 import useStoreSearch from "../hooks/useStoreSearch";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import StoreSearchDeck from "../components/StoreSearchDeck";
 
 const STORE_CACHE_TTL_MS = 60 * 60 * 1000;
 const FETCH_CONCURRENCY = 4;
@@ -115,10 +116,17 @@ function StorePage() {
 
     const { t } = useTranslation();
 
+    // The full, unfiltered store inventory as loaded from the sheet/cache.
+    // This must stay untouched by StoreSearchDeck — it's the search space
+    // every deck search runs against.
     const [storeCards, setStoreCards] = useState<Card[]>([]);
+    // The subset of storeCards that match the user's most recent pasted
+    // decklist, kept separate so re-running a search always matches against
+    // the full storeCards list rather than a previously-filtered subset.
+    const [deckMatchCards, setDeckMatchCards] = useState<Card[] | null>(null);
     const [storeLoading, setStoreLoading] = useState(false);
     const [storeError, setStoreError] = useState<string | null>(null);
-    const [, setStoreProgress] = useState({
+    const [storeProgress, setStoreProgress] = useState({
         current: 0,
         total: 0,
     });
@@ -190,6 +198,10 @@ function StorePage() {
         [applyStoreCards, store, t],
     );
 
+    // Show the deck-matched subset when a search has been run, otherwise
+    // fall back to the full store inventory.
+    const displayedStoreCards = deckMatchCards ?? storeCards;
+
     const {
         filters,
         setFilters,
@@ -202,7 +214,7 @@ function StorePage() {
         availableRarities,
         priceBounds,
         resetFilters,
-    } = useStoreSearch(storeCards);
+    } = useStoreSearch(displayedStoreCards);
 
     const lastUpdatedLabel = useMemo(() => {
         const value = lastUpdated ?? cachedTimestamp;
@@ -255,18 +267,53 @@ function StorePage() {
                 />
                 <div>
                     <h1>
-                        <a
-                            className="store-website"
-                            href={store.website}
-                            target="_blank"
-                        >
-                            {store.full_name}
-                        </a>
+                        {store.website ? (
+                            <a
+                                className="store-website"
+                                href={store.website}
+                                target="_blank"
+                            >
+                                {store.full_name}↗
+                            </a>
+                        ) : (
+                            store.full_name
+                        )}
                     </h1>
                     <h5 className="store-ck">CK ${store.ck_price}</h5>
                 </div>
+                {storeLoading && (
+                    <div className="modal-backdrop" aria-live="polite">
+                        <div
+                            className="modal-card"
+                            role="status"
+                            aria-busy="true"
+                        >
+                            <h2>Fetching decklists</h2>
+                            <progress
+                                className="progress-bar"
+                                value={
+                                    storeProgress.total
+                                        ? storeProgress.current
+                                        : undefined
+                                }
+                                max={storeProgress.total || 1}
+                            />
+                            <p className="progress-text">
+                                {storeProgress.total
+                                    ? `${storeProgress.current}/${storeProgress.total} decklists fetched`
+                                    : "Starting..."}
+                            </p>
+                        </div>
+                    </div>
+                )}
+                <div className="store-banner-search">
+                    <StoreSearchDeck
+                        storeDeckList={storeCards}
+                        onChangeValue={setDeckMatchCards}
+                    />
+                </div>
             </div>
-            {storeCards.length > 0 ? (
+            {displayedStoreCards.length > 0 ? (
                 <div className="store-results-layout pt-3">
                     <StoreAdvancedSearch
                         filters={filters}
@@ -276,7 +323,7 @@ function StorePage() {
                         availableRarities={availableRarities}
                         priceBounds={priceBounds}
                         resultCount={filteredCards.length}
-                        totalCount={storeCards.length}
+                        totalCount={displayedStoreCards.length}
                     />
                     <div className="store-results-main">
                         <StoreCardBoxGrid cardList={paginatedCards} />
