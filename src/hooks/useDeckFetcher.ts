@@ -25,5 +25,11 @@ export default function useDeckFetcher() {
         }
     }, []);
 
-    return { loading, error, cards, fetchDeck };
+    const reset = useCallback(() => {
+        setLoading(false);
+        setError(null);
+        setCards([]);
+    }, []);
+
+    return { loading, error, cards, fetchDeck, reset };
 }

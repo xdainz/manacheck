@@ -652,6 +652,24 @@ a:focus-visible {
     width: fit-content;
 }
 
+.clear-button {
+    margin: 0 0 0 0.5rem;
+    font-size: 1.2rem;
+    width: fit-content;
+    background-color: transparent;
+    color: var(--pretty-pink);
+}
+
+.clear-button:hover {
+    background: var(--surface-strong);
+    color: var(--highlight);
+    border: 2px solid var(--highlight);
+}
+
+.clear-button:active {
+    background: var(--bg-light);
+}
+
 .store-progress {
     display: grid;
     gap: 0.35rem;

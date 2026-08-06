@@ -116,7 +116,14 @@ function StorePage() {
 
     const { t } = useTranslation();
 
+    // The full, unfiltered store inventory as loaded from the sheet/cache.
+    // This must stay untouched by StoreSearchDeck — it's the search space
+    // every deck search runs against.
     const [storeCards, setStoreCards] = useState<Card[]>([]);
+    // The subset of storeCards that match the user's most recent pasted
+    // decklist, kept separate so re-running a search always matches against
+    // the full storeCards list rather than a previously-filtered subset.
+    const [deckMatchCards, setDeckMatchCards] = useState<Card[] | null>(null);
     const [storeLoading, setStoreLoading] = useState(false);
     const [storeError, setStoreError] = useState<string | null>(null);
     const [storeProgress, setStoreProgress] = useState({
@@ -191,6 +198,10 @@ function StorePage() {
         [applyStoreCards, store, t],
     );
 
+    // Show the deck-matched subset when a search has been run, otherwise
+    // fall back to the full store inventory.
+    const displayedStoreCards = deckMatchCards ?? storeCards;
+
     const {
         filters,
         setFilters,
@@ -203,7 +214,7 @@ function StorePage() {
         availableRarities,
         priceBounds,
         resetFilters,
-    } = useStoreSearch(storeCards);
+    } = useStoreSearch(displayedStoreCards);
 
     const lastUpdatedLabel = useMemo(() => {
         const value = lastUpdated ?? cachedTimestamp;
@@ -298,11 +309,11 @@ function StorePage() {
                 <div>
                     <StoreSearchDeck
                         storeDeckList={storeCards}
-                        onChangeValue={setStoreCards}
+                        onChangeValue={setDeckMatchCards}
                     />
                 </div>
             </div>
-            {storeCards.length > 0 ? (
+            {displayedStoreCards.length > 0 ? (
                 <div className="store-results-layout pt-3">
                     <StoreAdvancedSearch
                         filters={filters}
@@ -312,7 +323,7 @@ function StorePage() {
                         availableRarities={availableRarities}
                         priceBounds={priceBounds}
                         resultCount={filteredCards.length}
-                        totalCount={storeCards.length}
+                        totalCount={displayedStoreCards.length}
                     />
                     <div className="store-results-main">
                         <StoreCardBoxGrid cardList={paginatedCards} />
