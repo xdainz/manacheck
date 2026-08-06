@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import useDeckFetcher from "../hooks/useDeckFetcher";
 import type { Card } from "../types/types";
 import { getMatches } from "../lib/matching";
+import useTranslation from "../hooks/useTranslation";
 
 interface StoreSearchDeckProps {
     storeDeckList: Card[];
@@ -14,6 +15,8 @@ export default function StoreSearchDeck({
     storeDeckList,
     onChangeValue,
 }: StoreSearchDeckProps) {
+    const { t } = useTranslation();
+
     const {
         loading: searchLoading,
         error: searchError,
@@ -82,7 +85,7 @@ export default function StoreSearchDeck({
                 <input
                     value={searchLink}
                     onChange={(e) => setSearchLink(e.target.value)}
-                    placeholder="Paste here your manabox/moxfield link."
+                    placeholder={t("store.searchInput")}
                     className="form-control deck-input"
                     required
                 />
@@ -91,7 +94,7 @@ export default function StoreSearchDeck({
                     className="button mt-3 submit-button"
                     disabled={searchLoading}
                 >
-                    Search
+                    {t("store.submit")}
                 </button>
                 {hasActiveSearch && (
                     <button
@@ -100,7 +103,7 @@ export default function StoreSearchDeck({
                         onClick={handleClear}
                         disabled={searchLoading}
                     >
-                        Clear
+                        {t("result.clear")}
                     </button>
                 )}
             </form>

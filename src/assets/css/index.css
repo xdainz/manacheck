@@ -940,8 +940,8 @@ a:focus-visible {
 }
 
 .deck-input {
-    width: 100%!;
-    box-sizing: border-box!;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .deck-comparator form {
@@ -1021,9 +1021,19 @@ a:focus-visible {
 .store-banner {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
     width: 100%;
     padding: 0;
     scroll-margin-top: 1rem;
+}
+
+.store-banner-search {
+    flex: 1 1 420px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: 1rem;
 }
 
 .store-ck {
@@ -1168,6 +1178,12 @@ a:focus-visible {
 
     .submit-button {
         width: 100%;
+    }
+
+    .store-banner-search {
+        flex-basis: 100%;
+        max-width: 100%;
+        margin-left: 0;
     }
 }
 

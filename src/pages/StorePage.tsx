@@ -306,7 +306,7 @@ function StorePage() {
                         </div>
                     </div>
                 )}
-                <div>
+                <div className="store-banner-search">
                     <StoreSearchDeck
                         storeDeckList={storeCards}
                         onChangeValue={setDeckMatchCards}

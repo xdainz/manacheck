@@ -1,3 +1,5 @@
+import useTranslation from "../hooks/useTranslation";
+
 interface DeckLinkInputProps {
     value: string;
     onChange: (value: string) => void;
@@ -15,6 +17,8 @@ export default function DeckLinkInput({
     inputAriaLabel,
     disabled = false,
 }: DeckLinkInputProps) {
+    const { t } = useTranslation();
+
     return (
         <div className="input-row">
             <input
@@ -32,7 +36,7 @@ export default function DeckLinkInput({
                 disabled={!value || disabled}
                 aria-label={clearAriaLabel}
             >
-                Clear
+                {t("result.clear")}
             </button>
         </div>
     );
