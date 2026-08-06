@@ -67,9 +67,6 @@ function StoreCardBox(card: Card) {
                     <div className={card.isFoil ? "foil" : ""}></div>
                 </div>
             </div>
-            <button className="button store-cardbox-action">
-                {t("store.cartAddButton")}
-            </button>
         </div>
     );
 }
