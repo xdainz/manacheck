@@ -273,7 +273,7 @@ function StorePage() {
                                 href={store.website}
                                 target="_blank"
                             >
-                                {store.full_name}🔗
+                                {store.full_name}↗
                             </a>
                         ) : (
                             store.full_name
