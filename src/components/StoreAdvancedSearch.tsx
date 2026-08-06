@@ -166,6 +166,9 @@ function StoreAdvancedSearch({
                                                     ? "active"
                                                     : ""
                                             }`}
+                                            onMouseDown={(e) =>
+                                                e.preventDefault()
+                                            }
                                             onClick={() => handleSetSelect(set)}
                                         >
                                             {set}
