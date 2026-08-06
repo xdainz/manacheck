@@ -119,7 +119,7 @@ function StorePage() {
     const [storeCards, setStoreCards] = useState<Card[]>([]);
     const [storeLoading, setStoreLoading] = useState(false);
     const [storeError, setStoreError] = useState<string | null>(null);
-    const [, setStoreProgress] = useState({
+    const [storeProgress, setStoreProgress] = useState({
         current: 0,
         total: 0,
     });
@@ -270,6 +270,31 @@ function StorePage() {
                     </h1>
                     <h5 className="store-ck">CK ${store.ck_price}</h5>
                 </div>
+                {storeLoading && (
+                    <div className="modal-backdrop" aria-live="polite">
+                        <div
+                            className="modal-card"
+                            role="status"
+                            aria-busy="true"
+                        >
+                            <h2>Fetching decklists</h2>
+                            <progress
+                                className="progress-bar"
+                                value={
+                                    storeProgress.total
+                                        ? storeProgress.current
+                                        : undefined
+                                }
+                                max={storeProgress.total || 1}
+                            />
+                            <p className="progress-text">
+                                {storeProgress.total
+                                    ? `${storeProgress.current}/${storeProgress.total} decklists fetched`
+                                    : "Starting..."}
+                            </p>
+                        </div>
+                    </div>
+                )}
                 <div>
                     <StoreSearchDeck
                         storeDeckList={storeCards}
