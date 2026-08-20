@@ -55,9 +55,40 @@ describe("resolveFetchUrl", () => {
         expect(url).toBe("https://api2.moxfield.com/v3/decks/all/xyz789");
     });
 
+    it("converts archidekt deck pages to the API path in dev", () => {
+        const { url, source } = resolveFetchUrl(
+            "https://archidekt.com/decks/22512519/ragavan_money_machine",
+            { workerBase: WORKER, isDev: true },
+        );
+        expect(url).toBe("/api/archidekt/api/decks/22512519/");
+        expect(source).toBe("archidekt");
+    });
+
+    it("routes archidekt links through the worker in production", () => {
+        const { url } = resolveFetchUrl(
+            "https://archidekt.com/decks/22512519/ragavan_money_machine",
+            {
+                workerBase: WORKER,
+                isDev: false,
+            },
+        );
+        expect(url).toBe(`${WORKER}/api/archidekt/api/decks/22512519/`);
+    });
+
+    it("hits the archidekt API directly without a worker base", () => {
+        const { url } = resolveFetchUrl(
+            "https://archidekt.com/decks/22512519/ragavan_money_machine",
+            {
+                workerBase: "",
+                isDev: false,
+            },
+        );
+        expect(url).toBe("https://archidekt.com/api/decks/22512519/");
+    });
+
     it("throws for unsupported domains", () => {
         expect(() =>
-            resolveFetchUrl("https://archidekt.com/decks/123", {
+            resolveFetchUrl("https://tappedout.net/mtg-decks/123", {
                 workerBase: WORKER,
                 isDev: false,
             }),

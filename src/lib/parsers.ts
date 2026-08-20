@@ -44,6 +44,55 @@ export type MoxfieldDeck = {
     boards?: Record<string, MoxfieldBoard>;
 };
 
+type ArchidektCard = {
+    name?: string;
+    setCode?: string;
+    set?: string;
+    collectorNumber?: string | number;
+    collector_number?: string | number;
+    cn?: string | number;
+    rarity?: string;
+    qty?: number;
+    quantity?: number;
+    uid?: string;
+    scryfall_id?: string;
+    imgurl?: string;
+    modifier?: string;
+    isFoil?: boolean;
+    edition?: { editioncode?: string };
+    oracleCard?: { name?: string };
+    prices?: {
+        ck?: number;
+        ckFoil?: number;
+        ckfoil?: number;
+        ck_foil?: number;
+    };
+};
+
+type ArchidektCardEntry = ArchidektCard & {
+    card?: ArchidektCard;
+};
+
+export type ArchidektDeck = {
+    pageProps?: {
+        redux?: {
+            deck?: {
+                cardMap?: Record<string, ArchidektCardEntry>;
+            };
+        };
+    };
+    redux?: {
+        deck?: {
+            cardMap?: Record<string, ArchidektCardEntry>;
+        };
+    };
+    deck?: {
+        cardMap?: Record<string, ArchidektCardEntry>;
+    };
+    cardMap?: Record<string, ArchidektCardEntry>;
+    cards?: ArchidektCardEntry[];
+};
+
 // Thrown when a response is readable but does not have the shape we expect,
 // i.e. the upstream site likely changed its markup or API. Callers surface
 // this to the user instead of showing an empty "no matches" result.
@@ -156,6 +205,97 @@ export function parseMoxfield(dataObj: MoxfieldDeck): Card[] {
                     ? (card?.prices?.ck_foil ?? 0)
                     : (card?.prices?.ck ?? 0),
             });
+        });
+    });
+
+    return cleaned;
+}
+
+export function parseArchidekt(dataObj: ArchidektDeck): Card[] {
+    if (!dataObj || typeof dataObj !== "object") {
+        throw new DeckParseError(
+            "Unexpected Archidekt API response shape. Archidekt may have changed their API.",
+        );
+    }
+
+    const cardMap =
+        dataObj?.pageProps?.redux?.deck?.cardMap ??
+        dataObj?.redux?.deck?.cardMap ??
+        dataObj?.deck?.cardMap ??
+        dataObj?.cardMap;
+
+    const rawCards = cardMap
+        ? Object.values(cardMap)
+        : Array.isArray(dataObj?.cards)
+          ? dataObj.cards
+          : null;
+
+    if (!rawCards) {
+        throw new DeckParseError(
+            "Unexpected Archidekt API response shape. Archidekt may have changed their API.",
+        );
+    }
+
+    const cleaned: Card[] = [];
+    const baseImgUrl = "https://cards.scryfall.io/normal/front";
+
+    rawCards.forEach((entry) => {
+        const cardData =
+            entry && typeof entry === "object" && "card" in entry && entry.card
+                ? entry.card
+                : entry;
+
+        const isFoil =
+            (entry?.modifier ?? cardData?.modifier ?? "").toLowerCase() ===
+                "foil" || Boolean(entry?.isFoil ?? cardData?.isFoil);
+
+        const cardScryfallId = cardData?.uid ?? cardData?.scryfall_id ?? "";
+        const firstNumber = cardScryfallId[0] ?? "";
+        const secondNumber = cardScryfallId[1] ?? "";
+        const imgUrl = cardData?.imgurl
+            ? cardData.imgurl
+            : cardScryfallId
+              ? `${baseImgUrl}/${firstNumber}/${secondNumber}/${cardScryfallId}.jpg`
+              : "";
+
+        const prices = cardData?.prices;
+        const ckPrice = isFoil
+            ? (prices?.ckFoil ??
+              prices?.ckfoil ??
+              prices?.ck_foil ??
+              prices?.ck ??
+              0)
+            : (prices?.ck ?? 0);
+
+        cleaned.push({
+            name: cardData?.name ?? cardData?.oracleCard?.name ?? "",
+            isFoil,
+            set: (
+                cardData?.setCode ??
+                cardData?.edition?.editioncode ??
+                cardData?.set ??
+                ""
+            )
+                .toString()
+                .toUpperCase(),
+            collector_number: (
+                cardData?.collectorNumber ??
+                cardData?.collector_number ??
+                cardData?.cn ??
+                ""
+            ).toString(),
+            rarity: String(cardData?.rarity ?? "").replace(/^./, (c) =>
+                c.toUpperCase(),
+            ),
+            quantity: Number(
+                entry?.quantity ??
+                    entry?.qty ??
+                    cardData?.qty ??
+                    cardData?.quantity ??
+                    0,
+            ),
+            image_url: imgUrl,
+            ck_price: ckPrice,
         });
     });
 
