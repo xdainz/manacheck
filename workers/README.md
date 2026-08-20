@@ -9,12 +9,12 @@ Setup & deploy (quick)
 1. Login to Cloudflare:
 
     ```bash
-    wrangler login
+    bun wrangler login
 
     ```
 
 2. Publish the worker:
     ```bash
     # from repo root
-    wrangler deploy workers/worker.js --name manacheck-proxy
+    bun wrangler deploy workers/worker.js --name manacheck-proxy
     ```
