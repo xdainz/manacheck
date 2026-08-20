@@ -73,9 +73,61 @@ describe("parseManabox", () => {
         expect(parsed[0].name).toBe("Alpha");
         expect(parsed[0].set).toBe("XYZ");
         expect(parsed[0].quantity).toBe(2);
+        expect(parsed[0].isFoil).toBe(false);
         expect(parsed[0].image_url).toBe("https://example.com/img.jpg");
         // ck_price is rounded to 2 decimals in the parser
         expect(parsed[0].ck_price).toBeCloseTo(3.46, 2);
+    });
+
+    it("parses foil and etched variants in manabox", () => {
+        const dataObj = {
+            deck: [
+                null,
+                {
+                    cards: [
+                        null,
+                        [
+                            [
+                                0,
+                                {
+                                    name: [0, "Foil Card"],
+                                    setId: [0, "abc"],
+                                    collectorNumber: [0, "10"],
+                                    rarity: [0, "rare"],
+                                    quantity: [0, 1],
+                                    variant: [0, "Foil"],
+                                    images: [null, []],
+                                    pricing: [null, {}],
+                                },
+                            ],
+                            [
+                                0,
+                                {
+                                    name: [0, "Etched Card"],
+                                    setId: [0, "def"],
+                                    collectorNumber: [0, "20"],
+                                    rarity: [0, "mythic"],
+                                    quantity: [0, 1],
+                                    variant: [0, "Etched"],
+                                    images: [null, []],
+                                    pricing: [null, {}],
+                                },
+                            ],
+                        ],
+                    ],
+                },
+            ],
+        };
+
+        const escaped = JSON.stringify(dataObj).replace(/"/g, "&quot;");
+        const html = `<html><body><astro-island></astro-island><astro-island props="${escaped}"></astro-island></body></html>`;
+
+        const parsed = parseManabox(html);
+        expect(parsed).toHaveLength(2);
+        expect(parsed[0].name).toBe("Foil Card");
+        expect(parsed[0].isFoil).toBe(true);
+        expect(parsed[1].name).toBe("Etched Card");
+        expect(parsed[1].isFoil).toBe(true);
     });
 
     it("throws DeckParseError when the page has no deck island", () => {

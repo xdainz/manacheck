@@ -15,6 +15,8 @@ type ManaboxCardData = {
     collectorNumber?: [unknown, string | number];
     rarity?: [unknown, string];
     quantity?: [unknown, number];
+    variant?: [unknown, string];
+    isFoil?: [unknown, boolean];
 };
 type ManaboxCardEntry = [unknown, ManaboxCardData];
 type ManaboxCards = [unknown, ManaboxCardEntry[]];
@@ -144,9 +146,15 @@ export function parseManabox(htmlText: string): Card[] {
             Math.round(
                 (data?.pricing?.[1]?.cardKingdom?.[1]?.value?.[1] ?? 0) * 100,
             ) / 100; // hack to round to 2 decimals
+        const variant = String(data?.variant?.[1] ?? "").toLowerCase();
+        const isFoil =
+            variant === "foil" ||
+            variant === "etched" ||
+            Boolean(data?.isFoil?.[1]);
 
         return {
             name: data?.name?.[1] ?? "",
+            isFoil,
             set: (data?.setId?.[1] ?? "").toString().toUpperCase(),
             collector_number: data?.collectorNumber?.[1] ?? "",
             rarity: String(data?.rarity?.[1] ?? "").replace(/^./, (c) =>
