@@ -4,7 +4,9 @@
 
 import { describe, it, expect } from "vitest";
 import {
+    ArchidektDeck,
     DeckParseError,
+    parseArchidekt,
     parseManabox,
     parseMoxfield,
 } from "../src/lib/parsers";
@@ -71,9 +73,61 @@ describe("parseManabox", () => {
         expect(parsed[0].name).toBe("Alpha");
         expect(parsed[0].set).toBe("XYZ");
         expect(parsed[0].quantity).toBe(2);
+        expect(parsed[0].isFoil).toBe(false);
         expect(parsed[0].image_url).toBe("https://example.com/img.jpg");
         // ck_price is rounded to 2 decimals in the parser
         expect(parsed[0].ck_price).toBeCloseTo(3.46, 2);
+    });
+
+    it("parses foil and etched variants in manabox", () => {
+        const dataObj = {
+            deck: [
+                null,
+                {
+                    cards: [
+                        null,
+                        [
+                            [
+                                0,
+                                {
+                                    name: [0, "Foil Card"],
+                                    setId: [0, "abc"],
+                                    collectorNumber: [0, "10"],
+                                    rarity: [0, "rare"],
+                                    quantity: [0, 1],
+                                    variant: [0, "Foil"],
+                                    images: [null, []],
+                                    pricing: [null, {}],
+                                },
+                            ],
+                            [
+                                0,
+                                {
+                                    name: [0, "Etched Card"],
+                                    setId: [0, "def"],
+                                    collectorNumber: [0, "20"],
+                                    rarity: [0, "mythic"],
+                                    quantity: [0, 1],
+                                    variant: [0, "Etched"],
+                                    images: [null, []],
+                                    pricing: [null, {}],
+                                },
+                            ],
+                        ],
+                    ],
+                },
+            ],
+        };
+
+        const escaped = JSON.stringify(dataObj).replace(/"/g, "&quot;");
+        const html = `<html><body><astro-island></astro-island><astro-island props="${escaped}"></astro-island></body></html>`;
+
+        const parsed = parseManabox(html);
+        expect(parsed).toHaveLength(2);
+        expect(parsed[0].name).toBe("Foil Card");
+        expect(parsed[0].isFoil).toBe(true);
+        expect(parsed[1].name).toBe("Etched Card");
+        expect(parsed[1].isFoil).toBe(true);
     });
 
     it("throws DeckParseError when the page has no deck island", () => {
@@ -135,3 +189,140 @@ describe("parseMoxfield", () => {
         expect(() => parseMoxfield({})).toThrow(DeckParseError);
     });
 });
+
+describe("parseArchidekt", () => {
+    it("parses archidekt Next.js response shape with cardMap", () => {
+        const obj = {
+            pageProps: {
+                redux: {
+                    deck: {
+                        cardMap: {
+                            wonder: {
+                                name: "Wonder",
+                                setCode: "tdc",
+                                collectorNumber: "170",
+                                rarity: "uncommon",
+                                qty: 1,
+                                modifier: "Normal",
+                                uid: "567abd78-d4a3-4a33-9b5b-b5ca361059cc",
+                                prices: { ck: 3.99, ckFoil: 0 },
+                            },
+                            artificer: {
+                                name: "Artificer's Assistant",
+                                setCode: "plst",
+                                collectorNumber: "DOM-44",
+                                rarity: "common",
+                                qty: 1,
+                                modifier: "Normal",
+                                uid: "852ceabf-ce14-4fa9-90b5-895b5cb5ca7f",
+                                prices: { ck: 0.49, ckFoil: 0 },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+        const parsed = parseArchidekt(obj);
+
+        expect(parsed).toHaveLength(2);
+
+        const wonder = parsed.find((c) => c.name === "Wonder");
+        expect(wonder).toBeDefined();
+        expect(wonder?.set).toBe("TDC");
+        expect(wonder?.collector_number).toBe("170");
+        expect(wonder?.rarity).toBe("Uncommon");
+        expect(wonder?.quantity).toBe(1);
+        expect(wonder?.isFoil).toBe(false);
+        expect(wonder?.image_url).toBe(
+            "https://cards.scryfall.io/normal/front/5/6/567abd78-d4a3-4a33-9b5b-b5ca361059cc.jpg",
+        );
+        expect(wonder?.ck_price).toBe(3.99);
+
+        const artificer = parsed.find((c) => c.name === "Artificer's Assistant");
+        expect(artificer).toBeDefined();
+        expect(artificer?.set).toBe("PLST");
+        expect(artificer?.collector_number).toBe("DOM-44");
+        expect(artificer?.ck_price).toBe(0.49);
+    });
+
+    it("parses minimal archidekt object with cardMap", () => {
+        const obj = {
+            pageProps: {
+                redux: {
+                    deck: {
+                        cardMap: {
+                            entry1: {
+                                name: "Ragavan, Nimble Pilferer",
+                                setCode: "mh2",
+                                collectorNumber: "138",
+                                rarity: "mythic",
+                                qty: 2,
+                                modifier: "Foil",
+                                uid: "a9738cda-adb1-47fb-9f4c-cc93022544dd",
+                                prices: { ck: 45.0, ckFoil: 65.0 },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const parsed = parseArchidekt(obj);
+        expect(parsed).toHaveLength(1);
+        expect(parsed[0].name).toBe("Ragavan, Nimble Pilferer");
+        expect(parsed[0].set).toBe("MH2");
+        expect(parsed[0].collector_number).toBe("138");
+        expect(parsed[0].rarity).toBe("Mythic");
+        expect(parsed[0].quantity).toBe(2);
+        expect(parsed[0].isFoil).toBe(true);
+        expect(parsed[0].image_url).toBe(
+            "https://cards.scryfall.io/normal/front/a/9/a9738cda-adb1-47fb-9f4c-cc93022544dd.jpg",
+        );
+        expect(parsed[0].ck_price).toBe(65.0);
+    });
+
+    it("parses API response with cards array", () => {
+        const obj = {
+            cards: [
+                {
+                    quantity: 1,
+                    modifier: "Normal",
+                    card: {
+                        collectorNumber: "100",
+                        rarity: "rare",
+                        uid: "12345678-abcd-ef01-2345-6789abcdef01",
+                        edition: { editioncode: "abc" },
+                        oracleCard: { name: "Sol Ring" },
+                        prices: { ck: 1.5 },
+                    },
+                },
+            ],
+        };
+
+        const parsed = parseArchidekt(obj);
+        expect(parsed).toHaveLength(1);
+        expect(parsed[0].name).toBe("Sol Ring");
+        expect(parsed[0].set).toBe("ABC");
+        expect(parsed[0].collector_number).toBe("100");
+        expect(parsed[0].rarity).toBe("Rare");
+        expect(parsed[0].quantity).toBe(1);
+        expect(parsed[0].isFoil).toBe(false);
+        expect(parsed[0].image_url).toBe(
+            "https://cards.scryfall.io/normal/front/1/2/12345678-abcd-ef01-2345-6789abcdef01.jpg",
+        );
+        expect(parsed[0].ck_price).toBe(1.5);
+    });
+
+    it("throws DeckParseError when response shape is invalid or missing cards", () => {
+        expect(() => parseArchidekt({} as unknown as ArchidektDeck)).toThrow(
+            DeckParseError,
+        );
+        expect(() => parseArchidekt(null as unknown as ArchidektDeck)).toThrow(
+            DeckParseError,
+        );
+        expect(() =>
+            parseArchidekt({ pageProps: {} } as unknown as ArchidektDeck),
+        ).toThrow(DeckParseError);
+    });
+});
+

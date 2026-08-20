@@ -48,6 +48,8 @@ function CardBox(card: Card) {
                     {t("card.quantity")}{" "}
                     <label className="label-value">{card.quantity}</label>
                 </p>
+                {card.isFoil ? <p className="label foil-text">Foil</p> : null}
+
                 {card.ck_price ? (
                     <p className="price">
                         ${card.ck_price}
@@ -61,11 +63,14 @@ function CardBox(card: Card) {
                 )}
             </div>
             <div className="col">
-                <img
-                    src={card.image_url}
-                    alt={card.name + " image"}
-                    className="image"
-                />
+                <div className="card-image">
+                    <img
+                        src={card.image_url}
+                        alt={card.name + " image"}
+                        className="image"
+                    />
+                    <div className={card.isFoil ? "foil" : ""}></div>
+                </div>
             </div>
         </div>
     );

@@ -1,12 +1,5 @@
-// Cloudflare Worker: proxy for Moxfield and Manabox
-// - Routes
-//   /api/moxfield/* -> https://api2.moxfield.com/*
-//   /api/manabox/*  -> https://manabox.app/*
-// Edit ALLOWED_ORIGIN to restrict CORS to your GH Pages origin before publishing.
-
-// Use the site origin (no path). GitHub Pages origin for your site:
 const ALLOWED_ORIGIN = "https://xdainz.github.io";
-const CACHE_TTL_SECONDS = 300; // 5 minutes
+const CACHE_TTL_SECONDS = 180; // 3 minutes
 
 addEventListener("fetch", (event) => {
     event.respondWith(handleRequest(event));
@@ -31,6 +24,9 @@ async function handleRequest(event) {
     } else if (pathname.startsWith("/api/manabox")) {
         upstreamBase = "https://manabox.app";
         upstreamPath = pathname.replace(/^\/api\/manabox/, "");
+    } else if (pathname.startsWith("/api/archidekt")) {
+        upstreamBase = "https://archidekt.com";
+        upstreamPath = pathname.replace(/^\/api\/archidekt/, "");
     } else {
         return new Response("Not found", {
             status: 404,

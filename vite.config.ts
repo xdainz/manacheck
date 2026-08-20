@@ -46,6 +46,26 @@ export default defineConfig({
                     });
                 },
             },
+            // Proxy Archidekt API requests during development to avoid CORS
+            "/api/archidekt": {
+                target: "https://archidekt.com",
+                changeOrigin: true,
+                secure: true,
+                rewrite: (path) => path.replace(/^\/api\/archidekt/, ""),
+                configure: (proxy) => {
+                    proxy.on("proxyReq", (proxyReq) => {
+                        proxyReq.setHeader(
+                            "User-Agent",
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
+                        );
+                        proxyReq.setHeader("Referer", "https://archidekt.com/");
+                        proxyReq.setHeader(
+                            "Accept",
+                            "application/json, text/plain, */*",
+                        );
+                    });
+                },
+            },
         },
     },
 });

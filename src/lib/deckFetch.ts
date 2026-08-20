@@ -1,7 +1,7 @@
 import type { Card } from "../types/types";
-import { parseManabox, parseMoxfield } from "./parsers";
+import { parseArchidekt, parseManabox, parseMoxfield } from "./parsers";
 
-export type DeckSource = "manabox" | "moxfield";
+export type DeckSource = "manabox" | "moxfield" | "archidekt";
 
 export type DeckFetchOptions = {
     // Base URL of the deployed Cloudflare Worker proxy ("" = fetch directly).
@@ -44,6 +44,20 @@ export function resolveFetchUrl(
         };
     }
 
+    if (link.startsWith("https://archidekt.com/decks/")) {
+        const match = link.match(/^https:\/\/archidekt\.com\/decks\/(\d+)/);
+        if (!match) throw new Error("Invalid Archidekt deck URL");
+        const deckId = match[1];
+        const apiPath = `/api/decks/${deckId}/`;
+        if (isDev) return { url: `/api/archidekt${apiPath}`, source: "archidekt" };
+        return {
+            url: workerBase
+                ? `${workerBase}/api/archidekt${apiPath}`
+                : `https://archidekt.com${apiPath}`,
+            source: "archidekt",
+        };
+    }
+
     throw new Error("Unsupported domain");
 }
 
@@ -59,5 +73,9 @@ export async function fetchDeckCards(
     if (source === "manabox") {
         return parseManabox(await res.text());
     }
+    if (source === "archidekt") {
+        return parseArchidekt(await res.json());
+    }
     return parseMoxfield(await res.json());
 }
+
