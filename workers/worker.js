@@ -24,6 +24,9 @@ async function handleRequest(event) {
     } else if (pathname.startsWith("/api/manabox")) {
         upstreamBase = "https://manabox.app";
         upstreamPath = pathname.replace(/^\/api\/manabox/, "");
+    } else if (pathname.startsWith("/api/archidekt")) {
+        upstreamBase = "https://archidekt.com";
+        upstreamPath = pathname.replace(/^\/api\/archidekt/, "");
     } else {
         return new Response("Not found", {
             status: 404,

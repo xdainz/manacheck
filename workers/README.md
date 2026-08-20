@@ -1,8 +1,8 @@
-Cloudflare Worker proxy for Moxfield & Manabox
+Cloudflare Worker proxy for Moxfield & Manabox & Archidekt
 
 -   `/api/moxfield/*` -> `https://api2.moxfield.com/*`
 -   `/api/manabox/*` -> `https://manabox.app/*`
--   `/api/archidekt/*` -> `https://manabox.app/*`
+-   `/api/archidekt/*` -> `https://archidekt.com/*`
 
 Setup & deploy (quick)
 
